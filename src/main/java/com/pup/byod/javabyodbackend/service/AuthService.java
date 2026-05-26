@@ -23,22 +23,37 @@ public class AuthService {
         ValidationUtil.requireNonBlank(password, "Password");
 
         var userOpt = userDAO.findByUsername(username);
+
+        // Unknown username — log failed attempt without a userId, then reject.
+        // Return a generic message so we don't reveal which usernames exist.
         if (userOpt.isEmpty()) {
             auditLogService.writeAuditLog(null, "USER_LOGIN_FAILED", "users", null, null, null, null);
             throw new BusinessRuleException("Invalid username or password.");
         }
 
         User user = userOpt.get();
-        if (!PasswordUtil.verify(password, user.getPasswordHash())) {
-            auditLogService.writeAuditLog(user.getUserId(), "USER_LOGIN_FAILED", "users", user.getUserId().toString(), null, null, null);
-            throw new BusinessRuleException("Invalid username or password.");
-        }
 
-        if (user.getStatus() != null && user.getStatus().equalsIgnoreCase("inactive")) {
+        // Check account status BEFORE verifying password.
+        // Architecture doc maps inactive → HTTP 403.
+        // GlobalExceptionHandler maps BusinessRuleException → 422, so we keep a
+        // distinct message here; the controller can map it to 403 if needed,
+        // or you can add a dedicated InactiveAccountException later.
+        if ("inactive".equalsIgnoreCase(user.getStatus())) {
             throw new BusinessRuleException("Account is inactive.");
         }
 
-        auditLogService.writeAuditLog(user.getUserId(), "USER_LOGIN", "users", user.getUserId().toString(), null, null, null);
+        // Wrong password — log the failed attempt against the known userId.
+        if (!PasswordUtil.verify(password, user.getPasswordHash())) {
+            auditLogService.writeAuditLog(
+                    user.getUserId(), "USER_LOGIN_FAILED", "users",
+                    user.getUserId().toString(), null, null, null);
+            throw new BusinessRuleException("Invalid username or password.");
+        }
+
+        auditLogService.writeAuditLog(
+                user.getUserId(), "USER_LOGIN", "users",
+                user.getUserId().toString(), null, null, null);
+
         return user;
     }
 
@@ -47,6 +62,8 @@ public class AuthService {
         if (userOpt.isEmpty()) {
             throw new BusinessRuleException("User not found.");
         }
-        auditLogService.writeAuditLog(userId, "USER_LOGOUT", "users", String.valueOf(userId), null, null, null);
+        auditLogService.writeAuditLog(
+                userId, "USER_LOGOUT", "users",
+                String.valueOf(userId), null, null, null);
     }
 }
