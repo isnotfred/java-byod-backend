@@ -61,7 +61,7 @@ public class EventRequestDAO {
     }
 
     public List<EventRequest> findActiveRequests() {
-        String sql = "SELECT * FROM event_requests WHERE status IN ('pending', 'approved') ORDER BY created_at DESC";
+        String sql = "SELECT * FROM v_active_event_requests ORDER BY created_at DESC";
         return jdbc.query(sql, rowMapper);
     }
 

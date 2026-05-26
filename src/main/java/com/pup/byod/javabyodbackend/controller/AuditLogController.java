@@ -32,4 +32,9 @@ public class AuditLogController {
     public List<AuditLog> getByUserId(@PathVariable int userId) {
         return auditLogService.findByUserId(userId);
     }
+
+    @GetMapping("/action/{actionType}")
+    public List<AuditLog> getByActionType(@PathVariable String actionType) {
+        return auditLogService.findByActionType(actionType);
+    }
 }

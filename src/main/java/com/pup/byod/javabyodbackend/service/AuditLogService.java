@@ -34,4 +34,8 @@ public class AuditLogService {
     public List<AuditLog> findByUserId(int userId) {
         return auditLogDAO.findByUserId(userId);
     }
+
+    public List<AuditLog> findByActionType(String actionType) {
+        return auditLogDAO.findByActionType(actionType);
+    }
 }
