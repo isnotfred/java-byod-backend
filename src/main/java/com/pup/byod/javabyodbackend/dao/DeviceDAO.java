@@ -12,6 +12,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,8 +127,8 @@ public class DeviceDAO {
                     (student_id, device_type, brand, model, serial_number,
                      registration_status, device_status, device_purpose, remarks)
                 VALUES
-                    (:studentId, :deviceType::device_type_enum, :brand, :model, :serialNumber,
-                     :registrationStatus::registration_status_enum, :deviceStatus, :devicePurpose, :remarks)
+                    (:studentId, :deviceType, :brand, :model, :serialNumber,
+                     :registrationStatus, :deviceStatus, :devicePurpose, :remarks)
                 """;
 
         var params = new MapSqlParameterSource()
@@ -148,11 +150,25 @@ public class DeviceDAO {
     public int updateRegistrationStatus(int deviceId, RegistrationStatus status) {
         String sql = """
                 UPDATE devices
-                SET registration_status = :status::registration_status_enum
+                SET registration_status = :status
                 WHERE device_id = :deviceId
                 """;
         var params = new MapSqlParameterSource()
                 .addValue("status", status.name())
+                .addValue("deviceId", deviceId);
+        return jdbc.update(sql, params);
+    }
+
+    public int updateReviewInfo(int deviceId, int reviewedBy, LocalDateTime reviewedAt) {
+        String sql = """
+            UPDATE devices
+            SET reviewed_by = :reviewedBy,
+                reviewed_at = :reviewedAt
+            WHERE device_id = :deviceId
+            """;
+        var params = new MapSqlParameterSource()
+                .addValue("reviewedBy", reviewedBy)
+                .addValue("reviewedAt", Timestamp.valueOf(reviewedAt))
                 .addValue("deviceId", deviceId);
         return jdbc.update(sql, params);
     }

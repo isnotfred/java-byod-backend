@@ -77,7 +77,7 @@ public class AuditLogDAO {
                 .addValue("newValues", newValues)
                 .addValue("ipAddress", ipAddress);
 
-        jdbc.queryForObject(sql, params, Void.class);
+        jdbc.query(sql, params, rs -> null);
     }
 
     // ── Queries ──────────────────────────────────────────────────────

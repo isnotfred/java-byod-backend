@@ -1,6 +1,7 @@
 package com.pup.byod.javabyodbackend.dao;
 
 import com.pup.byod.javabyodbackend.model.EventRequest;
+import com.pup.byod.javabyodbackend.model.ActiveEventRequest;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -43,6 +44,18 @@ public class EventRequestDAO {
             .updatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null)
             .build();
 
+    private final RowMapper<ActiveEventRequest> activeEventRequestRowMapper = (rs, rowNum) -> ActiveEventRequest.builder()
+            .eventRequestId(rs.getInt("event_request_id"))
+            .studentId(rs.getString("student_id"))
+            .studentName(rs.getString("student_name"))
+            .eventName(rs.getString("event_name"))
+            .organization(rs.getString("organization"))
+            .startDate(rs.getDate("start_date") != null ? rs.getDate("start_date").toLocalDate() : null)
+            .endDate(rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null)
+            .status(rs.getString("status"))
+            .deviceCount(rs.getInt("device_count"))
+            .build();
+
     public List<EventRequest> findAll() {
         String sql = "SELECT * FROM event_requests ORDER BY created_at DESC";
         return jdbc.query(sql, rowMapper);
@@ -60,9 +73,9 @@ public class EventRequestDAO {
         return jdbc.query(sql, params, rowMapper);
     }
 
-    public List<EventRequest> findActiveRequests() {
-        String sql = "SELECT * FROM v_active_event_requests ORDER BY created_at DESC";
-        return jdbc.query(sql, rowMapper);
+    public List<ActiveEventRequest> findActiveRequests() {
+        String sql = "SELECT * FROM v_active_event_requests ORDER BY event_request_id DESC";
+        return jdbc.query(sql, activeEventRequestRowMapper);
     }
 
     public int insert(EventRequest request) {

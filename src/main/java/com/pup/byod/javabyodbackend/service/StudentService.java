@@ -1,6 +1,6 @@
 package com.pup.byod.javabyodbackend.service;
 
-import com.pup.byod.javabyodbackend.dao.StudentRepository;
+import com.pup.byod.javabyodbackend.dao.StudentDAO;
 import com.pup.byod.javabyodbackend.exception.BusinessRuleException;
 import com.pup.byod.javabyodbackend.exception.ResourceNotFoundException;
 import com.pup.byod.javabyodbackend.model.Student;
@@ -13,10 +13,10 @@ import java.util.List;
 @Service
 public class StudentService {
 
-    private final StudentRepository studentRepository;
+    private final StudentDAO studentRepository;
     private final AuditLogService auditLogService;
 
-    public StudentService(StudentRepository studentRepository, AuditLogService auditLogService) {
+    public StudentService(StudentDAO studentRepository, AuditLogService auditLogService) {
         this.studentRepository = studentRepository;
         this.auditLogService = auditLogService;
     }

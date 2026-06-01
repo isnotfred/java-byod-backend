@@ -63,7 +63,7 @@ public class UserDAO {
     public int insert(User user) {
         String sql = """
                 INSERT INTO users (username, password_hash, full_name, role, status)
-                VALUES (:username, :passwordHash, :fullName, :role::users_role, :status)
+                VALUES (:username, :passwordHash, :fullName, :role, :status)
                 """;
 
         var params = new MapSqlParameterSource()
@@ -86,7 +86,7 @@ public class UserDAO {
         String sql = """
                 UPDATE users
                 SET full_name = :fullName,
-                    role      = :role::users_role,
+                    role      = :role,
                     status    = :status
                 WHERE user_id = :userId
                 """;

@@ -1,7 +1,7 @@
 package com.pup.byod.javabyodbackend.service;
 
-import com.pup.byod.javabyodbackend.dao.DeviceRepository;
-import com.pup.byod.javabyodbackend.dao.StudentRepository;
+import com.pup.byod.javabyodbackend.dao.DeviceDAO;
+import com.pup.byod.javabyodbackend.dao.StudentDAO;
 import com.pup.byod.javabyodbackend.exception.BusinessRuleException;
 import com.pup.byod.javabyodbackend.exception.ResourceNotFoundException;
 import com.pup.byod.javabyodbackend.model.Device;
@@ -19,44 +19,44 @@ import java.util.List;
 @Service
 public class DeviceService {
 
-    private final DeviceRepository deviceRepository;
-    private final StudentRepository studentRepository;
+    private final DeviceDAO deviceDAO;
+    private final StudentDAO studentDAO;
     private final AuditLogService auditLogService;
 
-    public DeviceService(DeviceRepository deviceRepository, StudentRepository studentRepository, AuditLogService auditLogService) {
-        this.deviceRepository = deviceRepository;
-        this.studentRepository = studentRepository;
+    public DeviceService(DeviceDAO deviceDAO, StudentDAO studentDAO, AuditLogService auditLogService) {
+        this.deviceDAO = deviceDAO;
+        this.studentDAO = studentDAO;
         this.auditLogService = auditLogService;
     }
 
     public List<Device> getAllDevices() {
-        return deviceRepository.findAll();
+        return deviceDAO.findAll();
     }
 
     public Device getDeviceById(int deviceId) {
-        return deviceRepository.findById(deviceId)
+        return deviceDAO.findById(deviceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Device not found."));
     }
 
     public Device getDeviceBySerial(String serialNumber) {
-        return deviceRepository.findBySerialNumber(serialNumber)
+        return deviceDAO.findBySerialNumber(serialNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Device not found."));
     }
 
     public List<Device> getDevicesByStudentId(String studentId) {
-        return deviceRepository.findByStudentId(studentId);
+        return deviceDAO.findByStudentId(studentId);
     }
 
     public List<PendingDevice> getPendingDevices() {
-        return deviceRepository.findPendingDevices();
+        return deviceDAO.findAllPending();
     }
 
     public List<DeviceCampusStatus> getCampusStatus() {
-        return deviceRepository.findCampusStatus();
+        return deviceDAO.findCampusStatus();
     }
 
     public DeviceCampusStatus getCampusStatusBySerial(String serialNumber) {
-        return deviceRepository.findCampusStatusBySerial(serialNumber)
+        return deviceDAO.findCampusStatusBySerial(serialNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Device status not found."));
     }
 
@@ -76,11 +76,11 @@ public class DeviceService {
         ValidationUtil.requireNonBlank(deviceType, "Device type");
         ValidationUtil.requireNonBlank(devicePurpose, "Device purpose");
 
-        if (studentRepository.findById(studentId).isEmpty()) {
+        if (studentDAO.findById(studentId).isEmpty()) {
             throw new ResourceNotFoundException("Student not found.");
         }
 
-        if (deviceRepository.findBySerialNumber(serialNumber).isPresent()) {
+        if (deviceDAO.findBySerialNumber(serialNumber).isPresent()) {
             throw new BusinessRuleException("Serial number already exists.");
         }
 
@@ -103,7 +103,7 @@ public class DeviceService {
                 .imagePath(imagePath)
                 .build();
 
-        int deviceId = deviceRepository.insert(device);
+        int deviceId = deviceDAO.insert(device);
         Device saved = getDeviceById(deviceId);
         auditLogService.writeAuditLog(null, "DEVICE_REGISTERED", "devices", String.valueOf(deviceId), null, null, null);
         return saved;
@@ -138,7 +138,7 @@ public class DeviceService {
                 .updatedAt(existing.getUpdatedAt())
                 .build();
 
-        deviceRepository.update(updated);
+        deviceDAO.update(updated);
         Device saved = getDeviceById(deviceId);
         auditLogService.writeAuditLog(null, "DEVICE_UPDATED", "devices", String.valueOf(deviceId), null, null, null);
         return saved;
@@ -160,7 +160,8 @@ public class DeviceService {
             throw new BusinessRuleException("Inactive devices cannot be approved.");
         }
 
-        deviceRepository.updateRegistrationStatus(deviceId, RegistrationStatus.approved, reviewedBy, LocalDateTime.now());
+        deviceDAO.updateRegistrationStatus(deviceId, RegistrationStatus.approved);
+        deviceDAO.updateReviewInfo(deviceId, reviewedBy, LocalDateTime.now());
         Device saved = getDeviceById(deviceId);
         auditLogService.writeAuditLog(reviewedBy, "DEVICE_APPROVED", "devices", String.valueOf(deviceId), null, null, null);
         return saved;
@@ -180,7 +181,7 @@ public class DeviceService {
 
         ValidationUtil.requireNonBlank(remarks, "Remarks");
 
-        deviceRepository.update(Device.builder()
+        deviceDAO.update(Device.builder()
                 .deviceId(existing.getDeviceId())
                 .studentId(existing.getStudentId())
                 .deviceName(existing.getDeviceName())
@@ -197,7 +198,8 @@ public class DeviceService {
                 .imagePath(existing.getImagePath())
                 .build());
 
-        deviceRepository.updateRegistrationStatus(deviceId, RegistrationStatus.rejected, reviewedBy, LocalDateTime.now());
+        deviceDAO.updateRegistrationStatus(deviceId, RegistrationStatus.rejected);
+        deviceDAO.updateReviewInfo(deviceId, reviewedBy, LocalDateTime.now());
         Device saved = getDeviceById(deviceId);
         auditLogService.writeAuditLog(reviewedBy, "DEVICE_REJECTED", "devices", String.valueOf(deviceId), null, null, null);
         return saved;
@@ -211,7 +213,7 @@ public class DeviceService {
             return;
         }
 
-        deviceRepository.setDeviceStatus(deviceId, "inactive");
+        deviceDAO.setDeviceStatus(deviceId, "inactive");
         auditLogService.writeAuditLog(null, "DEVICE_DEACTIVATED", "devices", String.valueOf(deviceId), null, null, null);
     }
 }

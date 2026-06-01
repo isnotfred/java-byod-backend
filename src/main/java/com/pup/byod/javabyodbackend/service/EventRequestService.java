@@ -2,7 +2,7 @@ package com.pup.byod.javabyodbackend.service;
 
 import com.pup.byod.javabyodbackend.dao.EventRequestDAO;
 import com.pup.byod.javabyodbackend.dao.EventRequestDeviceDAO;
-import com.pup.byod.javabyodbackend.dao.StudentRepository;
+import com.pup.byod.javabyodbackend.dao.StudentDAO;
 import com.pup.byod.javabyodbackend.exception.BusinessRuleException;
 import com.pup.byod.javabyodbackend.exception.ResourceNotFoundException;
 import com.pup.byod.javabyodbackend.model.ActiveEventRequest;
@@ -22,12 +22,12 @@ public class EventRequestService {
 
     private final EventRequestDAO eventRequestDAO;
     private final EventRequestDeviceDAO eventRequestDeviceDAO;
-    private final StudentRepository studentRepository;
+    private final StudentDAO studentRepository;
     private final AuditLogService auditLogService;
 
     public EventRequestService(EventRequestDAO eventRequestDAO,
                                EventRequestDeviceDAO eventRequestDeviceDAO,
-                               StudentRepository studentRepository,
+                               StudentDAO studentRepository,
                                AuditLogService auditLogService) {
         this.eventRequestDAO = eventRequestDAO;
         this.eventRequestDeviceDAO = eventRequestDeviceDAO;
@@ -49,25 +49,7 @@ public class EventRequestService {
     }
 
     public List<ActiveEventRequest> getActiveEventRequests() {
-        List<ActiveEventRequest> results = new ArrayList<>();
-        for (EventRequest request : eventRequestDAO.findActiveRequests()) {
-            var student = studentRepository.findById(request.getStudentId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Student not found."));
-            var devices = eventRequestDeviceDAO.findByEventRequestId(request.getEventRequestId());
-
-            results.add(ActiveEventRequest.builder()
-                    .eventRequestId(request.getEventRequestId())
-                    .studentId(request.getStudentId())
-                    .studentName(student.getFirstName() + " " + student.getLastName())
-                    .eventName(request.getEventName())
-                    .organization(request.getOrganization())
-                    .startDate(request.getStartDate())
-                    .endDate(request.getEndDate())
-                    .status(request.getStatus())
-                    .deviceCount(devices.size())
-                    .build());
-        }
-        return results;
+        return eventRequestDAO.findActiveRequests();
     }
 
     @Transactional

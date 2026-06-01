@@ -1,7 +1,7 @@
 package com.pup.byod.javabyodbackend.service;
 
 import com.pup.byod.javabyodbackend.dao.DeviceLogDAO;
-import com.pup.byod.javabyodbackend.dao.DeviceRepository;
+import com.pup.byod.javabyodbackend.dao.DeviceDAO;
 import com.pup.byod.javabyodbackend.exception.BusinessRuleException;
 import com.pup.byod.javabyodbackend.exception.ResourceNotFoundException;
 import com.pup.byod.javabyodbackend.model.Device;
@@ -17,11 +17,11 @@ import java.util.List;
 @Service
 public class DeviceLogService {
 
-    private final DeviceRepository deviceRepository;
+    private final DeviceDAO deviceRepository;
     private final DeviceLogDAO deviceLogDAO;
     private final AuditLogService auditLogService;
 
-    public DeviceLogService(DeviceRepository deviceRepository, DeviceLogDAO deviceLogDAO, AuditLogService auditLogService) {
+    public DeviceLogService(DeviceDAO deviceRepository, DeviceLogDAO deviceLogDAO, AuditLogService auditLogService) {
         this.deviceRepository = deviceRepository;
         this.deviceLogDAO = deviceLogDAO;
         this.auditLogService = auditLogService;
