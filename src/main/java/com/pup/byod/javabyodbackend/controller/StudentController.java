@@ -5,6 +5,7 @@ import com.pup.byod.javabyodbackend.service.StudentService;
 import com.pup.byod.javabyodbackend.util.ValidationUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -80,6 +81,13 @@ public class StudentController {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("message", "Student deactivated.");
         return body;
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<Map<String, Object>> importStudents(
+            @RequestParam("file") MultipartFile file) {
+        Map<String, Object> result = studentService.importFromCsv(file);
+        return ResponseEntity.ok(result);
     }
 
     public static class CreateStudentRequest {
