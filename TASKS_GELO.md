@@ -1,40 +1,61 @@
-# Backend Tasks — Gelo
-**Modules:** Student & Device Registration · Ingress/Egress Monitoring  
-**Project:** `pup.edu.ph.it.javabyodsystem` | Spring Boot + PostgreSQL
+# Backend Tasks - Gelo
+**Modules:** Device Type Alignment and Super Admin Account Management  
+**Project:** `java-byod-backend` | Spring Boot + PostgreSQL
 
 ---
 
-## Files at a Glance
+## Read This First
+
+This task file has been aligned with the current codebase. Follow these notes to avoid breaking compile:
+
+- Current Java package root is `com/pup/byod/javabyodbackend`, not `com/pup/byod/backend`.
+- `Role.java` currently uses lowercase enum constants because `UserDAO` writes `role.name()` directly to PostgreSQL. Use `Role.admin`, `Role.guard`, and `Role.super_admin`.
+- `Role.super_admin` and AuthService helper methods were already added by the Reports/RBAC task.
+- `DevicePurpose.java` does not currently exist. `devices.device_purpose` is currently modeled as `String`. Do not convert `Device.devicePurpose` to an enum unless you update every caller.
+- Spring Security currently permits all requests in `SecurityConfig`, and method security is not enabled. `@PreAuthorize` annotations will not enforce 403 until method security/authentication is wired.
+
+---
+
+## Files At A Glance
 
 | File | New / Modify |
 |---|---|
 | `model/enums/DeviceType.java` | Modify |
-| `model/enums/DevicePurpose.java` | Modify |
 | `dao/DeviceDAO.java` | Modify |
-| `dao/AuditLogDAO.java` | Modify (audit write only) |
-| `service/SuperAdminService.java` | **New** |
-| `controller/SuperAdminController.java` | **New** |
+| `controller/DeviceController.java` | Modify only if needed for `DeviceType` parsing |
+| `service/DeviceService.java` | Modify only if needed for `DeviceType` parsing |
+| `dao/UserDAO.java` | Modify - add small wrapper methods only if service needs them |
+| `model/AuditActionTypes.java` | New, optional but preferred |
+| `service/SuperAdminService.java` | New |
+| `controller/SuperAdminController.java` | New |
 
-> **Dependency note:** Do the enums first. `DeviceDAO` and `SuperAdminService` both depend on them being correct before you touch anything else.
+> Dependency note: Do `DeviceType.java` first, then update all current `DeviceType.fromString(...)` and `deviceType.name()` call sites. Do not start Super Admin work until user role constants and DAO methods are confirmed.
 
 ---
 
-## 1. Enums
+## 1. Enum - `DeviceType.java`
 
-### 1.1 `DeviceType.java`
+**File:** `src/main/java/com/pup/byod/javabyodbackend/model/enums/DeviceType.java`
 
-**File:** `com/pup/byod/javabyodbackend/model/enums/DeviceType.java`
+Replace the old values:
 
-Replace all existing subtype values with the five category constants. The `dbValue` string must match the database CHECK constraint exactly — spacing, ampersands, and parentheses included.
+```java
+laptop,
+tablet,
+phone
+```
+
+with the five category constants required by `src/main/resources/db/schema.sql`.
+
+Use this shape, but keep `fromString(...)` as a compatibility alias because existing code already calls it:
 
 ```java
 public enum DeviceType {
-
-    PERSONAL_COMPUTERS         ("Personal Computers"),
-    COMPONENTS_AND_PERIPHERALS ("Components & Peripherals"),
-    DISPLAY_AND_PROJECTION     ("Display & Projection"),
-    PROJECT_PROTOTYPES         ("Project Prototypes (Optional SN)"),
-    APPLIANCES_TLE             ("Appliances (TLE)");
+    PERSONAL_COMPUTERS("Personal Computers"),
+    COMPONENTS_AND_PERIPHERALS("Components & Peripherals"),
+    DISPLAY_AND_PROJECTION("Display & Projection"),
+    PROJECT_PROTOTYPES("Project Prototypes (Optional SN)"),
+    APPLIANCES_TLE("Appliances (TLE)");
 
     private final String dbValue;
 
@@ -46,249 +67,256 @@ public enum DeviceType {
         return dbValue;
     }
 
-    /** Use when reading device_type back from the DB. */
     public static DeviceType fromDbValue(String value) {
-        for (DeviceType t : values()) {
-            if (t.dbValue.equals(value)) return t;
+        if (value == null) {
+            return null;
+        }
+
+        String normalized = value.trim();
+        for (DeviceType type : values()) {
+            if (type.dbValue.equals(normalized) || type.name().equalsIgnoreCase(normalized)) {
+                return type;
+            }
         }
         throw new IllegalArgumentException("Unknown device_type: " + value);
     }
+
+    public static DeviceType fromString(String value) {
+        return fromDbValue(value);
+    }
 }
 ```
 
-### 1.2 `DevicePurpose.java`
+Do not create or modify `DevicePurpose.java` for now. The current model stores purpose as `String`, and the database already accepts `PROTOTYPE` and `APPLIANCE`.
 
-**File:** `com/pup/byod/javabyodbackend/model/enums/DevicePurpose.java`
+---
 
-Add two new values to the existing enum:
+## 2. DAO - `DeviceDAO`
+
+**File:** `src/main/java/com/pup/byod/javabyodbackend/dao/DeviceDAO.java`
+
+### 2.1 Read `device_type` With DB Values
+
+Update every `DeviceType.fromString(rs.getString("device_type"))` mapper to use:
 
 ```java
-PROTOTYPE ("PROTOTYPE"),  // ← add
-APPLIANCE ("APPLIANCE");  // ← add
+DeviceType.fromDbValue(rs.getString("device_type"))
+```
+
+Current places to check:
+
+- main `Device` row mapper
+- `PendingDevice` row mapper
+- `DeviceCampusStatus` row mapper
+
+Report DTO row mappers can stay as plain `String` because those report models expose `deviceType` as `String`.
+
+### 2.2 Write `device_type` With DB Values
+
+Any insert or update that writes `device_type` must use:
+
+```java
+device.getDeviceType().getDbValue()
+```
+
+not:
+
+```java
+device.getDeviceType().name()
+```
+
+Current place to check:
+
+- `DeviceDAO.insert(Device device)`
+
+---
+
+## 3. Caller Updates For `DeviceType`
+
+Search for:
+
+```text
+DeviceType.fromString
+deviceType.name()
+DeviceType.
+```
+
+Current known callers:
+
+- `controller/DeviceController.java`
+- `service/DeviceService.java`
+- `dao/DeviceDAO.java`
+
+These should still compile if `fromString(...)` remains as an alias. Prefer changing new code to `fromDbValue(...)`, but keeping the alias avoids a wide refactor.
+
+---
+
+## 4. DAO - `UserDAO`
+
+**File:** `src/main/java/com/pup/byod/javabyodbackend/dao/UserDAO.java`
+
+`SuperAdminService` may reuse the existing methods:
+
+- `insert(User user)`
+- `update(User user)`
+- `setStatus(int userId, String status)`
+- `findById(int userId)`
+- `findByUsername(String username)`
+
+If you want method names that match the service intent, add thin wrappers instead of duplicating SQL:
+
+```java
+public int createUser(User user) {
+    return insert(user);
+}
+
+public int updateUser(User user) {
+    return update(user);
+}
+
+public int setUserStatus(int userId, String status) {
+    return setStatus(userId, status);
+}
+
+public int setUserRole(int userId, Role role) {
+    String sql = "UPDATE users SET role = :role WHERE user_id = :userId";
+    var params = new MapSqlParameterSource()
+            .addValue("role", role.name())
+            .addValue("userId", userId);
+    return jdbc.update(sql, params);
+}
+```
+
+Remember: use lowercase role constants in service code:
+
+```java
+Role.admin
+Role.guard
+Role.super_admin
 ```
 
 ---
 
-## 2. DAO — `DeviceDAO`
+## 5. Audit Action Type Constants
 
-**File:** `com/pup/byod/javabyodbackend/dao/DeviceDAO.java`
+**Preferred new file:** `src/main/java/com/pup/byod/javabyodbackend/model/AuditActionTypes.java`
 
-Two changes needed.
-
-### 2.1 Update RowMapper for `device_type`
-
-Find every place that reads `device_type` from a `ResultSet` and maps it to a Java type. Replace old subtype string comparisons with `DeviceType.fromDbValue(...)`.
-
-**Before:**
-```java
-String raw = rs.getString("device_type");
-DeviceType type = switch (raw) {
-    case "laptop" -> DeviceType.LAPTOP;
-    case "tablet" -> DeviceType.TABLET;
-    case "phone"  -> DeviceType.PHONE;
-    default       -> throw new IllegalArgumentException("Unknown: " + raw);
-};
-```
-
-**After:**
-```java
-DeviceType type = DeviceType.fromDbValue(rs.getString("device_type"));
-```
-
-Do the same for any INSERT or UPDATE that writes `device_type` — use `deviceType.getDbValue()` instead of `.name()` or a hardcoded string.
-
-### 2.2 Confirm `UserDAO` has create/update/deactivate
-
-`SuperAdminService` reuses `UserDAO` directly — no new DAO is needed. But before writing the service, confirm these methods exist in `UserDAO`. If any are missing, add them now:
-
-- `createUser(User user)` — inserts a new row into `users`
-- `updateUser(int userId, User user)` — updates `full_name`, `username`, etc.
-- `setUserStatus(int userId, String status)` — sets `status = 'active'` or `'inactive'`
-- `setUserRole(int userId, Role role)` — updates the `role` column
-
----
-
-## 3. DAO — `AuditLogDAO` (Super Admin call sites only)
-
-**File:** `com/pup/byod/javabyodbackend/dao/AuditLogDAO.java`
-
-No new query methods are needed here for your tasks. The existing `write(...)` method handles all action types. What you do need to confirm before writing `SuperAdminService`:
-
-Make sure the following action type strings are defined as constants somewhere accessible (a dedicated `AuditActionTypes` constants class, or inline in `AuditLogDAO`):
-
-```
-ADMIN_CREATED            ADMIN_UPDATED            ADMIN_DEACTIVATED
-GUARD_CREATED            GUARD_UPDATED            GUARD_DEACTIVATED_BY_SUPER
-USER_ROLE_CHANGED        SYSTEM_CONFIG_UPDATED
-```
-
-If no constants class exists yet, create one:
+The database already allows these values in `schema.sql`; this task is only to avoid typo-prone inline strings.
 
 ```java
-// com/pup/byod/javabyodbackend/model/AuditActionTypes.java
+package com.pup.byod.javabyodbackend.model;
+
 public final class AuditActionTypes {
     private AuditActionTypes() {}
 
-    public static final String ADMIN_CREATED             = "ADMIN_CREATED";
-    public static final String ADMIN_UPDATED             = "ADMIN_UPDATED";
-    public static final String ADMIN_DEACTIVATED         = "ADMIN_DEACTIVATED";
-    public static final String GUARD_CREATED             = "GUARD_CREATED";
-    public static final String GUARD_UPDATED             = "GUARD_UPDATED";
+    public static final String ADMIN_CREATED = "ADMIN_CREATED";
+    public static final String ADMIN_UPDATED = "ADMIN_UPDATED";
+    public static final String ADMIN_DEACTIVATED = "ADMIN_DEACTIVATED";
+    public static final String GUARD_CREATED = "GUARD_CREATED";
+    public static final String GUARD_UPDATED = "GUARD_UPDATED";
     public static final String GUARD_DEACTIVATED_BY_SUPER = "GUARD_DEACTIVATED_BY_SUPER";
-    public static final String USER_ROLE_CHANGED         = "USER_ROLE_CHANGED";
-    public static final String SYSTEM_CONFIG_UPDATED     = "SYSTEM_CONFIG_UPDATED";
-    // Add any existing action type constants here too
+    public static final String USER_ROLE_CHANGED = "USER_ROLE_CHANGED";
+    public static final String SYSTEM_CONFIG_UPDATED = "SYSTEM_CONFIG_UPDATED";
 }
 ```
 
+Do not remove or rewrite existing report query methods in `AuditLogDAO`.
+
 ---
 
-## 4. Service — `SuperAdminService` (New)
+## 6. Service - `SuperAdminService`
 
-**File:** `com/pup/byod/javabyodbackend/service/SuperAdminService.java`
+**New file:** `src/main/java/com/pup/byod/javabyodbackend/service/SuperAdminService.java`
 
-Handles all account management operations performed by a Super Admin: creating, updating, deactivating Admin and Guard accounts, and changing roles.
+Handles Super Admin account management for Admin and Guard accounts.
 
-### Required methods
+### Required Methods
 
-| Method | Action type logged |
+| Method | Action Type |
 |---|---|
-| `createAdminAccount(CreateUserRequest req)` | `ADMIN_CREATED` |
-| `createGuardAccount(CreateUserRequest req)` | `GUARD_CREATED` |
-| `updateAccount(int userId, UpdateUserRequest req)` | `ADMIN_UPDATED` or `GUARD_UPDATED` — check current role first |
-| `deactivateAdmin(int userId, int actingUserId)` | `ADMIN_DEACTIVATED` |
-| `deactivateGuard(int userId, int actingUserId)` | `GUARD_DEACTIVATED_BY_SUPER` |
-| `changeUserRole(int userId, Role newRole, int actingUserId)` | `USER_ROLE_CHANGED` — store old and new role in `old_values`/`new_values` |
+| `createAdminAccount(...)` | `ADMIN_CREATED` |
+| `createGuardAccount(...)` | `GUARD_CREATED` |
+| `updateAccount(...)` | `ADMIN_UPDATED` or `GUARD_UPDATED` based on current role |
+| `deactivateAdmin(...)` | `ADMIN_DEACTIVATED` |
+| `deactivateGuard(...)` | `GUARD_DEACTIVATED_BY_SUPER` |
+| `changeUserRole(...)` | `USER_ROLE_CHANGED` |
 
-### Rules
+### Service Rules
 
-- Every method must wrap its `UserDAO` mutation and `AuditLogDAO.write(...)` call in a **single transaction**. Do not call the audit write outside the transaction boundary.
-- Reject at the service layer if the acting user is not `SUPER_ADMIN` — do not rely solely on the controller for this check.
-- Passwords must be stored as a bcrypt or argon2 hash — never plaintext. Delegate hashing to the same utility already used in the existing user creation flow.
+- Mark mutating methods with `@Transactional`.
+- Use `PasswordUtil.hash(...)`; never store plaintext passwords.
+- Use `ValidationUtil` consistently with `UserService`.
+- Check `actingUserId` by loading that user and requiring `Role.super_admin`.
+- Do not rely only on controller annotations for authorization.
+- Use `AuditLogDAO.writeAuditLog(...)` or `AuditLogService.writeAuditLog(...)` inside the same transaction as the user mutation.
+- Store useful JSON strings in `old_values` and `new_values`, especially for role changes.
+- Do not allow deactivation or role changes for a missing user; throw the existing `ResourceNotFoundException`.
 
-### Skeleton
+Suggested role checks:
 
 ```java
-@Service
-public class SuperAdminService {
-
-    private final UserDAO     userDAO;
-    private final AuditLogDAO auditLogDAO;
-    // inject password encoder from existing auth utilities
-
-    @Transactional
-    public void createAdminAccount(CreateUserRequest req) {
-        // 1. Hash password
-        // 2. userDAO.createUser(...) with role = ADMIN
-        // 3. auditLogDAO.write(ADMIN_CREATED, "users", newUserId, null, newValues)
-    }
-
-    @Transactional
-    public void createGuardAccount(CreateUserRequest req) { ... }
-
-    @Transactional
-    public void updateAccount(int userId, UpdateUserRequest req) {
-        // 1. Fetch current user to determine role (ADMIN or GUARD)
-        // 2. userDAO.updateUser(...)
-        // 3. auditLogDAO.write(ADMIN_UPDATED or GUARD_UPDATED, ...)
-    }
-
-    @Transactional
-    public void deactivateAdmin(int userId, int actingUserId) {
-        // 1. userDAO.setUserStatus(userId, "inactive")
-        // 2. auditLogDAO.write(ADMIN_DEACTIVATED, ...)
-    }
-
-    @Transactional
-    public void deactivateGuard(int userId, int actingUserId) { ... }
-
-    @Transactional
-    public void changeUserRole(int userId, Role newRole, int actingUserId) {
-        // 1. Fetch current role for old_values
-        // 2. userDAO.setUserRole(userId, newRole)
-        // 3. auditLogDAO.write(USER_ROLE_CHANGED, old_values={role:old}, new_values={role:new})
+private void requireSuperAdmin(int actingUserId) {
+    User actor = userDAO.findById(actingUserId)
+            .orElseThrow(() -> new ResourceNotFoundException("Acting user not found."));
+    if (actor.getRole() != Role.super_admin) {
+        throw new BusinessRuleException("Super admin access required.");
     }
 }
 ```
 
 ---
 
-## 5. Controller — `SuperAdminController` (New)
+## 7. Controller - `SuperAdminController`
 
-**File:** `com/pup/byod/javabyodbackend/controller/SuperAdminController.java`  
-**Base path:** `/super-admin`  
-**Access:** `SUPER_ADMIN` only — set `@PreAuthorize` at class level
+**New file:** `src/main/java/com/pup/byod/javabyodbackend/controller/SuperAdminController.java`  
+**Base path:** `/super-admin`
 
-### Endpoints
+Create endpoints:
 
-| Method | Endpoint | Delegates to |
+| Method | Endpoint | Delegates To |
 |---|---|---|
-| `POST` | `/super-admin/admins` | `SuperAdminService.createAdminAccount(...)` |
-| `POST` | `/super-admin/guards` | `SuperAdminService.createGuardAccount(...)` |
-| `PUT` | `/super-admin/users/{userId}` | `SuperAdminService.updateAccount(...)` |
-| `PUT` | `/super-admin/users/{userId}/deactivate` | `SuperAdminService.deactivateAdmin/Guard(...)` |
-| `PUT` | `/super-admin/users/{userId}/role` | `SuperAdminService.changeUserRole(...)` |
+| `POST` | `/super-admin/admins` | `createAdminAccount(...)` |
+| `POST` | `/super-admin/guards` | `createGuardAccount(...)` |
+| `PUT` | `/super-admin/users/{userId}` | `updateAccount(...)` |
+| `PUT` | `/super-admin/users/{userId}/deactivate` | service determines current role, then deactivates |
+| `PUT` | `/super-admin/users/{userId}/role` | `changeUserRole(...)` |
 
-All endpoints must return `403 Forbidden` — not `404` — when called by an `ADMIN` or `GUARD` role.
+You may add:
 
 ```java
-@RestController
-@RequestMapping("/super-admin")
 @PreAuthorize("hasRole('SUPER_ADMIN')")
-public class SuperAdminController {
-
-    private final SuperAdminService superAdminService;
-
-    public SuperAdminController(SuperAdminService superAdminService) {
-        this.superAdminService = superAdminService;
-    }
-
-    @PostMapping("/admins")
-    public ResponseEntity<Void> createAdmin(@RequestBody CreateUserRequest req) {
-        superAdminService.createAdminAccount(req);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PostMapping("/guards")
-    public ResponseEntity<Void> createGuard(@RequestBody CreateUserRequest req) {
-        superAdminService.createGuardAccount(req);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PutMapping("/users/{userId}")
-    public ResponseEntity<Void> updateUser(@PathVariable int userId,
-                                           @RequestBody UpdateUserRequest req) {
-        superAdminService.updateAccount(userId, req);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/users/{userId}/deactivate")
-    public ResponseEntity<Void> deactivateUser(@PathVariable int userId,
-                                               @RequestParam int actingUserId) {
-        // Determine admin vs guard inside the service
-        superAdminService.deactivateAdmin(userId, actingUserId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/users/{userId}/role")
-    public ResponseEntity<Void> changeRole(@PathVariable int userId,
-                                           @RequestParam Role newRole,
-                                           @RequestParam int actingUserId) {
-        superAdminService.changeUserRole(userId, newRole, actingUserId);
-        return ResponseEntity.ok().build();
-    }
-}
 ```
+
+but this will not work until method security is enabled and authentication creates `ROLE_SUPER_ADMIN`. Keep the service-level `actingUserId` check no matter what.
+
+For now, include `actingUserId` in the request body or request parameter, matching the existing project style. Do not claim 403 behavior is complete unless `SecurityConfig` is updated with real authentication and method security.
+
+---
+
+## 8. What Is Already Done
+
+- `Role.super_admin` exists.
+- `AuthService.isSuperAdmin(...)`, `isAdminOrAbove(...)`, and `isAnyStaff(...)` exist.
+- `schema.sql` already allows `super_admin`.
+- `schema.sql` already allows the Super Admin audit action type strings.
+- Report DAO methods in `DeviceDAO`, `DeviceLogDAO`, and `AuditLogDAO` already exist. Do not rewrite them for this task.
 
 ---
 
 ## Checklist
 
-- [ ] `DeviceType.java` — replaced with five category constants + `getDbValue()` / `fromDbValue()`
-- [ ] `DevicePurpose.java` — `PROTOTYPE` and `APPLIANCE` added
-- [ ] `DeviceDAO` RowMapper updated to use `DeviceType.fromDbValue(...)`
-- [ ] All `device_type` INSERT/UPDATE paths use `deviceType.getDbValue()`
-- [ ] `UserDAO` has `createUser`, `updateUser`, `setUserStatus`, `setUserRole`
-- [ ] Audit action type constants defined and accessible
-- [ ] `SuperAdminService` — all six methods implemented with transactional audit writes
-- [ ] `SuperAdminController` — all five endpoints wired, returns `403` for wrong roles
+- [ ] `DeviceType.java` replaced with five database category constants
+- [ ] `DeviceType.getDbValue()` added
+- [ ] `DeviceType.fromDbValue(...)` added
+- [ ] `DeviceType.fromString(...)` kept as a compatibility alias
+- [ ] `DeviceDAO` row mappers use `DeviceType.fromDbValue(...)`
+- [ ] `DeviceDAO.insert(...)` writes `deviceType.getDbValue()`
+- [ ] No `DevicePurpose.java` migration done unless all callers are updated
+- [ ] `UserDAO` wrappers added only if needed by `SuperAdminService`
+- [ ] `UserDAO.setUserRole(...)` added if service needs direct role changes
+- [ ] `AuditActionTypes` constants added
+- [ ] `SuperAdminService` implemented with `@Transactional` methods
+- [ ] `SuperAdminService` checks `actingUserId` is `Role.super_admin`
+- [ ] `SuperAdminController` endpoints wired
+- [ ] Security limitation documented or fixed before claiming 403 behavior
+- [ ] `mvnw compile` passes with a Java 21 JDK
