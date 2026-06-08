@@ -3,6 +3,7 @@ package com.pup.byod.javabyodbackend.service;
 import com.pup.byod.javabyodbackend.dao.UserDAO;
 import com.pup.byod.javabyodbackend.exception.BusinessRuleException;
 import com.pup.byod.javabyodbackend.model.User;
+import com.pup.byod.javabyodbackend.model.enums.Role;
 import com.pup.byod.javabyodbackend.util.PasswordUtil;
 import com.pup.byod.javabyodbackend.util.ValidationUtil;
 import org.springframework.stereotype.Service;
@@ -65,5 +66,17 @@ public class AuthService {
         auditLogService.writeAuditLog(
                 userId, "USER_LOGOUT", "users",
                 String.valueOf(userId), null, null, null);
+    }
+
+    public boolean isSuperAdmin(Role role) {
+        return role == Role.super_admin;
+    }
+
+    public boolean isAdminOrAbove(Role role) {
+        return role == Role.admin || role == Role.super_admin;
+    }
+
+    public boolean isAnyStaff(Role role) {
+        return role == Role.guard || role == Role.admin || role == Role.super_admin;
     }
 }

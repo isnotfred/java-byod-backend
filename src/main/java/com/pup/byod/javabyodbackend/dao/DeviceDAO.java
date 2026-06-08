@@ -5,6 +5,8 @@ import com.pup.byod.javabyodbackend.model.DeviceCampusStatus;
 import com.pup.byod.javabyodbackend.model.PendingDevice;
 import com.pup.byod.javabyodbackend.model.enums.DeviceType;
 import com.pup.byod.javabyodbackend.model.enums.RegistrationStatus;
+import com.pup.byod.javabyodbackend.model.report.ActiveDeviceRow;
+import com.pup.byod.javabyodbackend.model.report.PendingRegistrationRow;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -12,8 +14,11 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +75,39 @@ public class DeviceDAO {
                     ? rs.getTimestamp("last_event_time").toLocalDateTime() : null)
             .build();
 
+    private final RowMapper<PendingRegistrationRow> pendingRegistrationRowMapper = (rs, rowNum) -> {
+        var row = new PendingRegistrationRow();
+        row.setDeviceId(rs.getInt("device_id"));
+        row.setStudentId(rs.getString("student_id"));
+        row.setStudentName(rs.getString("student_name"));
+        row.setCourseYearLevel(rs.getString("course_year_level"));
+        row.setDeviceName(rs.getString("device_name"));
+        row.setBrand(rs.getString("brand"));
+        row.setModel(rs.getString("model"));
+        row.setSerialNumber(rs.getString("serial_number"));
+        row.setDeviceType(rs.getString("device_type"));
+        row.setDevicePurpose(rs.getString("device_purpose"));
+        row.setImagePath(rs.getString("image_path"));
+        row.setSubmittedAt(getOffsetDateTime(rs, "submitted_at"));
+        row.setSubmittedBy(rs.getString("submitted_by"));
+        return row;
+    };
+
+    private final RowMapper<ActiveDeviceRow> activeDeviceRowMapper = (rs, rowNum) -> {
+        var row = new ActiveDeviceRow();
+        row.setDeviceId(rs.getInt("device_id"));
+        row.setStudentId(rs.getString("student_id"));
+        row.setStudentName(rs.getString("student_name"));
+        row.setCourseYearLevel(rs.getString("course_year_level"));
+        row.setDeviceName(rs.getString("device_name"));
+        row.setSerialNumber(rs.getString("serial_number"));
+        row.setDeviceType(rs.getString("device_type"));
+        row.setBrand(rs.getString("brand"));
+        row.setModel(rs.getString("model"));
+        row.setEnteredAt(getOffsetDateTime(rs, "entered_at"));
+        return row;
+    };
+
     // ── Queries: devices table ───────────────────────────────────────
 
     public List<Device> findAll() {
@@ -117,6 +155,60 @@ public class DeviceDAO {
         String sql = "SELECT * FROM v_device_campus_status WHERE serial_number = :serialNumber";
         var params = new MapSqlParameterSource("serialNumber", serialNumber);
         return jdbc.query(sql, params, campusStatusRowMapper).stream().findFirst();
+    }
+
+    public List<PendingRegistrationRow> getPendingRegistrations() {
+        String sql = """
+                SELECT
+                    vp.device_id,
+                    vp.student_id,
+                    vp.student_name,
+                    vp.course_year_level,
+                    vp.device_name,
+                    vp.brand,
+                    vp.model,
+                    vp.serial_number,
+                    vp.device_type,
+                    vp.device_purpose,
+                    vp.image_path,
+                    vp.created_at AS submitted_at,
+                    u.full_name   AS submitted_by
+                FROM v_pending_devices vp
+                LEFT JOIN LATERAL (
+                    SELECT user_id
+                    FROM audit_logs
+                    WHERE target_table = 'devices'
+                      AND target_id = vp.device_id::text
+                      AND action_type = 'DEVICE_REGISTERED'
+                    ORDER BY created_at ASC
+                    LIMIT 1
+                ) al ON TRUE
+                LEFT JOIN users u ON u.user_id = al.user_id
+                ORDER BY vp.created_at
+                """;
+        return jdbc.query(sql, pendingRegistrationRowMapper);
+    }
+
+    public List<ActiveDeviceRow> getActiveDevicesOnCampus() {
+        String sql = """
+                SELECT
+                    vcs.device_id,
+                    vcs.student_id,
+                    s.first_name || ' ' || s.last_name AS student_name,
+                    s.course_year_level,
+                    vcs.device_name,
+                    vcs.serial_number,
+                    d.device_type,
+                    d.brand,
+                    d.model,
+                    vcs.last_event_time AS entered_at
+                FROM v_device_campus_status vcs
+                JOIN devices d ON d.device_id = vcs.device_id
+                JOIN students s ON s.student_id = vcs.student_id
+                WHERE vcs.campus_status = 'inside'
+                ORDER BY vcs.last_event_time DESC
+                """;
+        return jdbc.query(sql, activeDeviceRowMapper);
     }
 
     // ── Mutations ────────────────────────────────────────────────────
@@ -197,5 +289,9 @@ public class DeviceDAO {
                 .addValue("remarks", device.getRemarks())
                 .addValue("deviceId", device.getDeviceId());
         return jdbc.update(sql, params);
+    }
+
+    private OffsetDateTime getOffsetDateTime(ResultSet rs, String columnName) throws SQLException {
+        return rs.getObject(columnName, OffsetDateTime.class);
     }
 }

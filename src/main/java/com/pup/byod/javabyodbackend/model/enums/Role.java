@@ -6,7 +6,8 @@ package com.pup.byod.javabyodbackend.model.enums;
  */
 public enum Role {
     admin,
-    guard;
+    guard,
+    super_admin;
 
     /**
      * Safe lookup that throws a clear message on unknown values
