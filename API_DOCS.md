@@ -88,59 +88,25 @@ Retrieves details of a specific user.
   }
   ```
 
-#### `POST /api/v1/users`
-Registers a new user (admin or guard).
+#### `PUT /api/v1/users/{id}/profile/password`
+Allows a logged-in user to update their own password after verifying their current password.
 - **Request Body:**
   ```json
   {
-    "username": "admin_jane",
-    "password": "AdminPassword123",
-    "fullName": "Jane Smith",
-    "role": "admin"
-  }
-  ```
-- **Response Body (`201 Created`):**
-  ```json
-  {
-    "userId": 2,
-    "username": "admin_jane",
-    "fullName": "Jane Smith",
-    "role": "admin",
-    "status": "active",
-    "createdAt": "2026-06-09T10:35:00",
-    "updatedAt": "2026-06-09T10:35:00"
-  }
-  ```
-
-#### `PUT /api/v1/users/{id}`
-Updates details of an existing user.
-- **Request Body:**
-  ```json
-  {
-    "fullName": "Jane A. Smith",
-    "role": "admin",
-    "status": "active"
+    "currentPassword": "SecurePassword123",
+    "newPassword": "MyBrandNewPassword456"
   }
   ```
 - **Response Body (`200 OK`):**
   ```json
   {
-    "userId": 2,
-    "username": "admin_jane",
-    "fullName": "Jane A. Smith",
-    "role": "admin",
+    "userId": 1,
+    "username": "guard_john",
+    "fullName": "John Doe",
+    "role": "guard",
     "status": "active",
-    "createdAt": "2026-06-09T10:35:00",
-    "updatedAt": "2026-06-09T10:36:00"
-  }
-  ```
-
-#### `PUT /api/v1/users/{id}/deactivate`
-Deactivates a user account (soft-delete).
-- **Response Body (`200 OK`):**
-  ```json
-  {
-    "message": "User deactivated."
+    "createdAt": "2026-06-09T10:30:00",
+    "updatedAt": "2026-06-09T10:52:00"
   }
   ```
 
@@ -1238,3 +1204,47 @@ Changes a user's system role (e.g. promoting a guard to admin, or vice versa).
     "updatedAt": "2026-06-09T12:05:00"
   }
   ```
+
+---
+
+### 2.10 System Configuration (`/api/v1/settings`)
+
+#### `GET /api/v1/settings`
+Retrieves all system configuration parameters and policies. Available to all authenticated roles.
+- **Response Body (`200 OK`):**
+  ```json
+  [
+    {
+      "settingKey": "max_devices_per_student",
+      "settingValue": "3",
+      "description": "Maximum number of active registered devices allowed per student",
+      "updatedAt": "2026-06-09T10:30:00"
+    },
+    {
+      "settingKey": "allow_unregistered_devices",
+      "settingValue": "false",
+      "description": "Whether unapproved devices can be checked in by guards",
+      "updatedAt": "2026-06-09T10:30:00"
+    }
+  ]
+  ```
+
+#### `PUT /api/v1/settings/{key}`
+Modifies a specific system configuration parameter. Only allowed for `super_admin` role. Generates a `SYSTEM_CONFIG_UPDATED` audit log row.
+- **Request Body:**
+  ```json
+  {
+    "actingUserId": 9,
+    "settingValue": "4"
+  }
+  ```
+- **Response Body (`200 OK`):**
+  ```json
+  {
+    "settingKey": "max_devices_per_student",
+    "settingValue": "4",
+    "description": "Maximum number of active registered devices allowed per student",
+    "updatedAt": "2026-06-09T10:53:00"
+  }
+  ```
+

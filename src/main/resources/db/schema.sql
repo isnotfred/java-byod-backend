@@ -162,6 +162,20 @@ CREATE TABLE audit_logs (
 );
 
 
+-- ── system_settings ─────────────────────────────────────────
+-- System settings and policy parameters.
+
+CREATE TABLE system_settings (
+    setting_key   VARCHAR(100) PRIMARY KEY,
+    setting_value TEXT NOT NULL,
+    description   TEXT,
+    updated_at    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+
+
 -- ============================================================
 -- SECTION 2: INDEXES
 -- ============================================================
@@ -410,6 +424,11 @@ CREATE TRIGGER trg_event_requests_updated_at
 CREATE TRIGGER trg_event_request_devices_updated_at
     BEFORE UPDATE ON event_request_devices
     FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
+
+CREATE TRIGGER trg_system_settings_updated_at
+    BEFORE UPDATE ON system_settings
+    FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
+
 
 
 -- ── 4.2 Force server-side created_at (prevent backdating) ────
@@ -789,6 +808,17 @@ COMMENT ON VIEW   v_active_event_requests     IS 'Pending and approved event req
 
 COMMENT ON FUNCTION fn_write_audit_log        IS 'Preferred way to write to audit_logs from Java. Keeps inserts consistent.';
 COMMENT ON FUNCTION fn_set_updated_at         IS 'Auto-refreshes updated_at on every UPDATE.';
+
+COMMENT ON TABLE  system_settings             IS 'System settings and policy parameters.';
+
+
+-- ============================================================
+-- SECTION 8: SEED DATA (SYSTEM SETTINGS)
+-- ============================================================
+
+INSERT INTO system_settings (setting_key, setting_value, description) VALUES
+('max_devices_per_student', '3', 'Maximum number of active registered devices allowed per student'),
+('allow_unregistered_devices', 'false', 'Whether unapproved devices can be checked in by guards');
 
 
 -- ============================================================

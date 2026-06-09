@@ -388,7 +388,7 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 | Controller Class | Endpoints / Role |
 |---|---|
 | AuthController | POST /auth/login — authenticate user, return session/token |
-| UserController | GET/POST/PUT /users — user account CRUD |
+| UserController | GET /users — retrieve users list, GET /users/{id} — retrieve user details, PUT /users/{id}/profile/password — user password updates |
 | StudentController | GET/POST/PUT /students — student registry CRUD |
 | DeviceController | GET/POST/PUT /devices — device registration, approval, deactivation |
 | EventRequestController | GET/POST/PUT /event-requests — event request lifecycle |
@@ -396,13 +396,14 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 | AuditLogController | GET /audit-logs — read-only audit trail queries |
 | ReportController | GET /reports/* — daily/monthly traffic, pending registrations, active devices, device frequency, incident reports |
 | SuperAdminController | POST/PUT /super-admin/* — manage admins/guards (create, update, deactivate, change role) |
+| SystemSettingController | GET /api/v1/settings — query config policies, PUT /api/v1/settings/{key} — modify config (Super Admin only) |
 
 **Services (`service/`)**
 
 | Service Class | Business Logic Handled |
 |---|---|
 | AuthService | Login validation, BCrypt password verification, session management |
-| UserService | User creation, status transitions, duplicate username checks |
+| UserService | Retrieve user list and details, update individual profile passwords with BCrypt validation |
 | StudentService | Student registration, soft-delete enforcement, search logic |
 | DeviceService | Device registration, approval/rejection state machine, deactivation |
 | EventRequestService | Event request submission, approval workflow, date range validation |
@@ -410,6 +411,7 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 | AuditLogService | Orchestrates calls to AuditLogDAO / fn_write_audit_log() |
 | ReportService | Produces all six report types required by the BYOD business analysis |
 | SuperAdminService | Account CRUD, status updates, role changes, and super admin authorization checks |
+| SystemSettingService | Manage system settings and configuration parameters with Super Admin checks |
 
 **DAOs (`dao/`)**
 
@@ -422,6 +424,7 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 | EventRequestDeviceDAO | event_request_devices table |
 | DeviceLogDAO | device_logs table |
 | AuditLogDAO | Calls fn_write_audit_log() — never INSERTs into audit_logs directly |
+| SystemSettingDAO | system_settings table |
 
 **Models (`model/`)**
 
@@ -435,6 +438,7 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 | DeviceLog | device_logs table |
 | AuditLog | audit_logs table |
 | AuditActionTypes | Constant values for audit actions |
+| SystemSetting | system_settings table |
 
 **Report Models (`model/report/`)**
 
@@ -482,7 +486,8 @@ byod-backend/                           ← GitHub repo root
 │   │   │       │   ├── DeviceLogController.java
 │   │   │       │   ├── AuditLogController.java
 │   │   │       │   ├── ReportController.java
-│   │   │       │   └── SuperAdminController.java
+│   │   │       │   ├── SuperAdminController.java
+│   │   │       │   └── SystemSettingController.java
 │   │   │       ├── service/                          ← @Service — business logic
 │   │   │       │   ├── AuthService.java
 │   │   │       │   ├── UserService.java
@@ -492,7 +497,8 @@ byod-backend/                           ← GitHub repo root
 │   │   │       │   ├── DeviceLogService.java
 │   │   │       │   ├── AuditLogService.java
 │   │   │       │   ├── ReportService.java
-│   │   │       │   └── SuperAdminService.java
+│   │   │       │   ├── SuperAdminService.java
+│   │   │       │   └── SystemSettingService.java
 │   │   │       ├── dao/                              ← JDBC; RowMapper; PreparedStatement
 │   │   │       │   ├── UserDAO.java
 │   │   │       │   ├── StudentDAO.java
@@ -500,7 +506,8 @@ byod-backend/                           ← GitHub repo root
 │   │   │       │   ├── EventRequestDAO.java
 │   │   │       │   ├── EventRequestDeviceDAO.java
 │   │   │       │   ├── DeviceLogDAO.java
-│   │   │       │   └── AuditLogDAO.java              ← calls fn_write_audit_log()
+│   │   │       │   ├── AuditLogDAO.java              ← calls fn_write_audit_log()
+│   │   │       │   └── SystemSettingDAO.java
 │   │   │       ├── model/                            ← POJOs + enums per DB table
 │   │   │       │   ├── User.java
 │   │   │       │   ├── Student.java
@@ -510,6 +517,7 @@ byod-backend/                           ← GitHub repo root
 │   │   │       │   ├── DeviceLog.java
 │   │   │       │   ├── AuditLog.java
 │   │   │       │   ├── AuditActionTypes.java
+│   │   │       │   ├── SystemSetting.java
 │   │   │       │   ├── enums/
 │   │   │       │   │   ├── Role.java
 │   │   │       │   │   ├── DeviceType.java

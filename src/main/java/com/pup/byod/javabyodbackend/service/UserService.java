@@ -31,66 +31,20 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
 
-    public User createUser(String username, String password, String fullName, Role role) {
-        ValidationUtil.requireValidUsername(username);
-        ValidationUtil.requireValidPassword(password);
-        ValidationUtil.requireNonBlank(fullName, "Full name");
-        if (role == null) {
-            throw new BusinessRuleException("Role is required.");
-        }
-
-        if (userDAO.findByUsername(username).isPresent()) {
-            throw new BusinessRuleException("Username already exists.");
-        }
-
-        User user = User.builder()
-                .username(username)
-                .passwordHash(PasswordUtil.hash(password))
-                .fullName(fullName)
-                .role(role)
-                .status("active")
-                .build();
-
-        int userId = userDAO.insert(user);
-        User created = getUserById(userId);
-        auditLogService.writeAuditLog(userId, "USER_CREATED", "users", String.valueOf(userId), null, toJson(created), null);
-        return created;
-    }
-
-    public User updateUser(int userId, String fullName, Role role, String status) {
+    public User updateProfilePassword(int userId, String currentPassword, String newPassword) {
         User existing = getUserById(userId);
-        ValidationUtil.requireNonBlank(fullName, "Full name");
-        if (role == null) {
-            throw new BusinessRuleException("Role is required.");
-        }
-        if (status == null || status.isBlank()) {
-            throw new BusinessRuleException("Status is required.");
+        ValidationUtil.requireNonBlank(currentPassword, "Current password");
+        ValidationUtil.requireValidPassword(newPassword);
+
+        if (!PasswordUtil.verify(currentPassword, existing.getPasswordHash())) {
+            throw new BusinessRuleException("Incorrect current password.");
         }
 
         String oldPayload = toJson(existing);
-
-        User updated = User.builder()
-                .userId(existing.getUserId())
-                .username(existing.getUsername())
-                .passwordHash(existing.getPasswordHash())
-                .fullName(fullName)
-                .role(role)
-                .status(status)
-                .build();
-
-        userDAO.update(updated);
+        userDAO.updatePassword(userId, PasswordUtil.hash(newPassword));
         User saved = getUserById(userId);
         auditLogService.writeAuditLog(userId, "USER_UPDATED", "users", String.valueOf(userId), oldPayload, toJson(saved), null);
         return saved;
-    }
-
-    public void deactivateUser(int userId) {
-        User existing = getUserById(userId);
-        if (existing.getStatus() != null && existing.getStatus().equalsIgnoreCase("inactive")) {
-            return;
-        }
-        userDAO.setStatus(userId, "inactive");
-        auditLogService.writeAuditLog(userId, "USER_DEACTIVATED", "users", String.valueOf(userId), toJson(existing), "{\"status\":\"inactive\"}", null);
     }
 
     private String toJson(User user) {
