@@ -56,6 +56,20 @@ public class UserController {
         return updated;
     }
 
+    @PutMapping("/{id}/profile/username")
+    public User changeUsername(
+            @PathVariable("id") int id,
+            @RequestBody ChangeUsernameRequest request
+    ) {
+        User updated = userService.updateProfileUsername(id, request.username);
+        updated.setPasswordHash(null);
+        return updated;
+    }
+
+    public static class ChangeUsernameRequest {
+        public String username;
+    }
+
     public static class ChangePasswordRequest {
         public String currentPassword;
         public String newPassword;

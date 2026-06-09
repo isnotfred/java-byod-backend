@@ -52,6 +52,30 @@ public class UserService {
         return saved;
     }
 
+    public User updateProfileUsername(int userId, String newUsername) {
+        ValidationUtil.requireNonBlank(newUsername, "Username");
+        if (newUsername.trim().length() < 3) {
+            throw new BusinessRuleException("Username must be at least 3 characters.");
+        }
+        
+        User existing = getUserById(userId);
+        String trimmed = newUsername.trim();
+        if (existing.getUsername().equals(trimmed)) {
+            return existing;
+        }
+
+        if (userDAO.findByUsername(trimmed).isPresent()) {
+            throw new BusinessRuleException("Username is already taken.");
+        }
+
+        String oldPayload = toJson(existing);
+        userDAO.updateUsername(userId, trimmed);
+        
+        User saved = getUserById(userId);
+        auditLogService.writeAuditLog(userId, "USER_UPDATED", "users", String.valueOf(userId), oldPayload, toJson(saved), null);
+        return saved;
+    }
+
     private String toJson(User user) {
         if (user == null) {
             return null;

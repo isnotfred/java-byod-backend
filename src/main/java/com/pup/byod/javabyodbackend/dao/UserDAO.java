@@ -125,6 +125,14 @@ public class UserDAO {
         return jdbc.update(sql, params);
     }
 
+    public int updateUsername(int userId, String newUsername) {
+        String sql = "UPDATE users SET username = :username WHERE user_id = :userId";
+        var params = new MapSqlParameterSource()
+                .addValue("username", newUsername)
+                .addValue("userId", userId);
+        return jdbc.update(sql, params);
+    }
+
     public int updatePassword(int userId, String newPasswordHash) {
         String sql = "UPDATE users SET password_hash = :hash WHERE user_id = :userId";
         var params = new MapSqlParameterSource()
