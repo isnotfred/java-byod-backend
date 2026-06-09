@@ -172,6 +172,8 @@ Common status codes:
 | --- | --- | --- |
 | `POST` | `/api/v1/auth/login` | Authenticate a user by username and password |
 | `POST` | `/api/v1/auth/logout` | Record a logout audit event for a user |
+| `POST` | `/api/v1/auth/forgot-password` | Request password reset token via email |
+| `POST` | `/api/v1/auth/reset-password` | Complete password reset using token |
 
 #### `POST /api/v1/auth/login`
 
@@ -201,6 +203,43 @@ Response:
 ```json
 {
   "message": "Logout successful."
+}
+```
+
+#### `POST /api/v1/auth/forgot-password`
+
+Request:
+
+```json
+{
+  "email": "user@example.com"
+}
+```
+
+Response:
+
+```json
+{
+  "message": "Password reset token sent to your email if the account exists."
+}
+```
+
+#### `POST /api/v1/auth/reset-password`
+
+Request:
+
+```json
+{
+  "token": "4a2c918a-bbcf-4a37-9efb-665e89d12345",
+  "newPassword": "NewSecurePassword123"
+}
+```
+
+Response:
+
+```json
+{
+  "message": "Password reset successful."
 }
 ```
 

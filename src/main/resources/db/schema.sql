@@ -12,14 +12,17 @@
 -- Admin and guard accounts. No student logins.
 
 CREATE TABLE users (
-    user_id       SERIAL          PRIMARY KEY,
-    username      VARCHAR(100)    NOT NULL UNIQUE,
-    password_hash TEXT            NOT NULL,
-    full_name     VARCHAR(255),
-    role          VARCHAR(10)     NOT NULL,
-    status        VARCHAR(10)     NOT NULL DEFAULT 'active',
-    created_at    TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    user_id                   SERIAL          PRIMARY KEY,
+    username                  VARCHAR(100)    NOT NULL UNIQUE,
+    email                     VARCHAR(255)    UNIQUE,
+    password_hash             TEXT            NOT NULL,
+    full_name                 VARCHAR(255),
+    role                      VARCHAR(10)     NOT NULL,
+    status                    VARCHAR(10)     NOT NULL DEFAULT 'active',
+    password_reset_token      VARCHAR(255)    UNIQUE,
+    password_reset_expires_at TIMESTAMPTZ,
+    created_at                TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at                TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -162,6 +165,20 @@ CREATE TABLE audit_logs (
 );
 
 
+-- ── system_settings ─────────────────────────────────────────
+-- System settings and policy parameters.
+
+CREATE TABLE system_settings (
+    setting_key   VARCHAR(100) PRIMARY KEY,
+    setting_value TEXT NOT NULL,
+    description   TEXT,
+    updated_at    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+
+
 -- ============================================================
 -- SECTION 2: INDEXES
 -- ============================================================
@@ -212,7 +229,7 @@ ALTER TABLE users
     ADD CONSTRAINT chk_users_role
         CHECK (role IN ('admin', 'guard', 'super_admin')),
     ADD CONSTRAINT chk_users_status
-        CHECK (status IN ('active', 'inactive')),
+        CHECK (status IN ('active', 'inactive', 'pending')),
     ADD CONSTRAINT chk_users_username_length
         CHECK (char_length(username) >= 3),
     -- Minimum 20 chars ensures no plaintext password was stored.
@@ -410,6 +427,11 @@ CREATE TRIGGER trg_event_requests_updated_at
 CREATE TRIGGER trg_event_request_devices_updated_at
     BEFORE UPDATE ON event_request_devices
     FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
+
+CREATE TRIGGER trg_system_settings_updated_at
+    BEFORE UPDATE ON system_settings
+    FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
+
 
 
 -- ── 4.2 Force server-side created_at (prevent backdating) ────
@@ -789,6 +811,17 @@ COMMENT ON VIEW   v_active_event_requests     IS 'Pending and approved event req
 
 COMMENT ON FUNCTION fn_write_audit_log        IS 'Preferred way to write to audit_logs from Java. Keeps inserts consistent.';
 COMMENT ON FUNCTION fn_set_updated_at         IS 'Auto-refreshes updated_at on every UPDATE.';
+
+COMMENT ON TABLE  system_settings             IS 'System settings and policy parameters.';
+
+
+-- ============================================================
+-- SECTION 8: SEED DATA (SYSTEM SETTINGS)
+-- ============================================================
+
+INSERT INTO system_settings (setting_key, setting_value, description) VALUES
+('max_devices_per_student', '3', 'Maximum number of active registered devices allowed per student'),
+('allow_unregistered_devices', 'false', 'Whether unapproved devices can be checked in by guards');
 
 
 -- ============================================================

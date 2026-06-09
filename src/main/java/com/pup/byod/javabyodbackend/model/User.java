@@ -21,6 +21,7 @@ public class User {
 
     private Integer userId;
     private String username;
+    private String email;
 
     // Never send this in a response. Strip at the Controller / DTO layer.
     private String passwordHash;
@@ -28,6 +29,8 @@ public class User {
     private String fullName;
     private Role role;
     private String status;          // active | inactive
+    private String passwordResetToken;
+    private LocalDateTime passwordResetExpiresAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

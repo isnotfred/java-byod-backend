@@ -42,49 +42,22 @@ public class UserController {
         return user;
     }
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody CreateUserRequest request) {
-        ValidationUtil.requireNonBlank(request.username, "Username");
-        ValidationUtil.requireNonBlank(request.password, "Password");
-        ValidationUtil.requireNonBlank(request.fullName, "Full name");
-        ValidationUtil.requireNonBlank(request.role, "Role");
-
-        Role role = Role.fromString(request.role);
-        User created = userService.createUser(request.username, request.password, request.fullName, role);
-        created.setPasswordHash(null);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
-
-    @PutMapping("/{id}")
-    public User updateUser(@PathVariable("id") int id, @RequestBody UpdateUserRequest request) {
-        ValidationUtil.requireNonBlank(request.fullName, "Full name");
-        ValidationUtil.requireNonBlank(request.role, "Role");
-        ValidationUtil.requireNonBlank(request.status, "Status");
-
-        Role role = Role.fromString(request.role);
-        User updated = userService.updateUser(id, request.fullName, role, request.status);
+    @PutMapping("/{id}/profile/password")
+    public User changePassword(
+            @PathVariable("id") int id,
+            @RequestBody ChangePasswordRequest request
+    ) {
+        User updated = userService.updateProfilePassword(
+                id,
+                request.currentPassword,
+                request.newPassword
+        );
         updated.setPasswordHash(null);
         return updated;
     }
 
-    @PutMapping("/{id}/deactivate")
-    public Map<String, Object> deactivateUser(@PathVariable("id") int id) {
-        userService.deactivateUser(id);
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("message", "User deactivated.");
-        return body;
-    }
-
-    public static class CreateUserRequest {
-        public String username;
-        public String password;
-        public String fullName;
-        public String role;
-    }
-
-    public static class UpdateUserRequest {
-        public String fullName;
-        public String role;
-        public String status;
+    public static class ChangePasswordRequest {
+        public String currentPassword;
+        public String newPassword;
     }
 }
