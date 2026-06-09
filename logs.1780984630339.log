@@ -1,0 +1,1001 @@
+2026-06-09T05:55:39.235938630Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:39.235942170Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:39.235945720Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:39.236684731Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:39.236688251Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:39.236692071Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:39.236695961Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:39.236699151Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:39.236702411Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:39.236706111Z [inf]  	... 24 common frames omitted
+2026-06-09T05:55:39.236709431Z [inf]  
+2026-06-09T05:55:40.745012771Z [inf]  
+2026-06-09T05:55:40.745022210Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:55:40.745027210Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:55:40.745032200Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:55:40.745036810Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:55:40.745041610Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:55:40.745046380Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:55:40.745051210Z [inf]  
+2026-06-09T05:55:40.745055130Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:55:40.745059540Z [inf]  
+2026-06-09T05:55:40.850578860Z [inf]  2026-06-09T05:55:40.842Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:55:40.850582870Z [inf]  2026-06-09T05:55:40.844Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:55:42.269797090Z [inf]  2026-06-09T05:55:42.268Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:55:42.279545879Z [inf]  2026-06-09T05:55:42.276Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:55:42.279548279Z [inf]  2026-06-09T05:55:42.277Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:55:42.294453838Z [inf]  2026-06-09T05:55:42.291Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1346 ms
+2026-06-09T05:55:42.354115114Z [inf]  2026-06-09T05:55:42.353Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:55:42.355917844Z [inf]  2026-06-09T05:55:42.355Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:55:42.416262921Z [inf]  2026-06-09T05:55:42.415Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:55:42.416265631Z [inf]  
+2026-06-09T05:55:42.416268081Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:55:42.442788147Z [inf]  2026-06-09T05:55:42.437Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:55:42.442793617Z [inf]  
+2026-06-09T05:55:42.442796926Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:55:42.442799536Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.442803286Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.442805726Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.442807946Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.442810286Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.442812746Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.442814846Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.442817066Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.443592307Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.443594787Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.443597477Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.443600857Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.443603497Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.443606197Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:42.443608467Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:42.443611007Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:42.443613377Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:42.443615507Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:42.443617757Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:42.444426498Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:55:42.444429898Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:55:42.444432848Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:55:42.444435988Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:42.444439008Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:42.444441878Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:42.444445608Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:55:42.444448728Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.444451978Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.444456488Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.444463238Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.444466298Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.445381397Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.445386877Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.445390597Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.445394067Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.445397297Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.445400397Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.445403507Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.445406537Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.445410147Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:42.445413257Z [inf]  	... 24 common frames omitted
+2026-06-09T05:55:42.445416137Z [inf]  
+2026-06-09T05:55:43.997505544Z [inf]  
+2026-06-09T05:55:43.997509104Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:55:43.997516974Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:55:43.997517264Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:55:43.997522183Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:55:43.997530933Z [inf]  
+2026-06-09T05:55:43.997537223Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:55:43.997551683Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:55:43.997570213Z [inf]  
+2026-06-09T05:55:43.997577723Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:55:44.210036695Z [inf]  2026-06-09T05:55:44.084Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:55:44.210041155Z [inf]  2026-06-09T05:55:44.087Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:55:45.515672909Z [inf]  2026-06-09T05:55:45.511Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:55:45.519906911Z [inf]  2026-06-09T05:55:45.518Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:55:45.519911111Z [inf]  2026-06-09T05:55:45.518Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:55:45.533739722Z [inf]  2026-06-09T05:55:45.532Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1344 ms
+2026-06-09T05:55:45.606867353Z [inf]  2026-06-09T05:55:45.604Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:55:45.607629745Z [inf]  2026-06-09T05:55:45.606Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:55:45.615121288Z [inf]  2026-06-09T05:55:45.614Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:55:45.615125798Z [inf]  
+2026-06-09T05:55:45.615128748Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:55:45.635301357Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635315077Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635315207Z [inf]  2026-06-09T05:55:45.622Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:55:45.635320136Z [inf]  
+2026-06-09T05:55:45.635322776Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:55:45.635325446Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635328146Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635330896Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635334086Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635337096Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635340176Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635691792Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635701032Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635711782Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635717422Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635720752Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.635725272Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:45.635729862Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:45.635733152Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:45.635737252Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:45.635740971Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:45.635744041Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:45.636256586Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:55:45.636260146Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:55:45.636263366Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:55:45.636266466Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:45.636269456Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:45.636272296Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:45.636275206Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:55:45.636279026Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.636282616Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.636285786Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.636288666Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.636291586Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.637100386Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.637104036Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.637107226Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.637109936Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.637112816Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.637115726Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.637118536Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.637120936Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.637123166Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:45.637125556Z [inf]  	... 24 common frames omitted
+2026-06-09T05:55:45.637128026Z [inf]  
+2026-06-09T05:55:47.387540498Z [inf]  
+2026-06-09T05:55:47.387544087Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:55:47.387546437Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:55:47.387548997Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:55:47.387551437Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:55:47.387553637Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:55:47.387556017Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:55:47.387558577Z [inf]  
+2026-06-09T05:55:47.387561007Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:55:47.387563137Z [inf]  
+2026-06-09T05:55:47.563170213Z [inf]  2026-06-09T05:55:47.484Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:55:47.563173143Z [inf]  2026-06-09T05:55:47.549Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:55:48.895348791Z [inf]  2026-06-09T05:55:48.892Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:55:48.905437376Z [inf]  2026-06-09T05:55:48.901Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:55:48.905442866Z [inf]  2026-06-09T05:55:48.902Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:55:48.927079108Z [inf]  2026-06-09T05:55:48.917Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1337 ms
+2026-06-09T05:55:49.003410822Z [inf]  2026-06-09T05:55:48.986Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:55:49.003414602Z [inf]  2026-06-09T05:55:48.988Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:55:49.003419752Z [inf]  2026-06-09T05:55:48.995Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:55:49.003423462Z [inf]  
+2026-06-09T05:55:49.003426642Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:55:49.068730423Z [inf]  2026-06-09T05:55:49.057Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:55:49.068735653Z [inf]  
+2026-06-09T05:55:49.068739333Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:55:49.068742563Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.068746873Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.068750673Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.068754123Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.068757793Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.068761123Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.068764383Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.068767433Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.070249296Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.070252116Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.070254906Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.070257486Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.070260236Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.070263736Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:49.070267126Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:49.070269976Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:49.070273116Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:49.070276476Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:49.070279306Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:49.070746550Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:55:49.070749800Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:55:49.070752400Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:55:49.070754900Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:49.070757400Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:49.070760050Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:49.070762380Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:55:49.070765240Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.070767740Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.070770030Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.070772500Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.070775070Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.071375133Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.071377752Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.071389042Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.071391782Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.071394242Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.071396752Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.071399402Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.071402372Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.071405122Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:49.071407782Z [inf]  	... 24 common frames omitted
+2026-06-09T05:55:49.071410272Z [inf]  
+2026-06-09T05:55:50.583369099Z [inf]  
+2026-06-09T05:55:50.583371819Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:55:50.583374658Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:55:50.583377338Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:55:50.583387718Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:55:50.583390158Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:55:50.583392858Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:55:50.583396928Z [inf]  
+2026-06-09T05:55:50.583399248Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:55:50.583402088Z [inf]  
+2026-06-09T05:55:50.675324414Z [inf]  2026-06-09T05:55:50.670Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:55:50.675327564Z [inf]  2026-06-09T05:55:50.673Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:55:52.089457542Z [inf]  2026-06-09T05:55:52.088Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:55:52.089499232Z [inf]  2026-06-09T05:55:52.079Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:55:52.089504902Z [inf]  2026-06-09T05:55:52.088Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:55:52.106217231Z [inf]  2026-06-09T05:55:52.102Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1335 ms
+2026-06-09T05:55:52.248664077Z [inf]  2026-06-09T05:55:52.166Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:55:52.248668067Z [inf]  2026-06-09T05:55:52.169Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:55:52.248671437Z [inf]  2026-06-09T05:55:52.176Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:55:52.248674697Z [inf]  
+2026-06-09T05:55:52.248677977Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:55:52.248680597Z [inf]  2026-06-09T05:55:52.184Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:55:52.248683787Z [inf]  
+2026-06-09T05:55:52.248687337Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:55:52.248691437Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.248694266Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.248697056Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249051552Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249058162Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249062852Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249067592Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:52.249086552Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249091172Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249096092Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249100632Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249103672Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249107042Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249109942Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249963951Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:55:52.249967891Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.249976471Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:52.249979451Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:55:52.249984171Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:52.249990981Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:55:52.249991781Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:55:52.250000351Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:55:52.250004761Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:52.250009941Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:52.250018981Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:52.250023511Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:52.250027871Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:55:52.250238838Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250242118Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250245098Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250248328Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250251518Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250255708Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250259238Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250262788Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250265758Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250269358Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250272678Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250991509Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250993949Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:55:52.250996809Z [inf]  	... 24 common frames omitted
+2026-06-09T05:55:52.250999339Z [inf]  
+2026-06-09T05:56:22.168624820Z [inf]  
+2026-06-09T05:56:22.168628060Z [inf]  2026-06-09T05:56:18.207Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:22.168631739Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:22.168632489Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:22.168637869Z [inf]  2026-06-09T05:56:18.207Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:22.168637999Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:22.168644199Z [inf]  
+2026-06-09T05:56:22.168645789Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:22.168648159Z [inf]  2026-06-09T05:56:18.220Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1438 ms
+2026-06-09T05:56:22.168651319Z [inf]  2026-06-09T05:56:16.681Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:22.168651529Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:22.168654949Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:22.168658719Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:22.168659519Z [inf]  2026-06-09T05:56:16.684Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:22.168662499Z [inf]  
+2026-06-09T05:56:22.168663929Z [inf]  2026-06-09T05:56:18.199Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:22.169211483Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169217572Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169220962Z [inf]  2026-06-09T05:56:18.289Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:22.169225922Z [inf]  2026-06-09T05:56:18.291Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:22.169229122Z [inf]  2026-06-09T05:56:18.298Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:22.169232192Z [inf]  
+2026-06-09T05:56:22.169235662Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:22.169238722Z [inf]  2026-06-09T05:56:18.346Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:22.169241692Z [inf]  
+2026-06-09T05:56:22.169244622Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:22.169248032Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169878995Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169882475Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169884985Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169887354Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169890114Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169893424Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169896724Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169899544Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169903184Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169905374Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.169907864Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.170487947Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.170490407Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.170492807Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.170495837Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.170499007Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.170501477Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:56:22.170503747Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:22.170506487Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:22.170509177Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:22.170511827Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:22.170514197Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:22.170516447Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:22.170519007Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171116381Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171122361Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171126861Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171130641Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171134031Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171137141Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171140271Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171143551Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171146820Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171150570Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.171166100Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.172239318Z [inf]  2026-06-09T05:56:19.950Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:22.172245588Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.172245938Z [inf]  2026-06-09T05:56:21.458Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:22.172253207Z [inf]  2026-06-09T05:56:21.466Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:22.172255917Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.172257787Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:22.172262407Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:22.172265637Z [inf]  
+2026-06-09T05:56:22.172268997Z [inf]  
+2026-06-09T05:56:22.172272047Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:22.172275267Z [inf]  
+2026-06-09T05:56:22.172278487Z [inf]  
+2026-06-09T05:56:22.172284637Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:22.172284697Z [inf]  2026-06-09T05:56:19.948Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:22.172289987Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:22.172293687Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:22.172297167Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:22.172300677Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:22.173069028Z [inf]  2026-06-09T05:56:21.467Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:22.173072598Z [inf]  2026-06-09T05:56:21.481Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1432 ms
+2026-06-09T05:56:22.173076068Z [inf]  2026-06-09T05:56:21.555Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:22.173080318Z [inf]  2026-06-09T05:56:21.556Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:22.173083948Z [inf]  2026-06-09T05:56:21.564Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:22.173087988Z [inf]  
+2026-06-09T05:56:22.173091208Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:22.173094537Z [inf]  2026-06-09T05:56:21.607Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:22.173097367Z [inf]  
+2026-06-09T05:56:22.173100457Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:22.173104147Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.173917759Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.173921469Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.173925199Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.173928749Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.173932319Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.173935659Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.173939449Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.173942388Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.173945368Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.173948958Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.174622680Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.174626010Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.174629610Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.174633000Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.174636650Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.174639690Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.174643390Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.174646440Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:22.174649780Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:56:22.174653870Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:22.174657410Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:22.174660320Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:22.175176334Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:22.175179244Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:22.175181894Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:22.175184424Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175186584Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175189034Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175191774Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175194544Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175196834Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175199304Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175201464Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175910166Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175912596Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175915816Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175918596Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175922016Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175924496Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:22.175927206Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:22.175930486Z [inf]  
+2026-06-09T05:56:23.186594371Z [inf]  
+2026-06-09T05:56:23.186634840Z [inf]  
+2026-06-09T05:56:23.186638640Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:23.186644530Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:23.186648080Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:23.186651700Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:23.186655010Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:23.186658040Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:23.186662310Z [inf]  
+2026-06-09T05:56:23.186665500Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:23.365786975Z [inf]  2026-06-09T05:56:23.287Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:23.365789235Z [inf]  2026-06-09T05:56:23.289Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:24.821870730Z [inf]  2026-06-09T05:56:24.820Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:24.855910619Z [inf]  2026-06-09T05:56:24.853Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:24.855913469Z [inf]  2026-06-09T05:56:24.854Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:24.875586083Z [inf]  2026-06-09T05:56:24.873Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1487 ms
+2026-06-09T05:56:24.982831183Z [inf]  2026-06-09T05:56:24.980Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:24.983960120Z [inf]  2026-06-09T05:56:24.982Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:24.993685558Z [inf]  2026-06-09T05:56:24.990Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:24.993689368Z [inf]  
+2026-06-09T05:56:24.993694238Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:25.003714233Z [inf]  2026-06-09T05:56:24.998Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:25.003718923Z [inf]  
+2026-06-09T05:56:25.003722743Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:25.003726253Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.003729503Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.003732483Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.003735853Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.003739113Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.003742383Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.003749433Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.003752413Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.004269287Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.004272317Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.004275097Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.004278487Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.004281477Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.004283867Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:25.004287147Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:25.004290467Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:25.004292787Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:25.004295147Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:25.004297316Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:25.006369093Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:56:25.006372073Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.006374193Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:25.006377353Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:25.006379403Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.006380423Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:25.006383143Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.006383333Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:25.006386163Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.006386243Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:25.006389163Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.006389783Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:25.007193273Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.007201623Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.007208503Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.007212113Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.007216043Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.007219333Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.007223013Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.007226423Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.007229463Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:25.007232763Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:25.007236212Z [inf]  
+2026-06-09T05:56:26.504434276Z [inf]  
+2026-06-09T05:56:26.504438386Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:26.504441826Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:26.504444716Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:26.504447046Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:26.504449276Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:26.504451656Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:26.504453826Z [inf]  
+2026-06-09T05:56:26.504456476Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:26.504458675Z [inf]  
+2026-06-09T05:56:26.605868042Z [inf]  2026-06-09T05:56:26.600Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:26.605872922Z [inf]  2026-06-09T05:56:26.602Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:28.078252360Z [inf]  2026-06-09T05:56:28.070Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:28.092978340Z [inf]  2026-06-09T05:56:28.090Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:28.092981180Z [inf]  2026-06-09T05:56:28.090Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:28.110059754Z [inf]  2026-06-09T05:56:28.106Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1405 ms
+2026-06-09T05:56:28.186154351Z [inf]  2026-06-09T05:56:28.183Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:28.186904812Z [inf]  2026-06-09T05:56:28.186Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:28.198644808Z [inf]  2026-06-09T05:56:28.196Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:28.198651828Z [inf]  
+2026-06-09T05:56:28.198655638Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:28.210268744Z [inf]  2026-06-09T05:56:28.205Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:28.210279124Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210279494Z [inf]  
+2026-06-09T05:56:28.210284264Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:28.210288834Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210291024Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210295684Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210301914Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210305134Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210308384Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210311703Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210916377Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210919567Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210922637Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210925367Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210928517Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.210931557Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:28.210934977Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:28.210937887Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:28.210940737Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:28.210944787Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:28.210947597Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:28.211653399Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:56:28.211660798Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:28.211665538Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:28.211669808Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:28.211675068Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:28.211679478Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:28.211683348Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:28.211686628Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211690428Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211693828Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211697218Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211699938Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211941245Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211944535Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211947635Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211950295Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211952835Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211955685Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211958595Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211960915Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211963475Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:28.211965675Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:28.211967885Z [inf]  
+2026-06-09T05:56:29.798615001Z [inf]  
+2026-06-09T05:56:29.798620011Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:29.798623411Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:29.798626521Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:29.798629751Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:29.798634131Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:29.798637261Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:29.798640501Z [inf]  
+2026-06-09T05:56:29.798644231Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:29.798647671Z [inf]  
+2026-06-09T05:56:29.898343957Z [inf]  2026-06-09T05:56:29.887Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:29.898347047Z [inf]  2026-06-09T05:56:29.890Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:31.461726600Z [inf]  2026-06-09T05:56:31.460Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:31.471003864Z [inf]  2026-06-09T05:56:31.470Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:31.471008554Z [inf]  2026-06-09T05:56:31.470Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:31.491477379Z [inf]  2026-06-09T05:56:31.485Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1495 ms
+2026-06-09T05:56:31.538788016Z [inf]  2026-06-09T05:56:31.528Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:31.538791706Z [inf]  2026-06-09T05:56:31.529Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:31.577333374Z [inf]  2026-06-09T05:56:31.572Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:31.577338634Z [inf]  
+2026-06-09T05:56:31.577342514Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:31.582765412Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.582769612Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.582771752Z [inf]  2026-06-09T05:56:31.580Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:31.582773042Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.582775832Z [inf]  
+2026-06-09T05:56:31.582776192Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.582779162Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:31.582782012Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.582785072Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.582788191Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.582790831Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.583852989Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.583857919Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.583862769Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.583866469Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.583870419Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.583876159Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:31.583880258Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:31.583883398Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:31.583886888Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:31.583891628Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:31.583895678Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:31.584514052Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:56:31.584517502Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.584517842Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:31.584521732Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:31.584521802Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.584525092Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.584526112Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:31.584529882Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:31.584544082Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:31.584551301Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:31.584558771Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.584562881Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.585523120Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.585526430Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.585531230Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.585534560Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.585539180Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.585562279Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.585565979Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.585569369Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.585572709Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:31.585576769Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:31.585580069Z [inf]  
+2026-06-09T05:56:33.209340639Z [inf]  
+2026-06-09T05:56:33.209343959Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:33.209347429Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:33.209350579Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:33.209354249Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:33.209358829Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:33.209363129Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:33.209366429Z [inf]  
+2026-06-09T05:56:33.209369359Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:33.209373539Z [inf]  
+2026-06-09T05:56:33.399132192Z [inf]  2026-06-09T05:56:33.303Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:33.399137762Z [inf]  2026-06-09T05:56:33.305Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:34.783943143Z [inf]  2026-06-09T05:56:34.779Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:34.794346084Z [inf]  2026-06-09T05:56:34.791Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:34.794348634Z [inf]  2026-06-09T05:56:34.791Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:34.809819876Z [inf]  2026-06-09T05:56:34.805Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1401 ms
+2026-06-09T05:56:34.888534924Z [inf]  2026-06-09T05:56:34.887Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:34.892841694Z [inf]  2026-06-09T05:56:34.889Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:34.903377903Z [inf]  2026-06-09T05:56:34.897Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:34.903381413Z [inf]  
+2026-06-09T05:56:34.903386003Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:34.907576675Z [inf]  2026-06-09T05:56:34.904Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:34.907580465Z [inf]  
+2026-06-09T05:56:34.907584845Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:34.907587445Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.907590175Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.907592745Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.907595305Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.907597625Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.907599915Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.907602715Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.907604815Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.908576593Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.908586903Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.908591813Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.908595863Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.908599183Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.908603233Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:34.908606933Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:34.908610313Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:34.908613733Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:34.908619223Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:34.908622632Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:34.909078418Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:56:34.909081388Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:34.909083848Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:34.909086588Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:34.909089848Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:34.909092668Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:34.909094988Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:34.909097208Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909100278Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909102898Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909106118Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909108728Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909635022Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909642011Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909647621Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909652461Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909657121Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909661191Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909665171Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909669331Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909673431Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:34.909677601Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:34.909681621Z [inf]  
+2026-06-09T05:56:36.446542368Z [inf]  
+2026-06-09T05:56:36.446549408Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:36.446553498Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:36.446558278Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:36.446562888Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:36.446566688Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:36.446570178Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:36.446573198Z [inf]  
+2026-06-09T05:56:36.446576328Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:36.446579468Z [inf]  
+2026-06-09T05:56:36.581826806Z [inf]  2026-06-09T05:56:36.574Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:36.581831316Z [inf]  2026-06-09T05:56:36.577Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:38.155039275Z [inf]  2026-06-09T05:56:38.149Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:38.177303080Z [inf]  2026-06-09T05:56:38.176Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:38.177325490Z [inf]  2026-06-09T05:56:38.176Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:38.192447957Z [inf]  2026-06-09T05:56:38.190Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1538 ms
+2026-06-09T05:56:38.278315561Z [inf]  2026-06-09T05:56:38.276Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:38.279307719Z [inf]  2026-06-09T05:56:38.278Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:38.290903557Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:38.290922507Z [inf]  2026-06-09T05:56:38.286Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:38.290930007Z [inf]  
+2026-06-09T05:56:38.300413437Z [inf]  2026-06-09T05:56:38.295Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:38.300416177Z [inf]  
+2026-06-09T05:56:38.300418807Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:38.300421497Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.300424447Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.300427067Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.300429777Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.300432057Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.300434507Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.300437967Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.300440857Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.301353057Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.301356977Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.301360227Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.301364167Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.301368957Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.301372207Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:38.301375467Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:38.301378347Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:38.301381627Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:38.301386367Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:38.301389216Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:38.302401144Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:56:38.302403704Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:38.302407194Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:38.302409004Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:38.302409504Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:38.302411924Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:38.302414744Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:38.302415864Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.302419824Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.302423174Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.302426494Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.302429934Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.303517482Z [inf]  
+2026-06-09T05:56:38.303537882Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.303544782Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.303550342Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.303554812Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.303560532Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.303564752Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.303569162Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.303573451Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.303577461Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:38.303582081Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:39.999213046Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:39.999221086Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:39.999227106Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:39.999232116Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:39.999237946Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:39.999244906Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:39.999251075Z [inf]  
+2026-06-09T05:56:39.999256715Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:39.999262155Z [inf]  
+2026-06-09T05:56:39.999334674Z [inf]  
+2026-06-09T05:56:40.106813062Z [inf]  2026-06-09T05:56:40.101Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:40.106816082Z [inf]  2026-06-09T05:56:40.103Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:41.485843759Z [inf]  2026-06-09T05:56:41.482Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:41.495439609Z [inf]  2026-06-09T05:56:41.492Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:41.495442539Z [inf]  2026-06-09T05:56:41.492Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:41.508971914Z [inf]  2026-06-09T05:56:41.505Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1306 ms
+2026-06-09T05:56:41.594869048Z [inf]  2026-06-09T05:56:41.590Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:41.594872038Z [inf]  2026-06-09T05:56:41.592Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:41.602924766Z [inf]  2026-06-09T05:56:41.600Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:41.602927516Z [inf]  
+2026-06-09T05:56:41.602930445Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:41.612758423Z [inf]  2026-06-09T05:56:41.607Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:41.612766463Z [inf]  
+2026-06-09T05:56:41.612769653Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:41.612773193Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.612776053Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.612779033Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.612782223Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.612786013Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.612789613Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.612792643Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.612795883Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613029940Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613033460Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613036300Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613039020Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613042850Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613045270Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:41.613050360Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:41.613052870Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:41.613055249Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:41.613057789Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:41.613060129Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:41.613700482Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:41.613706582Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613711332Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613712412Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:56:41.613714062Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613716332Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:41.613716632Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613720852Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.613733371Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:41.613736101Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:41.613748091Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:41.613750531Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:41.614334604Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.614338194Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.614341034Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.614343944Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.614349624Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.614352914Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.614356324Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.614359434Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.614362404Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:41.614365394Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:41.614369354Z [inf]  
+2026-06-09T05:56:43.282635053Z [inf]  
+2026-06-09T05:56:43.282640063Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:43.282647523Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:43.282653673Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:43.282660023Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:43.282664923Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:43.282669633Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:43.282674333Z [inf]  
+2026-06-09T05:56:43.282678923Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:43.282683673Z [inf]  
+2026-06-09T05:56:43.477023732Z [inf]  2026-06-09T05:56:43.369Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:43.477026602Z [inf]  2026-06-09T05:56:43.372Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:45.062223644Z [inf]  2026-06-09T05:56:45.058Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:45.072929652Z [inf]  2026-06-09T05:56:45.066Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:45.072932361Z [inf]  2026-06-09T05:56:45.067Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:45.085120862Z [inf]  2026-06-09T05:56:45.084Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1613 ms
+2026-06-09T05:56:45.165971304Z [inf]  2026-06-09T05:56:45.164Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:45.166664956Z [inf]  2026-06-09T05:56:45.166Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:45.177008337Z [inf]  2026-06-09T05:56:45.174Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:45.177013307Z [inf]  
+2026-06-09T05:56:45.177016747Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:45.239065935Z [inf]  2026-06-09T05:56:45.182Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:45.239073375Z [inf]  
+2026-06-09T05:56:45.239078385Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:45.239093315Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239097095Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239103555Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239107465Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239112225Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239115605Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239119035Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239122065Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239912885Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239917215Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239921455Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239924875Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239928205Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.239931825Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:45.239934815Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:45.239938025Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:45.239941045Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:45.239948975Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:45.239953435Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:45.240566628Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:56:45.240570388Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:45.240574177Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:45.240577857Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:45.240581997Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:45.240585657Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:45.240588787Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:45.240591927Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.240595157Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.240598047Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.240601307Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.240604297Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.241949502Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.241954212Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.241958182Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.241962512Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.241965592Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.241969042Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.241972352Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.241975952Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.241979392Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:45.241982722Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:45.241986272Z [inf]  
+2026-06-09T05:56:46.855358940Z [inf]  
+2026-06-09T05:56:46.855362750Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:46.855366340Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:46.855369850Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:46.855373210Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:46.855376440Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:46.855379670Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:46.855385280Z [inf]  
+2026-06-09T05:56:46.855388620Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:46.855391699Z [inf]  
+2026-06-09T05:56:47.015609822Z [inf]  2026-06-09T05:56:47.004Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:47.015614351Z [inf]  2026-06-09T05:56:47.007Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:48.524029504Z [inf]  2026-06-09T05:56:48.520Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:48.535426373Z [inf]  2026-06-09T05:56:48.528Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:48.535437002Z [inf]  2026-06-09T05:56:48.529Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:48.546216889Z [inf]  2026-06-09T05:56:48.543Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1440 ms
+2026-06-09T05:56:48.652548969Z [inf]  2026-06-09T05:56:48.650Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:48.653306240Z [inf]  2026-06-09T05:56:48.652Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:48.664170595Z [inf]  2026-06-09T05:56:48.660Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:48.664175455Z [inf]  
+2026-06-09T05:56:48.664178145Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:48.674791314Z [inf]  2026-06-09T05:56:48.667Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:48.674794224Z [inf]  
+2026-06-09T05:56:48.674796824Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:48.674799234Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.674801984Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.674804664Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.674808704Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.674811214Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.674813454Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.674815574Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.674818654Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.675667414Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.675677544Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.675683974Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.675687904Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.675691874Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.675695873Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:48.675699143Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:48.675703323Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:48.675706573Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:48.675709493Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:48.675712523Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:48.676689932Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+2026-06-09T05:56:48.676693782Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:48.676697222Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:48.676700661Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:48.676704061Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:48.676707661Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:48.676711031Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:48.676714141Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.676717401Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.676720501Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.676723921Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.676727481Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.677225255Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.677228175Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.677230575Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.677233025Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.677235465Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.677238205Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.677241096Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.677243706Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.677246046Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:48.677248046Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:48.677250206Z [inf]  
+2026-06-09T05:56:50.369360910Z [inf]  
+2026-06-09T05:56:50.369365060Z [inf]    .   ____          _            __ _ _
+2026-06-09T05:56:50.369368210Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-06-09T05:56:50.369371340Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-06-09T05:56:50.369374030Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-06-09T05:56:50.369376870Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-06-09T05:56:50.369379550Z [inf]   =========|_|==============|___/=/_/_/_/
+2026-06-09T05:56:50.369383130Z [inf]  
+2026-06-09T05:56:50.369386950Z [inf]   :: Spring Boot ::                (v4.0.6)
+2026-06-09T05:56:50.369389489Z [inf]  
+2026-06-09T05:56:50.536227965Z [inf]  2026-06-09T05:56:50.491Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : Starting JavaByodBackendApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 1 (/app/target/java-byod-backend-0.0.1-SNAPSHOT.jar started by root in /app)
+2026-06-09T05:56:50.536235095Z [inf]  2026-06-09T05:56:50.494Z  INFO 1 --- [java-byod-backend] [           main] c.p.b.j.JavaByodBackendApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-06-09T05:56:51.913749500Z [inf]  2026-06-09T05:56:51.902Z  INFO 1 --- [java-byod-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-06-09T05:56:51.913752340Z [inf]  2026-06-09T05:56:51.912Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-09T05:56:51.913755130Z [inf]  2026-06-09T05:56:51.912Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-09T05:56:51.937101222Z [inf]  2026-06-09T05:56:51.928Z  INFO 1 --- [java-byod-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1342 ms
+2026-06-09T05:56:52.009568030Z [inf]  2026-06-09T05:56:52.006Z  WARN 1 --- [java-byod-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:52.009571830Z [inf]  2026-06-09T05:56:52.008Z  INFO 1 --- [java-byod-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-06-09T05:56:52.020492655Z [inf]  2026-06-09T05:56:52.016Z  INFO 1 --- [java-byod-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-09T05:56:52.020495205Z [inf]  
+2026-06-09T05:56:52.020498925Z [inf]  Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-09T05:56:52.079199340Z [inf]  2026-06-09T05:56:52.065Z ERROR 1 --- [java-byod-backend] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-06-09T05:56:52.079202100Z [inf]  
+2026-06-09T05:56:52.079204570Z [inf]  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceConfig': Injection of autowired dependencies failed
+2026-06-09T05:56:52.079207300Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:499) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.079209640Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1446) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.079212190Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:602) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.079215070Z [inf]  	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.079217530Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.079219910Z [inf]  	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.079222310Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.079224570Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084772237Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+2026-06-09T05:56:52.084779696Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+2026-06-09T05:56:52.084782586Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1672) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084785806Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:52.084791956Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084793546Z [inf]  	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:52.084796326Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084800356Z [inf]  	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[java-byod-backend-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+2026-06-09T05:56:52.084807836Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:764) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084808796Z [inf]  Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'PGHOST' in value "${PGHOST}"
+2026-06-09T05:56:52.084810156Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084817316Z [inf]  	at org.springframework.util.PlaceholderResolutionException.withValue(PlaceholderResolutionException.java:81) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084819146Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:748) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084820416Z [inf]  	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084826256Z [inf]  	at org.springframework.util.PlaceholderParser$ParsedValue.resolve(PlaceholderParser.java:296) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084829866Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084830276Z [inf]  	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084836636Z [inf]  	at org.springframework.util.PlaceholderParser.replacePlaceholders(PlaceholderParser.java:129) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084837996Z [inf]  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084842216Z [inf]  	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:493) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084844666Z [inf]  	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:96) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084849486Z [inf]  	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:52.084852046Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:286) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084855196Z [inf]  	... 24 common frames omitted
+2026-06-09T05:56:52.084859235Z [inf]  	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:257) ~[spring-core-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084859525Z [inf]  	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:52.084866795Z [inf]  
+2026-06-09T05:56:52.084868585Z [inf]  	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:184) ~[spring-context-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084869755Z [inf]  	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:52.084874476Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:52.084877806Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:52.084882046Z [inf]  	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar!/:4.0.6]
+2026-06-09T05:56:52.084889766Z [inf]  	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:959) ~[spring-beans-7.0.7.jar!/:7.0.7]
+2026-06-09T05:56:52.084892706Z [inf]  	at com.pup.byod.javabyodbackend.JavaByodBackendApplication.main(JavaByodBackendApplication.java:10) ~[!/:0.0.1-SNAPSHOT]

@@ -17,7 +17,7 @@ CREATE TABLE users (
     email                     VARCHAR(255)    UNIQUE,
     password_hash             TEXT            NOT NULL,
     full_name                 VARCHAR(255),
-    role                      VARCHAR(10)     NOT NULL,
+    role                      VARCHAR(20)     NOT NULL,
     status                    VARCHAR(10)     NOT NULL DEFAULT 'active',
     password_reset_token      VARCHAR(255)    UNIQUE,
     password_reset_expires_at TIMESTAMPTZ,
