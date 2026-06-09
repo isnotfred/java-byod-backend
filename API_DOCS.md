@@ -29,6 +29,7 @@ Authenticates a user and returns their profile details (excluding password hash)
   {
     "userId": 1,
     "username": "guard_john",
+    "email": "john.doe@example.com",
     "fullName": "John Doe",
     "role": "guard",
     "status": "active",
@@ -64,6 +65,7 @@ Retrieves a list of all system users.
     {
       "userId": 1,
       "username": "guard_john",
+      "email": "john.doe@example.com",
       "fullName": "John Doe",
       "role": "guard",
       "status": "active",
@@ -80,6 +82,7 @@ Retrieves details of a specific user.
   {
     "userId": 1,
     "username": "guard_john",
+    "email": "john.doe@example.com",
     "fullName": "John Doe",
     "role": "guard",
     "status": "active",
@@ -102,6 +105,7 @@ Allows a logged-in user to update their own password after verifying their curre
   {
     "userId": 1,
     "username": "guard_john",
+    "email": "john.doe@example.com",
     "fullName": "John Doe",
     "role": "guard",
     "status": "active",
@@ -1107,6 +1111,7 @@ Creates a new Admin account.
   {
     "userId": 5,
     "username": "admin_clara",
+    "email": "clara.oswald@example.com",
     "fullName": "Clara Oswald",
     "role": "admin",
     "status": "active",
@@ -1131,11 +1136,37 @@ Creates a new Security Guard account.
   {
     "userId": 6,
     "username": "guard_amy",
+    "email": "amy.pond@example.com",
     "fullName": "Amy Pond",
     "role": "guard",
     "status": "active",
     "createdAt": "2026-06-09T11:50:00",
     "updatedAt": "2026-06-09T11:50:00"
+  }
+  ```
+
+#### `POST /super-admin/users`
+Creates a new pending Admin or Guard account and triggers an email containing a default randomly-generated password for first login.
+- **Request Body:**
+  ```json
+  {
+    "actingUserId": 9,
+    "fullName": "Jane Doe",
+    "email": "jane.doe@example.com",
+    "role": "admin"
+  }
+  ```
+- **Response Body (`201 Created`):**
+  ```json
+  {
+    "userId": 7,
+    "username": "jane.doe@example.com",
+    "email": "jane.doe@example.com",
+    "fullName": "Jane Doe",
+    "role": "admin",
+    "status": "pending",
+    "createdAt": "2026-06-09T13:00:00",
+    "updatedAt": "2026-06-09T13:00:00"
   }
   ```
 
@@ -1154,6 +1185,7 @@ Updates an Admin or Guard account's name and status.
   {
     "userId": 6,
     "username": "guard_amy",
+    "email": "amy.pond@example.com",
     "fullName": "Amy Pond-Williams",
     "role": "guard",
     "status": "active",
@@ -1175,6 +1207,7 @@ Deactivates a user account (restricted to Admin & Guard targets).
   {
     "userId": 6,
     "username": "guard_amy",
+    "email": "amy.pond@example.com",
     "fullName": "Amy Pond-Williams",
     "role": "guard",
     "status": "inactive",
@@ -1197,6 +1230,7 @@ Changes a user's system role (e.g. promoting a guard to admin, or vice versa).
   {
     "userId": 6,
     "username": "guard_amy",
+    "email": "amy.pond@example.com",
     "fullName": "Amy Pond-Williams",
     "role": "admin",
     "status": "active",

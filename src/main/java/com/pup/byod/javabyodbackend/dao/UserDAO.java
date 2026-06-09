@@ -26,6 +26,7 @@ public class UserDAO {
     private final RowMapper<User> userRowMapper = (rs, rowNum) -> User.builder()
             .userId(rs.getInt("user_id"))
             .username(rs.getString("username"))
+            .email(rs.getString("email"))
             .passwordHash(rs.getString("password_hash"))
             .fullName(rs.getString("full_name"))
             .role(Role.fromString(rs.getString("role")))
@@ -62,12 +63,13 @@ public class UserDAO {
      */
     public int insert(User user) {
         String sql = """
-                INSERT INTO users (username, password_hash, full_name, role, status)
-                VALUES (:username, :passwordHash, :fullName, :role, :status)
+                INSERT INTO users (username, email, password_hash, full_name, role, status)
+                VALUES (:username, :email, :passwordHash, :fullName, :role, :status)
                 """;
 
         var params = new MapSqlParameterSource()
                 .addValue("username", user.getUsername())
+                .addValue("email", user.getEmail())
                 .addValue("passwordHash", user.getPasswordHash())
                 .addValue("fullName", user.getFullName())
                 .addValue("role", user.getRole().name())
@@ -86,6 +88,7 @@ public class UserDAO {
         String sql = """
                 UPDATE users
                 SET full_name = :fullName,
+                    email     = :email,
                     role      = :role,
                     status    = :status
                 WHERE user_id = :userId
@@ -93,6 +96,7 @@ public class UserDAO {
 
         var params = new MapSqlParameterSource()
                 .addValue("fullName", user.getFullName())
+                .addValue("email", user.getEmail())
                 .addValue("role", user.getRole().name())
                 .addValue("status", user.getStatus())
                 .addValue("userId", user.getUserId());

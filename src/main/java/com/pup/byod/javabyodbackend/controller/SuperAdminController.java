@@ -56,6 +56,23 @@ public class SuperAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @PostMapping("/users")
+    public ResponseEntity<User> createUser(@RequestBody CreateUserRequest request) {
+        ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
+        ValidationUtil.requireNonBlank(request.fullName, "Full name");
+        ValidationUtil.requireNonBlank(request.email, "Email");
+        ValidationUtil.requireNonBlank(request.role, "Role");
+
+        User created = superAdminService.createUserAccount(
+                request.actingUserId,
+                request.fullName,
+                request.email,
+                request.role
+        );
+        created.setPasswordHash(null);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
     @PutMapping("/users/{userId}")
     public User updateAccount(@PathVariable int userId, @RequestBody UpdateAccountRequest request) {
         ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
@@ -98,12 +115,18 @@ public class SuperAdminController {
         public String fullName;
     }
 
+    public static class CreateUserRequest {
+        public Integer actingUserId;
+        public String fullName;
+        public String email;
+        public String role;
+    }
+
     public static class UpdateAccountRequest {
         public Integer actingUserId;
         public String fullName;
         public String status;
     }
-
     public static class DeactivateAccountRequest {
         public Integer actingUserId;
     }

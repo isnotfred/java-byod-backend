@@ -53,13 +53,13 @@ public final class ValidationUtil {
     }
 
     /**
-     * Basic username rule: 3–50 chars, alphanumeric + underscores only.
+     * Basic username rule: 3–100 chars, alphanumeric, underscores, dots, hyphens, and @.
      */
     public static void requireValidUsername(String username) {
         requireNonBlank(username, "Username");
-        if (!username.matches("^[A-Za-z0-9_]{3,50}$")) {
+        if (!username.matches("^[A-Za-z0-9_@\\.\\-]{3,100}$")) {
             throw new BusinessRuleException(
-                    "Username must be 3–50 characters and contain only letters, digits, and underscores.");
+                    "Username must be 3–100 characters and contain only letters, digits, underscores, dots, hyphens, and @.");
         }
     }
 

@@ -10,6 +10,11 @@ import com.pup.byod.javabyodbackend.model.enums.Role;
 import com.pup.byod.javabyodbackend.model.AuditActionTypes;
 import com.pup.byod.javabyodbackend.util.PasswordUtil;
 import com.pup.byod.javabyodbackend.util.ValidationUtil;
+import com.pup.byod.javabyodbackend.model.User;
+import com.pup.byod.javabyodbackend.model.enums.Role;
+import com.pup.byod.javabyodbackend.model.AuditActionTypes;
+import com.pup.byod.javabyodbackend.util.PasswordUtil;
+import com.pup.byod.javabyodbackend.util.ValidationUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +23,12 @@ public class SuperAdminService {
 
     private final UserDAO userDAO;
     private final AuditLogDAO auditLogDAO;
+    private final ResendEmailService resendEmailService;
 
-    public SuperAdminService(UserDAO userDAO, AuditLogDAO auditLogDAO) {
+    public SuperAdminService(UserDAO userDAO, AuditLogDAO auditLogDAO, ResendEmailService resendEmailService) {
         this.userDAO = userDAO;
         this.auditLogDAO = auditLogDAO;
+        this.resendEmailService = resendEmailService;
     }
 
     private void requireSuperAdmin(int actingUserId) {
@@ -37,9 +44,10 @@ public class SuperAdminService {
             return null;
         }
         return String.format(
-                "{\"userId\":%d,\"username\":\"%s\",\"fullName\":\"%s\",\"role\":\"%s\",\"status\":\"%s\"}",
+                "{\"userId\":%d,\"username\":\"%s\",\"email\":\"%s\",\"fullName\":\"%s\",\"role\":\"%s\",\"status\":\"%s\"}",
                 user.getUserId(),
                 escape(user.getUsername()),
+                escape(user.getEmail()),
                 escape(user.getFullName()),
                 user.getRole() != null ? user.getRole().name() : null,
                 escape(user.getStatus())
@@ -121,6 +129,7 @@ public class SuperAdminService {
         User updated = User.builder()
                 .userId(existing.getUserId())
                 .username(existing.getUsername())
+                .email(existing.getEmail())
                 .passwordHash(existing.getPasswordHash())
                 .fullName(fullName)
                 .role(existing.getRole())
@@ -221,5 +230,49 @@ public class SuperAdminService {
 
         auditLogDAO.writeAuditLog(actingUserId, AuditActionTypes.USER_ROLE_CHANGED, "users", String.valueOf(targetUserId), oldPayload, toJson(saved), null);
         return saved;
+    }
+
+    @Transactional
+    public User createUserAccount(int actingUserId, String fullName, String email, String roleStr) {
+        requireSuperAdmin(actingUserId);
+        ValidationUtil.requireNonBlank(fullName, "Full name");
+        ValidationUtil.requireNonBlank(email, "Email");
+        ValidationUtil.requireNonBlank(roleStr, "Role");
+
+        if (!email.contains("@") || !email.contains(".")) {
+            throw new BusinessRuleException("Email format is invalid.");
+        }
+
+        Role role = Role.fromString(roleStr);
+        if (role == Role.super_admin) {
+            throw new BusinessRuleException("Cannot create a super_admin account via this endpoint.");
+        }
+
+        if (userDAO.findByUsername(email).isPresent()) {
+            throw new BusinessRuleException("An account with this email/username already exists.");
+        }
+
+        String randomPassword = PasswordUtil.generateRandomPassword();
+        String hashedPassword = PasswordUtil.hash(randomPassword);
+
+        User user = User.builder()
+                .username(email)
+                .email(email)
+                .passwordHash(hashedPassword)
+                .fullName(fullName)
+                .role(role)
+                .status("pending")
+                .build();
+
+        int userId = userDAO.insert(user);
+        User created = userDAO.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Created user not found."));
+
+        String actionType = (role == Role.admin) ? AuditActionTypes.ADMIN_CREATED : AuditActionTypes.GUARD_CREATED;
+        auditLogDAO.writeAuditLog(actingUserId, actionType, "users", String.valueOf(userId), null, toJson(created), null);
+
+        resendEmailService.sendWelcomeEmail(email, fullName, randomPassword);
+
+        return created;
     }
 }

@@ -42,6 +42,11 @@ public class UserService {
 
         String oldPayload = toJson(existing);
         userDAO.updatePassword(userId, PasswordUtil.hash(newPassword));
+        
+        if ("pending".equalsIgnoreCase(existing.getStatus())) {
+            userDAO.setStatus(userId, "active");
+        }
+        
         User saved = getUserById(userId);
         auditLogService.writeAuditLog(userId, "USER_UPDATED", "users", String.valueOf(userId), oldPayload, toJson(saved), null);
         return saved;
@@ -52,9 +57,10 @@ public class UserService {
             return null;
         }
         return String.format(
-                "{\"userId\":%d,\"username\":\"%s\",\"fullName\":\"%s\",\"role\":\"%s\",\"status\":\"%s\"}",
+                "{\"userId\":%d,\"username\":\"%s\",\"email\":\"%s\",\"fullName\":\"%s\",\"role\":\"%s\",\"status\":\"%s\"}",
                 user.getUserId(),
                 escape(user.getUsername()),
+                escape(user.getEmail()),
                 escape(user.getFullName()),
                 user.getRole() != null ? user.getRole().name() : null,
                 escape(user.getStatus())

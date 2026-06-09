@@ -137,7 +137,7 @@ The PostgreSQL database is hosted on Railway and is the single source of truth. 
 
 | Table | Primary Key | Purpose |
 |---|---|---|
-| **users** | user_id SERIAL | Admin, guard, and super admin accounts (no student logins) |
+| **users** | user_id SERIAL | Admin, guard, and super admin accounts (email address in `email` column, `status` allows `pending` for first login onboarding) |
 | **students** | student_id VARCHAR(50) | Student registry — never hard-delete; set status = inactive |
 | **devices** | device_id SERIAL | Permanent BYOD device registrations |
 | **event_requests** | event_request_id SERIAL | Header for a temporary device access request (school events, orgs) |
@@ -411,6 +411,7 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 | AuditLogService | Orchestrates calls to AuditLogDAO / fn_write_audit_log() |
 | ReportService | Produces all six report types required by the BYOD business analysis |
 | SuperAdminService | Account CRUD, status updates, role changes, and super admin authorization checks |
+| ResendEmailService | Sends credential onboarding emails using the Resend API |
 | SystemSettingService | Manage system settings and configuration parameters with Super Admin checks |
 
 **DAOs (`dao/`)**
@@ -497,6 +498,7 @@ byod-backend/                           ← GitHub repo root
 │   │   │       │   ├── DeviceLogService.java
 │   │   │       │   ├── AuditLogService.java
 │   │   │       │   ├── ReportService.java
+│   │   │       │   ├── ResendEmailService.java
 │   │   │       │   ├── SuperAdminService.java
 │   │   │       │   └── SystemSettingService.java
 │   │   │       ├── dao/                              ← JDBC; RowMapper; PreparedStatement

@@ -21,6 +21,7 @@ public class User {
 
     private Integer userId;
     private String username;
+    private String email;
 
     // Never send this in a response. Strip at the Controller / DTO layer.
     private String passwordHash;

@@ -9,6 +9,19 @@ public final class PasswordUtil {
     private PasswordUtil() {}
 
     /**
+     * Generate a secure random password.
+     */
+    public static String generateRandomPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+        java.security.SecureRandom random = new java.security.SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 12; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
+
+    /**
      * Hash a plain-text password with BCrypt.
      * Store the returned hash in the DB — never store the plain-text.
      */

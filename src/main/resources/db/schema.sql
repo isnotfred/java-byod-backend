@@ -14,6 +14,7 @@
 CREATE TABLE users (
     user_id       SERIAL          PRIMARY KEY,
     username      VARCHAR(100)    NOT NULL UNIQUE,
+    email         VARCHAR(255)    UNIQUE,
     password_hash TEXT            NOT NULL,
     full_name     VARCHAR(255),
     role          VARCHAR(10)     NOT NULL,
@@ -226,7 +227,7 @@ ALTER TABLE users
     ADD CONSTRAINT chk_users_role
         CHECK (role IN ('admin', 'guard', 'super_admin')),
     ADD CONSTRAINT chk_users_status
-        CHECK (status IN ('active', 'inactive')),
+        CHECK (status IN ('active', 'inactive', 'pending')),
     ADD CONSTRAINT chk_users_username_length
         CHECK (char_length(username) >= 3),
     -- Minimum 20 chars ensures no plaintext password was stored.
