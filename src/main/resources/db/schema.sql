@@ -12,14 +12,17 @@
 -- Admin and guard accounts. No student logins.
 
 CREATE TABLE users (
-    user_id       SERIAL          PRIMARY KEY,
-    username      VARCHAR(100)    NOT NULL UNIQUE,
-    password_hash TEXT            NOT NULL,
-    full_name     VARCHAR(255),
-    role          VARCHAR(10)     NOT NULL,
-    status        VARCHAR(10)     NOT NULL DEFAULT 'active',
-    created_at    TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    user_id                   SERIAL          PRIMARY KEY,
+    username                  VARCHAR(100)    NOT NULL UNIQUE,
+    email                     VARCHAR(255)    UNIQUE,
+    password_hash             TEXT            NOT NULL,
+    full_name                 VARCHAR(255),
+    role                      VARCHAR(10)     NOT NULL,
+    status                    VARCHAR(10)     NOT NULL DEFAULT 'active',
+    password_reset_token      VARCHAR(255)    UNIQUE,
+    password_reset_expires_at TIMESTAMPTZ,
+    created_at                TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at                TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -49,7 +52,7 @@ CREATE TABLE devices (
     brand               VARCHAR(100),
     model               VARCHAR(100),
     serial_number       VARCHAR(255)    NOT NULL UNIQUE,
-    device_type         VARCHAR(10),
+    device_type         VARCHAR(50),
     device_purpose      VARCHAR(100),
     registration_status VARCHAR(10)     NOT NULL DEFAULT 'pending',
     device_status       VARCHAR(10)     NOT NULL DEFAULT 'active',
@@ -103,7 +106,7 @@ CREATE TABLE event_request_devices (
     device_name      VARCHAR(255),
     brand            VARCHAR(100),
     model            VARCHAR(100),
-    device_type      VARCHAR(20),
+    device_type      VARCHAR(50),
     serial_number    VARCHAR(255),
     quantity         INT            NOT NULL DEFAULT 1,
     verified_by      INT,
@@ -162,6 +165,20 @@ CREATE TABLE audit_logs (
 );
 
 
+-- ── system_settings ─────────────────────────────────────────
+-- System settings and policy parameters.
+
+CREATE TABLE system_settings (
+    setting_key   VARCHAR(100) PRIMARY KEY,
+    setting_value TEXT NOT NULL,
+    description   TEXT,
+    updated_at    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+
+
 -- ============================================================
 -- SECTION 2: INDEXES
 -- ============================================================
@@ -210,9 +227,9 @@ CREATE INDEX idx_audit_logs_created_at      ON audit_logs (created_at DESC);
 -- ── users ────────────────────────────────────────────────────
 ALTER TABLE users
     ADD CONSTRAINT chk_users_role
-        CHECK (role IN ('admin', 'guard')),
+        CHECK (role IN ('admin', 'guard', 'super_admin')),
     ADD CONSTRAINT chk_users_status
-        CHECK (status IN ('active', 'inactive')),
+        CHECK (status IN ('active', 'inactive', 'pending')),
     ADD CONSTRAINT chk_users_username_length
         CHECK (char_length(username) >= 3),
     -- Minimum 20 chars ensures no plaintext password was stored.
@@ -236,14 +253,22 @@ ALTER TABLE students
 -- ── devices ──────────────────────────────────────────────────
 ALTER TABLE devices
     ADD CONSTRAINT chk_devices_type
-        CHECK (device_type IN ('laptop', 'tablet', 'phone')),
+        CHECK (device_type IN (
+            'Personal Computers',
+            'Components & Peripherals',
+            'Display & Projection',
+            'Project Prototypes (Optional SN)',
+            'Appliances (TLE)'
+        )),
     ADD CONSTRAINT chk_devices_purpose
         CHECK (device_purpose IN (
             'Academic BYOD',
             'School Event',
             'Organization Activity',
             'Temporary Equipment',
-            'Other Approved Purpose'
+            'Other Approved Purpose',
+            'PROTOTYPE',
+            'APPLIANCE'
         )),
     ADD CONSTRAINT chk_devices_registration_status
         CHECK (registration_status IN ('pending', 'approved', 'rejected')),
@@ -288,7 +313,14 @@ ALTER TABLE event_request_devices
     ADD CONSTRAINT chk_event_request_devices_quantity
         CHECK (quantity > 0),
     ADD CONSTRAINT chk_event_request_devices_type
-        CHECK (device_type IN ('laptop', 'tablet', 'phone', 'camera', 'projector', 'other')),
+        CHECK (device_type IN (
+            'Personal Computers',
+            'Components & Peripherals',
+            'Display & Projection',
+            'Project Prototypes (Optional SN)',
+            'Appliances (TLE)',
+            'Other'
+        )),
     ADD CONSTRAINT chk_event_request_devices_status
         CHECK (device_status IN ('pending', 'approved', 'returned'));
 
@@ -340,17 +372,25 @@ ALTER TABLE audit_logs
             'STUDENT_CREATED',
             'STUDENT_UPDATED',
             'STUDENT_DEACTIVATED',
-            'EVENT_REQUEST_CREATED',
-            'EVENT_REQUEST_APPROVED',
-            'EVENT_REQUEST_RETURNED',
-            'EVENT_REQUEST_REJECTED',
             'USER_CREATED',
             'USER_UPDATED',
             'USER_DEACTIVATED',
             'USER_LOGIN',
             'USER_LOGOUT',
             'USER_LOGIN_FAILED',
-            'SYSTEM_AUTO_EXIT_BATCH'
+            'EVENT_REQUEST_CREATED',
+            'EVENT_REQUEST_APPROVED',
+            'EVENT_REQUEST_RETURNED',
+            'EVENT_REQUEST_REJECTED',
+            'SYSTEM_AUTO_EXIT_BATCH',
+            'ADMIN_CREATED',
+            'ADMIN_UPDATED',
+            'ADMIN_DEACTIVATED',
+            'GUARD_CREATED',
+            'GUARD_UPDATED',
+            'GUARD_DEACTIVATED_BY_SUPER',
+            'USER_ROLE_CHANGED',
+            'SYSTEM_CONFIG_UPDATED'
         ));
 
 
@@ -387,6 +427,11 @@ CREATE TRIGGER trg_event_requests_updated_at
 CREATE TRIGGER trg_event_request_devices_updated_at
     BEFORE UPDATE ON event_request_devices
     FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
+
+CREATE TRIGGER trg_system_settings_updated_at
+    BEFORE UPDATE ON system_settings
+    FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
+
 
 
 -- ── 4.2 Force server-side created_at (prevent backdating) ────
@@ -743,7 +788,7 @@ ALTER TABLE audit_logs SET (
 -- ============================================================
 
 COMMENT ON TABLE  users                       IS 'Admin and guard accounts. No student logins.';
-COMMENT ON COLUMN users.role                  IS 'admin or guard.';
+COMMENT ON COLUMN users.role                  IS 'admin, guard, or super_admin.';
 COMMENT ON COLUMN users.password_hash         IS 'Store bcrypt or argon2 hash only. Never plaintext.';
 COMMENT ON COLUMN users.status                IS 'active or inactive. Never hard-delete a user.';
 
@@ -766,6 +811,17 @@ COMMENT ON VIEW   v_active_event_requests     IS 'Pending and approved event req
 
 COMMENT ON FUNCTION fn_write_audit_log        IS 'Preferred way to write to audit_logs from Java. Keeps inserts consistent.';
 COMMENT ON FUNCTION fn_set_updated_at         IS 'Auto-refreshes updated_at on every UPDATE.';
+
+COMMENT ON TABLE  system_settings             IS 'System settings and policy parameters.';
+
+
+-- ============================================================
+-- SECTION 8: SEED DATA (SYSTEM SETTINGS)
+-- ============================================================
+
+INSERT INTO system_settings (setting_key, setting_value, description) VALUES
+('max_devices_per_student', '3', 'Maximum number of active registered devices allowed per student'),
+('allow_unregistered_devices', 'false', 'Whether unapproved devices can be checked in by guards');
 
 
 -- ============================================================

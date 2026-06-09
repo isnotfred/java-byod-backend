@@ -24,8 +24,7 @@ public class StudentDAO {
             .studentId(rs.getString("student_id"))
             .firstName(rs.getString("first_name"))
             .lastName(rs.getString("last_name"))
-            .course(rs.getString("course"))
-            .yearLevel(rs.getObject("year_level") != null ? rs.getInt("year_level") : null)
+            .courseYearLevel(rs.getString("course_year_level"))
             .status(rs.getString("status"))
             .createdAt(rs.getTimestamp("created_at") != null
                     ? rs.getTimestamp("created_at").toLocalDateTime() : null)
@@ -71,16 +70,15 @@ public class StudentDAO {
 
     public int insert(Student student) {
         String sql = """
-                INSERT INTO students (student_id, first_name, last_name, course, year_level, status)
-                VALUES (:studentId, :firstName, :lastName, :course, :yearLevel, :status)
+                INSERT INTO students (student_id, first_name, last_name, course_year_level, status)
+                VALUES (:studentId, :firstName, :lastName, :courseYearLevel, :status)
                 """;
 
         var params = new MapSqlParameterSource()
                 .addValue("studentId", student.getStudentId())
                 .addValue("firstName", student.getFirstName())
                 .addValue("lastName", student.getLastName())
-                .addValue("course", student.getCourse())
-                .addValue("yearLevel", student.getYearLevel())
+                .addValue("courseYearLevel", student.getCourseYearLevel())
                 .addValue("status", student.getStatus());
 
         return jdbc.update(sql, params);
@@ -89,19 +87,17 @@ public class StudentDAO {
     public int update(Student student) {
         String sql = """
                 UPDATE students
-                SET first_name  = :firstName,
-                    last_name   = :lastName,
-                    course      = :course,
-                    year_level  = :yearLevel,
-                    status      = :status
+                SET first_name       = :firstName,
+                    last_name        = :lastName,
+                    course_year_level = :courseYearLevel,
+                    status           = :status
                 WHERE student_id = :studentId
                 """;
 
         var params = new MapSqlParameterSource()
                 .addValue("firstName", student.getFirstName())
                 .addValue("lastName", student.getLastName())
-                .addValue("course", student.getCourse())
-                .addValue("yearLevel", student.getYearLevel())
+                .addValue("courseYearLevel", student.getCourseYearLevel())
                 .addValue("status", student.getStatus())
                 .addValue("studentId", student.getStudentId());
 
