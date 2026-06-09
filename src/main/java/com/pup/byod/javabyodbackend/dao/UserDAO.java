@@ -115,4 +115,12 @@ public class UserDAO {
                 .addValue("userId", userId);
         return jdbc.update(sql, params);
     }
+
+    public int setUserRole(int userId, Role role) {
+        String sql = "UPDATE users SET role = :role WHERE user_id = :userId";
+        var params = new MapSqlParameterSource()
+                .addValue("role", role.name())
+                .addValue("userId", userId);
+        return jdbc.update(sql, params);
+    }
 }
