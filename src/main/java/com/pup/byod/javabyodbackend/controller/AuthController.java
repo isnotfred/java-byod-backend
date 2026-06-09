@@ -36,6 +36,22 @@ public class AuthController {
         return ResponseEntity.ok(body);
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, Object>> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        authService.initiatePasswordReset(request.email);
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("message", "Password reset token sent to your email if the account exists.");
+        return ResponseEntity.ok(body);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request.token, request.newPassword);
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("message", "Password reset successful.");
+        return ResponseEntity.ok(body);
+    }
+
     public static class LoginRequest {
         public String username;
         public String password;
@@ -43,5 +59,14 @@ public class AuthController {
 
     public static class LogoutRequest {
         public Integer userId;
+    }
+
+    public static class ForgotPasswordRequest {
+        public String email;
+    }
+
+    public static class ResetPasswordRequest {
+        public String token;
+        public String newPassword;
     }
 }

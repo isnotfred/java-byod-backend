@@ -387,7 +387,7 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 
 | Controller Class | Endpoints / Role |
 |---|---|
-| AuthController | POST /auth/login — authenticate user, return session/token |
+| AuthController | POST /auth/login — authenticate user, return session/token, POST /auth/forgot-password / POST /auth/reset-password — password recovery |
 | UserController | GET /users — retrieve users list, GET /users/{id} — retrieve user details, PUT /users/{id}/profile/password — user password updates |
 | StudentController | GET/POST/PUT /students — student registry CRUD |
 | DeviceController | GET/POST/PUT /devices — device registration, approval, deactivation |
@@ -402,7 +402,7 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 
 | Service Class | Business Logic Handled |
 |---|---|
-| AuthService | Login validation, BCrypt password verification, session management |
+| AuthService | Login validation, BCrypt password verification, session management, password reset token lifecycle and execution |
 | UserService | Retrieve user list and details, update individual profile passwords with BCrypt validation |
 | StudentService | Student registration, soft-delete enforcement, search logic |
 | DeviceService | Device registration, approval/rejection state machine, deactivation |

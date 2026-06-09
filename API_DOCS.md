@@ -53,6 +53,37 @@ Logs a user out and generates an audit log entry.
   }
   ```
 
+#### `POST /api/v1/auth/forgot-password`
+Initiates the password reset flow. Generates a secure token, saves it to the database with a 15-minute expiration, and emails it to the user.
+- **Request Body:**
+  ```json
+  {
+    "email": "clara.oswald@example.com"
+  }
+  ```
+- **Response Body (`200 OK`):**
+  ```json
+  {
+    "message": "Password reset token sent to your email if the account exists."
+  }
+  ```
+
+#### `POST /api/v1/auth/reset-password`
+Completes the password reset process using a valid reset token.
+- **Request Body:**
+  ```json
+  {
+    "token": "4a2c918a-bbcf-4a37-9efb-665e89d12345",
+    "newPassword": "MyBrandNewSecurePassword123"
+  }
+  ```
+- **Response Body (`200 OK`):**
+  ```json
+  {
+    "message": "Password reset successful."
+  }
+  ```
+
 ---
 
 ### 2.2 User Management (`/api/v1/users`)

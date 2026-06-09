@@ -73,4 +73,55 @@ public class ResendEmailService {
             throw new BusinessRuleException("Error occurred while sending welcome email: " + e.getMessage());
         }
     }
+
+    public void sendPasswordResetEmail(String toEmail, String fullName, String token) {
+        if (apiKey == null || apiKey.isBlank()) {
+            System.out.println("Resend API Key is not set. Simulated Email sending:");
+            System.out.println("To: " + toEmail);
+            System.out.println("Subject: Password Reset Request");
+            System.out.println("Token: " + token);
+            return;
+        }
+
+        String subject = "Password Reset Request";
+        String htmlContent = String.format(
+                "<h3>Hello %s,</h3>" +
+                "<p>A password reset was requested for your account in the BYOD Device Management System.</p>" +
+                "<p>Please use the following token to reset your password:</p>" +
+                "<p style=\"font-size: 18px; font-weight: bold; background-color: #f3f4f6; padding: 10px; display: inline-block;\">%s</p>" +
+                "<p>This token will expire in 15 minutes.</p>" +
+                "<p>If you did not make this request, you can safely ignore this email.</p>" +
+                "<p>Best regards,<br>BYOD System Admin</p>",
+                fullName, token
+        );
+
+        // Escape JSON quotes/newlines
+        String escapedHtml = htmlContent.replace("\"", "\\\"").replace("\n", "\\n");
+
+        String jsonPayload = String.format(
+                "{\"from\":\"%s\",\"to\":\"%s\",\"subject\":\"%s\",\"html\":\"%s\"}",
+                fromEmail, toEmail, subject, escapedHtml
+        );
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.resend.com/emails"))
+                    .header("Authorization", "Bearer " + apiKey)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonPayload, StandardCharsets.UTF_8))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() >= 300) {
+                throw new BusinessRuleException("Failed to send password reset email via Resend. Status code: " 
+                        + response.statusCode() + ", Response: " + response.body());
+            }
+        } catch (Exception e) {
+            if (e instanceof BusinessRuleException) {
+                throw (BusinessRuleException) e;
+            }
+            throw new BusinessRuleException("Error occurred while sending password reset email: " + e.getMessage());
+        }
+    }
 }

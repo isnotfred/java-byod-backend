@@ -31,6 +31,9 @@ public class UserDAO {
             .fullName(rs.getString("full_name"))
             .role(Role.fromString(rs.getString("role")))
             .status(rs.getString("status"))
+            .passwordResetToken(rs.getString("password_reset_token"))
+            .passwordResetExpiresAt(rs.getTimestamp("password_reset_expires_at") != null
+                    ? rs.getTimestamp("password_reset_expires_at").toLocalDateTime() : null)
             .createdAt(rs.getTimestamp("created_at") != null
                     ? rs.getTimestamp("created_at").toLocalDateTime() : null)
             .updatedAt(rs.getTimestamp("updated_at") != null
@@ -53,6 +56,24 @@ public class UserDAO {
     public Optional<User> findByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = :username";
         var params = new MapSqlParameterSource("username", username);
+        return jdbc.query(sql, params, userRowMapper).stream().findFirst();
+    }
+
+    public Optional<User> findByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = :email";
+        var params = new MapSqlParameterSource("email", email);
+        return jdbc.query(sql, params, userRowMapper).stream().findFirst();
+    }
+
+    public Optional<User> findByUsernameOrEmail(String identifier) {
+        String sql = "SELECT * FROM users WHERE username = :identifier OR email = :identifier";
+        var params = new MapSqlParameterSource("identifier", identifier);
+        return jdbc.query(sql, params, userRowMapper).stream().findFirst();
+    }
+
+    public Optional<User> findByPasswordResetToken(String token) {
+        String sql = "SELECT * FROM users WHERE password_reset_token = :token";
+        var params = new MapSqlParameterSource("token", token);
         return jdbc.query(sql, params, userRowMapper).stream().findFirst();
     }
 
@@ -125,6 +146,31 @@ public class UserDAO {
         var params = new MapSqlParameterSource()
                 .addValue("role", role.name())
                 .addValue("userId", userId);
+        return jdbc.update(sql, params);
+    }
+
+    public int updatePasswordResetToken(int userId, String token, java.time.LocalDateTime expiresAt) {
+        String sql = """
+                UPDATE users
+                SET password_reset_token = :token,
+                    password_reset_expires_at = :expiresAt
+                WHERE user_id = :userId
+                """;
+        var params = new MapSqlParameterSource()
+                .addValue("token", token)
+                .addValue("expiresAt", expiresAt)
+                .addValue("userId", userId);
+        return jdbc.update(sql, params);
+    }
+
+    public int clearPasswordResetToken(int userId) {
+        String sql = """
+                UPDATE users
+                SET password_reset_token = NULL,
+                    password_reset_expires_at = NULL
+                WHERE user_id = :userId
+                """;
+        var params = new MapSqlParameterSource("userId", userId);
         return jdbc.update(sql, params);
     }
 }

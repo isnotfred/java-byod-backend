@@ -12,15 +12,17 @@
 -- Admin and guard accounts. No student logins.
 
 CREATE TABLE users (
-    user_id       SERIAL          PRIMARY KEY,
-    username      VARCHAR(100)    NOT NULL UNIQUE,
-    email         VARCHAR(255)    UNIQUE,
-    password_hash TEXT            NOT NULL,
-    full_name     VARCHAR(255),
-    role          VARCHAR(10)     NOT NULL,
-    status        VARCHAR(10)     NOT NULL DEFAULT 'active',
-    created_at    TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    user_id                   SERIAL          PRIMARY KEY,
+    username                  VARCHAR(100)    NOT NULL UNIQUE,
+    email                     VARCHAR(255)    UNIQUE,
+    password_hash             TEXT            NOT NULL,
+    full_name                 VARCHAR(255),
+    role                      VARCHAR(10)     NOT NULL,
+    status                    VARCHAR(10)     NOT NULL DEFAULT 'active',
+    password_reset_token      VARCHAR(255)    UNIQUE,
+    password_reset_expires_at TIMESTAMPTZ,
+    created_at                TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at                TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 

@@ -29,6 +29,8 @@ public class User {
     private String fullName;
     private Role role;
     private String status;          // active | inactive
+    private String passwordResetToken;
+    private LocalDateTime passwordResetExpiresAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
