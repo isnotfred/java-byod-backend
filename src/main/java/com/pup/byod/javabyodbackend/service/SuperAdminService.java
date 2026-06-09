@@ -3,6 +3,7 @@ package com.pup.byod.javabyodbackend.service;
 import com.pup.byod.javabyodbackend.dao.UserDAO;
 import com.pup.byod.javabyodbackend.dao.AuditLogDAO;
 import com.pup.byod.javabyodbackend.exception.BusinessRuleException;
+import com.pup.byod.javabyodbackend.exception.ForbiddenException;
 import com.pup.byod.javabyodbackend.exception.ResourceNotFoundException;
 import com.pup.byod.javabyodbackend.model.User;
 import com.pup.byod.javabyodbackend.model.enums.Role;
@@ -27,7 +28,7 @@ public class SuperAdminService {
         User actor = userDAO.findById(actingUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Acting user not found."));
         if (actor.getRole() != Role.super_admin) {
-            throw new BusinessRuleException("Super admin access required.");
+            throw new ForbiddenException("Super admin access required.");
         }
     }
 
@@ -107,16 +108,14 @@ public class SuperAdminService {
     }
 
     @Transactional
-    public User updateAccount(int actingUserId, int targetUserId, String fullName, String roleStr, String status) {
+    public User updateAccount(int actingUserId, int targetUserId, String fullName, String status) {
         requireSuperAdmin(actingUserId);
         User existing = userDAO.findById(targetUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("User to update not found."));
 
         ValidationUtil.requireNonBlank(fullName, "Full name");
-        ValidationUtil.requireNonBlank(roleStr, "Role");
         ValidationUtil.requireNonBlank(status, "Status");
 
-        Role role = Role.fromString(roleStr);
         String oldPayload = toJson(existing);
 
         User updated = User.builder()
@@ -124,7 +123,7 @@ public class SuperAdminService {
                 .username(existing.getUsername())
                 .passwordHash(existing.getPasswordHash())
                 .fullName(fullName)
-                .role(role)
+                .role(existing.getRole())
                 .status(status)
                 .build();
 

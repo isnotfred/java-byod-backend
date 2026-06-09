@@ -5,7 +5,6 @@ import com.pup.byod.javabyodbackend.service.SuperAdminService;
 import com.pup.byod.javabyodbackend.util.ValidationUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,7 +22,6 @@ public class SuperAdminController {
         this.superAdminService = superAdminService;
     }
 
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PostMapping("/admins")
     public ResponseEntity<User> createAdmin(@RequestBody CreateAccountRequest request) {
         ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
@@ -41,7 +39,6 @@ public class SuperAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PostMapping("/guards")
     public ResponseEntity<User> createGuard(@RequestBody CreateAccountRequest request) {
         ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
@@ -59,26 +56,22 @@ public class SuperAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PutMapping("/users/{userId}")
     public User updateAccount(@PathVariable int userId, @RequestBody UpdateAccountRequest request) {
         ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
         ValidationUtil.requireNonBlank(request.fullName, "Full name");
-        ValidationUtil.requireNonBlank(request.role, "Role");
         ValidationUtil.requireNonBlank(request.status, "Status");
 
         User updated = superAdminService.updateAccount(
                 request.actingUserId,
                 userId,
                 request.fullName,
-                request.role,
                 request.status
         );
         updated.setPasswordHash(null);
         return updated;
     }
 
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PutMapping("/users/{userId}/deactivate")
     public User deactivateAccount(@PathVariable int userId, @RequestBody DeactivateAccountRequest request) {
         ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
@@ -88,7 +81,6 @@ public class SuperAdminController {
         return deactivated;
     }
 
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PutMapping("/users/{userId}/role")
     public User changeUserRole(@PathVariable int userId, @RequestBody ChangeRoleRequest request) {
         ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
@@ -109,7 +101,6 @@ public class SuperAdminController {
     public static class UpdateAccountRequest {
         public Integer actingUserId;
         public String fullName;
-        public String role;
         public String status;
     }
 
