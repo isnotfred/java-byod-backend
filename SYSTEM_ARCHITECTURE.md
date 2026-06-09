@@ -59,17 +59,17 @@ The JavaFX frontend and the Spring Boot backend are completely separate processe
 
 ## 4. Backend — Spring Boot Package Structure
 
-All backend source code lives under the base package: `com.pup.byod.backend/`
+All backend source code lives under the base package: `com.pup.byod.javabyodbackend/`
 
 | Package / Layer | Full Package Path | Responsibility |
 |---|---|---|
-| **controller/** | com.pup.byod.backend.controller | @RestController — receives HTTP requests, returns ResponseEntity |
-| **service/** | com.pup.byod.backend.service | Business logic, auth, validation, transaction orchestration |
-| **dao/** | com.pup.byod.backend.dao | All SQL via JDBC / NamedParameterJdbcTemplate; RowMapper |
-| **model/** | com.pup.byod.backend.model | POJOs and enums matching DB tables |
-| **config/** | com.pup.byod.backend.config | DataSource bean, CORS config, security config, DB connection pool |
-| **util/** | com.pup.byod.backend.util | Password hashing (BCrypt), validation helpers, date formatters |
-| **exception/** | com.pup.byod.backend.exception | Custom exception classes + @ControllerAdvice global error handler |
+| **controller/** | com.pup.byod.javabyodbackend.controller | @RestController — receives HTTP requests, returns ResponseEntity |
+| **service/** | com.pup.byod.javabyodbackend.service | Business logic, auth, validation, transaction orchestration |
+| **dao/** | com.pup.byod.javabyodbackend.dao | All SQL via JDBC / NamedParameterJdbcTemplate; RowMapper |
+| **model/** | com.pup.byod.javabyodbackend.model | POJOs, enums, constants, and report rows matching DB |
+| **config/** | com.pup.byod.javabyodbackend.config | DataSource bean, CORS config, security config, DB connection pool |
+| **util/** | com.pup.byod.javabyodbackend.util | Password hashing (BCrypt), validation helpers, date formatters |
+| **exception/** | com.pup.byod.javabyodbackend.exception | Custom exception classes + @ControllerAdvice global error handler |
 
 ---
 
@@ -121,7 +121,7 @@ Views used directly in DAO queries:
 
 ### 5.4 Model Layer (POJOs)
 
-Models are plain Java objects with fields that match the database table columns. One Model class per table. Models contain private fields with getters/setters, and enums for constrained fields (`DeviceType`, `RegistrationStatus`, `Role`, etc.). Models carry no logic.
+Models are plain Java objects with fields that match the database table columns. One Model class per table. Models contain private fields with getters/setters, and enums for constrained fields (`DeviceType`, `RegistrationStatus`, `Role`, etc.). Models carry no logic. Additionally, this layer contains constants for audit actions (`AuditActionTypes`) and DTOs representing query result structures for reports (under `model/report/`).
 
 ---
 
@@ -137,7 +137,7 @@ The PostgreSQL database is hosted on Railway and is the single source of truth. 
 
 | Table | Primary Key | Purpose |
 |---|---|---|
-| **users** | user_id SERIAL | Admin and guard accounts (no student logins) |
+| **users** | user_id SERIAL | Admin, guard, and super admin accounts (no student logins) |
 | **students** | student_id VARCHAR(50) | Student registry — never hard-delete; set status = inactive |
 | **devices** | device_id SERIAL | Permanent BYOD device registrations |
 | **event_requests** | event_request_id SERIAL | Header for a temporary device access request (school events, orgs) |
@@ -192,13 +192,16 @@ Errors originate in three places: the Service layer (business rule violations), 
 
 | Trigger | Caught In | Shown to User As |
 |---|---|---|
-| DB trigger blocks INSERT/UPDATE | @ControllerAdvice (HTTP 400/409) | Friendly banner / alert dialog in JavaFX |
-| Duplicate unique key | @ControllerAdvice (HTTP 409) | "Serial number already exists" |
-| Invalid status transition | @ControllerAdvice (HTTP 422) | Trigger message text surfaced in alert |
+| DB trigger blocks INSERT/UPDATE | @ControllerAdvice (HTTP 400) | Friendly banner / alert dialog in JavaFX |
+| Duplicate unique key | @ControllerAdvice (HTTP 409) | "Serial number already exists", "Username already exists", or "Student ID already exists" |
+| Business rule violation | @ControllerAdvice (HTTP 422) | Custom message text surfaced in alert |
+| Super admin access required | @ControllerAdvice (HTTP 403) | "Super admin access required" |
+| Resource not found | @ControllerAdvice (HTTP 404) | "Acting user not found", "User to update not found", etc. |
 | Auth failure | Service → HTTP 401 | "Invalid username or password" |
 | Inactive account | Service → HTTP 403 | "Account is inactive" |
 | DB connection lost | HikariCP / @ControllerAdvice 503 | "Database connection failed" |
-| Field validation failure | @ControllerAdvice (HTTP 400) | Field-level error messages on form |
+| Field validation failure / invalid argument | @ControllerAdvice (HTTP 400) | Field-level error messages on form / validation error details |
+| General internal error | @ControllerAdvice (HTTP 500) | "An unexpected error occurred." |
 
 ---
 
@@ -229,10 +232,17 @@ Standardised `action_type` values (enforced by CHECK constraint):
 | DEVICE_REJECTED | STUDENT_DEACTIVATED | EVENT_REQUEST_RETURNED |
 | DEVICE_DEACTIVATED | USER_CREATED | EVENT_REQUEST_REJECTED |
 | DEVICE_UPDATED | USER_UPDATED | SYSTEM_AUTO_EXIT_BATCH |
-| DEVICE_ENTRY | USER_DEACTIVATED | |
+| DEVICE_ENTRY | USER_DEACTIVATED | SYSTEM_CONFIG_UPDATED |
 | DEVICE_EXIT | USER_LOGIN | |
 | DEVICE_AUTO_EXIT | USER_LOGOUT | |
 | | USER_LOGIN_FAILED | |
+| | USER_ROLE_CHANGED | |
+| | ADMIN_CREATED | |
+| | ADMIN_UPDATED | |
+| | ADMIN_DEACTIVATED | |
+| | GUARD_CREATED | |
+| | GUARD_UPDATED | |
+| | GUARD_DEACTIVATED_BY_SUPER | |
 
 ---
 
@@ -384,6 +394,8 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 | EventRequestController | GET/POST/PUT /event-requests — event request lifecycle |
 | DeviceLogController | GET/POST /device-logs — gate entry/exit logging and history |
 | AuditLogController | GET /audit-logs — read-only audit trail queries |
+| ReportController | GET /reports/* — daily/monthly traffic, pending registrations, active devices, device frequency, incident reports |
+| SuperAdminController | POST/PUT /super-admin/* — manage admins/guards (create, update, deactivate, change role) |
 
 **Services (`service/`)**
 
@@ -396,6 +408,8 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 | EventRequestService | Event request submission, approval workflow, date range validation |
 | DeviceLogService | Gate scan logic, consecutive-event prevention, auto-exit batch |
 | AuditLogService | Orchestrates calls to AuditLogDAO / fn_write_audit_log() |
+| ReportService | Produces all six report types required by the BYOD business analysis |
+| SuperAdminService | Account CRUD, status updates, role changes, and super admin authorization checks |
 
 **DAOs (`dao/`)**
 
@@ -420,21 +434,33 @@ The backend follows the standard Spring Boot layered structure. Each layer has o
 | EventRequestDevice | event_request_devices table |
 | DeviceLog | device_logs table |
 | AuditLog | audit_logs table |
+| AuditActionTypes | Constant values for audit actions |
+
+**Report Models (`model/report/`)**
+
+| Model Class | Maps To |
+|---|---|
+| ActiveDeviceRow | Real-time snapshot of active devices on campus |
+| DailyTrafficRow | Entry/exit events on a given day |
+| DeviceFrequencyRow | Device entry/exit frequency over a date range |
+| IncidentOverrideRow | Admin overrides, rejections, and dispute resolutions |
+| MonthlyTrafficRow | Aggregated monthly traffic grouped by category & student |
+| PendingRegistrationRow | All devices in 'pending' status joined with submitter info |
 
 **Enums (`model/enums/`)**
 
 | Enum Class | Used For |
 |---|---|
-| Role | users.role — maps to UserRole on the frontend |
-| DeviceType | devices.device_type and event_request_devices.device_type |
+| Role | users.role — admin, guard, super_admin |
+| DeviceType | devices.device_type and event_request_devices.device_type — Personal Computers, Components & Peripherals, Display & Projection, Project Prototypes (Optional SN), Appliances (TLE) |
 | RegistrationStatus | devices.registration_status — JDBC mapping and Service validation |
 
 **Supporting Packages:**
 
 | Package | Contents |
 |---|---|
-| config/ | DataSourceConfig (HikariCP + Railway env vars), CorsConfig (allow JavaFX host) |
-| exception/ | ResourceNotFoundException, BusinessRuleException, GlobalExceptionHandler (@ControllerAdvice) |
+| config/ | DataSourceConfig (HikariCP + Railway env vars), CorsConfig (allow JavaFX host), SecurityConfig (stateless security configuration) |
+| exception/ | ResourceNotFoundException, BusinessRuleException, ForbiddenException, GlobalExceptionHandler (@ControllerAdvice) |
 | util/ | PasswordUtil (BCrypt hash/verify), ValidationUtil, DateUtil |
 
 **File Tree:**
@@ -445,8 +471,8 @@ byod-backend/                           ← GitHub repo root
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── com/pup/byod/backend/
-│   │   │       ├── BYODBackendApplication.java       ← Spring Boot entry point
+│   │   │   └── com/pup/byod/javabyodbackend/
+│   │   │       ├── JavaByodBackendApplication.java   ← Spring Boot entry point
 │   │   │       ├── controller/                       ← @RestController — HTTP endpoints
 │   │   │       │   ├── AuthController.java
 │   │   │       │   ├── UserController.java
@@ -454,7 +480,9 @@ byod-backend/                           ← GitHub repo root
 │   │   │       │   ├── DeviceController.java
 │   │   │       │   ├── EventRequestController.java
 │   │   │       │   ├── DeviceLogController.java
-│   │   │       │   └── AuditLogController.java
+│   │   │       │   ├── AuditLogController.java
+│   │   │       │   ├── ReportController.java
+│   │   │       │   └── SuperAdminController.java
 │   │   │       ├── service/                          ← @Service — business logic
 │   │   │       │   ├── AuthService.java
 │   │   │       │   ├── UserService.java
@@ -462,7 +490,9 @@ byod-backend/                           ← GitHub repo root
 │   │   │       │   ├── DeviceService.java
 │   │   │       │   ├── EventRequestService.java
 │   │   │       │   ├── DeviceLogService.java
-│   │   │       │   └── AuditLogService.java
+│   │   │       │   ├── AuditLogService.java
+│   │   │       │   ├── ReportService.java
+│   │   │       │   └── SuperAdminService.java
 │   │   │       ├── dao/                              ← JDBC; RowMapper; PreparedStatement
 │   │   │       │   ├── UserDAO.java
 │   │   │       │   ├── StudentDAO.java
@@ -479,16 +509,26 @@ byod-backend/                           ← GitHub repo root
 │   │   │       │   ├── EventRequestDevice.java
 │   │   │       │   ├── DeviceLog.java
 │   │   │       │   ├── AuditLog.java
-│   │   │       │   └── enums/
-│   │   │       │       ├── Role.java
-│   │   │       │       ├── DeviceType.java
-│   │   │       │       └── RegistrationStatus.java
+│   │   │       │   ├── AuditActionTypes.java
+│   │   │       │   ├── enums/
+│   │   │       │   │   ├── Role.java
+│   │   │       │   │   ├── DeviceType.java
+│   │   │       │   │   └── RegistrationStatus.java
+│   │   │       │   └── report/                       ← DTO classes for report queries
+│   │   │       │       ├── ActiveDeviceRow.java
+│   │   │       │       ├── DailyTrafficRow.java
+│   │   │       │       ├── DeviceFrequencyRow.java
+│   │   │       │       ├── IncidentOverrideRow.java
+│   │   │       │       ├── MonthlyTrafficRow.java
+│   │   │       │       └── PendingRegistrationRow.java
 │   │   │       ├── config/                           ← Spring configuration beans
 │   │   │       │   ├── DataSourceConfig.java         ← HikariCP + Railway env vars
-│   │   │       │   └── CorsConfig.java               ← Allow requests from JavaFX host
+│   │   │       │   ├── CorsConfig.java               ← Allow requests from JavaFX host
+│   │   │       │   └── SecurityConfig.java           ← Stateless Spring Security filter chain
 │   │   │       ├── exception/                        ← Custom exceptions + global handler
 │   │   │       │   ├── ResourceNotFoundException.java
 │   │   │       │   ├── BusinessRuleException.java
+│   │   │       │   ├── ForbiddenException.java
 │   │   │       │   └── GlobalExceptionHandler.java   ← @ControllerAdvice
 │   │   │       └── util/                             ← Stateless helpers
 │   │   │           ├── PasswordUtil.java              ← BCrypt hash / verify
@@ -499,7 +539,7 @@ byod-backend/                           ← GitHub repo root
 │   │       └── db/
 │   │           └── schema.sql                        ← Full PostgreSQL schema (reference copy)
 │   └── test/
-│       └── java/com/pup/byod/backend/               ← Unit / integration tests
+│       └── java/com/pup/byod/javabyodbackend/       ← Unit / integration tests
 ├── pom.xml                                           ← Maven: Spring Boot, JDBC, PostgreSQL driver, BCrypt
 ├── Procfile                                          ← Railway start command
 ├── .gitignore
