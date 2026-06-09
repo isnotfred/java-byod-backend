@@ -28,7 +28,7 @@ public class AuthService {
         ValidationUtil.requireNonBlank(username, "Username");
         ValidationUtil.requireNonBlank(password, "Password");
 
-        var userOpt = userDAO.findByUsername(username);
+        var userOpt = userDAO.findByUsernameOrEmail(username);
 
         // Unknown username — log failed attempt without a userId, then reject.
         // Return a generic message so we don't reveal which usernames exist.
