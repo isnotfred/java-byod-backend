@@ -150,16 +150,16 @@ Common status codes:
 
 | Field | Values |
 | --- | --- |
-| User role | `admin`, `guard` |
-| User status | `active`, `inactive` |
+| User role | `admin`, `guard`, `super_admin` |
+| User status | `active`, `inactive`, `pending` |
 | Student status | `active`, `inactive` |
-| Device type | `laptop`, `tablet`, `phone` |
-| Device purpose | `Academic BYOD`, `School Event`, `Organization Activity`, `Temporary Equipment`, `Other Approved Purpose` |
+| Device type | `PERSONAL_COMPUTERS`, `COMPONENTS_AND_PERIPHERALS`, `DISPLAY_AND_PROJECTION`, `PROJECT_PROTOTYPES`, `APPLIANCES_TLE` |
+| Device purpose | `Academic BYOD`, `School Event`, `Organization Activity`, `Temporary Equipment`, `Other Approved Purpose`, `PROTOTYPE`, `APPLIANCE` |
 | Device registration status | `pending`, `approved`, `rejected` |
 | Device status | `active`, `inactive` |
 | Event request status | `pending`, `approved`, `returned`, `rejected` |
 | Event approval document type | `Paper Approval`, `Signed GPOA` |
-| Event request device type | `laptop`, `tablet`, `phone`, `camera`, `projector`, `other` |
+| Event request device type | `Personal Computers`, `Components & Peripherals`, `Display & Projection`, `Project Prototypes (Optional SN)`, `Appliances (TLE)`, `Other` |
 | Event request device status | `pending`, `approved`, `returned` |
 | Device log event type | `entry`, `exit` |
 | Device log logout type | `manual`, `automatic` |
@@ -545,6 +545,14 @@ USER_LOGIN
 USER_LOGOUT
 USER_LOGIN_FAILED
 SYSTEM_AUTO_EXIT_BATCH
+ADMIN_CREATED
+ADMIN_UPDATED
+ADMIN_DEACTIVATED
+GUARD_CREATED
+GUARD_UPDATED
+GUARD_DEACTIVATED_BY_SUPER
+USER_ROLE_CHANGED
+SYSTEM_CONFIG_UPDATED
 ```
 
 ## Business Rules

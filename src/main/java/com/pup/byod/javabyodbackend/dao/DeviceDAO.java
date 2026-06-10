@@ -66,6 +66,7 @@ public class DeviceDAO {
     private final RowMapper<DeviceCampusStatus> campusStatusRowMapper = (rs, rowNum) -> DeviceCampusStatus.builder()
             .deviceId(rs.getInt("device_id"))
             .studentId(rs.getString("student_id"))
+            .deviceName(rs.getString("device_name"))
             .serialNumber(rs.getString("serial_number"))
             .brand(rs.getString("brand"))
             .model(rs.getString("model"))
