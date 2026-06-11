@@ -224,7 +224,7 @@ public class DeviceLogDAO {
                 ) VALUES (
                     :deviceId,
                     :studentId,
-                    :eventType::gate_event_type,
+                    :eventType,
                     :eventTime,
                     :handledBy,
                     :logoutType,
