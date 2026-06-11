@@ -55,6 +55,7 @@ public class DeviceDAO {
             .deviceId(rs.getInt("device_id"))
             .studentId(rs.getString("student_id"))
             .studentFullName(rs.getString("student_name"))
+            .deviceName(rs.getString("device_name"))
             .deviceType(DeviceType.fromDbValue(rs.getString("device_type")))
             .brand(rs.getString("brand"))
             .model(rs.getString("model"))
