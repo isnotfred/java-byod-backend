@@ -36,6 +36,7 @@ public class DeviceDAO {
     private final RowMapper<Device> deviceRowMapper = (rs, rowNum) -> Device.builder()
             .deviceId(rs.getInt("device_id"))
             .studentId(rs.getString("student_id"))
+            .deviceName(rs.getString("device_name"))
             .deviceType(DeviceType.fromDbValue(rs.getString("device_type")))
             .brand(rs.getString("brand"))
             .model(rs.getString("model"))
@@ -217,15 +218,16 @@ public class DeviceDAO {
     public int insert(Device device) {
         String sql = """
                 INSERT INTO devices
-                    (student_id, device_type, brand, model, serial_number,
+                    (student_id, device_name, device_type, brand, model, serial_number,
                      registration_status, device_status, device_purpose, remarks)
                 VALUES
-                    (:studentId, :deviceType, :brand, :model, :serialNumber,
+                    (:studentId, :deviceName, :deviceType, :brand, :model, :serialNumber,
                      :registrationStatus, :deviceStatus, :devicePurpose, :remarks)
                 """;
 
         var params = new MapSqlParameterSource()
                 .addValue("studentId", device.getStudentId())
+                .addValue("deviceName", device.getDeviceName())
                 .addValue("deviceType", device.getDeviceType().getDbValue())
                 .addValue("brand", device.getBrand())
                 .addValue("model", device.getModel())
@@ -277,13 +279,15 @@ public class DeviceDAO {
     public int update(Device device) {
         String sql = """
                 UPDATE devices
-                SET brand          = :brand,
+                SET device_name    = :deviceName,
+                    brand          = :brand,
                     model          = :model,
                     device_purpose = :devicePurpose,
                     remarks        = :remarks
                 WHERE device_id = :deviceId
                 """;
         var params = new MapSqlParameterSource()
+                .addValue("deviceName", device.getDeviceName())
                 .addValue("brand", device.getBrand())
                 .addValue("model", device.getModel())
                 .addValue("devicePurpose", device.getDevicePurpose())

@@ -92,8 +92,10 @@ public class DeviceLogService {
         Device device = deviceRepository.findBySerialNumber(serialNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Device not found."));
 
-        if (device.getRegistrationStatus() == null || !"approved".equalsIgnoreCase(device.getRegistrationStatus().name())) {
-            throw new BusinessRuleException("Device is not approved and cannot be logged.");
+        if (device.getRegistrationStatus() == null ||
+                (!"approved".equalsIgnoreCase(device.getRegistrationStatus().name()) &&
+                 !"pending".equalsIgnoreCase(device.getRegistrationStatus().name()))) {
+            throw new BusinessRuleException("Device is not approved or pending and cannot be logged.");
         }
 
         if (device.getDeviceStatus() != null && "inactive".equalsIgnoreCase(device.getDeviceStatus())) {

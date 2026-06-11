@@ -86,7 +86,7 @@ public class DeviceService {
 
         DeviceType parsedType = DeviceType.fromString(deviceType);
         RegistrationStatus parsedStatus = registrationStatus == null
-                ? RegistrationStatus.approved
+                ? RegistrationStatus.pending
                 : RegistrationStatus.fromString(registrationStatus);
 
         Device device = Device.builder()
