@@ -8,6 +8,5 @@ class JavaByodBackendApplicationTests {
 
     @Test
     void contextLoads() {
+    }
 }
-
-
