@@ -78,6 +78,34 @@ public class EventRequestDAO {
         return jdbc.query(sql, activeEventRequestRowMapper);
     }
 
+    public List<ActiveEventRequest> findApprovedActiveRequestsForGuard() {
+        String sql = """
+                SELECT
+                    er.event_request_id,
+                    er.student_id,
+                    s.first_name || ' ' || s.last_name AS student_name,
+                    er.event_name,
+                    er.organization,
+                    er.start_date,
+                    er.end_date,
+                    er.status,
+                    COUNT(erd.event_device_id) AS device_count
+                FROM   event_requests er
+                JOIN   students s ON s.student_id = er.student_id
+                LEFT   JOIN event_request_devices erd
+                            ON erd.event_request_id = er.event_request_id
+                WHERE  er.status = 'approved'
+                  AND  CURRENT_DATE BETWEEN er.start_date AND er.end_date
+                GROUP  BY
+                    er.event_request_id, er.student_id,
+                    s.first_name, s.last_name,
+                    er.event_name, er.organization,
+                    er.start_date, er.end_date, er.status
+                ORDER  BY er.event_request_id DESC""";
+        return jdbc.query(sql, activeEventRequestRowMapper);
+    }
+
+
     public int insert(EventRequest request) {
         String sql = """
                 INSERT INTO event_requests (

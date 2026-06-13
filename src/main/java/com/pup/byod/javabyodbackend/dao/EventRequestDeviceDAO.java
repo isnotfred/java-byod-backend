@@ -21,34 +21,63 @@ public class EventRequestDeviceDAO {
         this.jdbc = jdbc;
     }
 
-    private final RowMapper<EventRequestDevice> rowMapper = (rs, rowNum) -> EventRequestDevice.builder()
-            .eventDeviceId(rs.getInt("event_device_id"))
-            .eventRequestId(rs.getInt("event_request_id"))
-            .deviceName(rs.getString("device_name"))
-            .brand(rs.getString("brand"))
-            .model(rs.getString("model"))
-            .deviceType(rs.getString("device_type"))
-            .serialNumber(rs.getString("serial_number"))
-            .quantity(rs.getInt("quantity"))
-            .verifiedBy(rs.getObject("verified_by") != null ? rs.getInt("verified_by") : null)
-            .verifiedAt(rs.getTimestamp("verified_at") != null ? rs.getTimestamp("verified_at").toLocalDateTime() : null)
-            .deviceStatus(rs.getString("device_status"))
-            .remarks(rs.getString("remarks"))
-            .createdAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null)
-            .updatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null)
-            .build();
+    private final RowMapper<EventRequestDevice> rowMapper = (rs, rowNum) -> {
+        var deviceBuilder = EventRequestDevice.builder()
+                .eventDeviceId(rs.getInt("event_device_id"))
+                .eventRequestId(rs.getInt("event_request_id"))
+                .deviceName(rs.getString("device_name"))
+                .brand(rs.getString("brand"))
+                .model(rs.getString("model"))
+                .deviceType(rs.getString("device_type"))
+                .serialNumber(rs.getString("serial_number"))
+                .quantity(rs.getInt("quantity"))
+                .verifiedBy(rs.getObject("verified_by") != null ? rs.getInt("verified_by") : null)
+                .verifiedAt(rs.getTimestamp("verified_at") != null ? rs.getTimestamp("verified_at").toLocalDateTime() : null)
+                .deviceStatus(rs.getString("device_status"))
+                .remarks(rs.getString("remarks"))
+                .createdAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null)
+                .updatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null);
+
+        try {
+            deviceBuilder.currentDayStatus(rs.getString("current_day_status"));
+        } catch (SQLException e) {
+            deviceBuilder.currentDayStatus("exit");
+        }
+
+        try {
+            deviceBuilder.lastEventTime(rs.getTimestamp("last_event_time") != null ? rs.getTimestamp("last_event_time").toLocalDateTime() : null);
+        } catch (SQLException e) {
+            deviceBuilder.lastEventTime(null);
+        }
+
+        return deviceBuilder.build();
+    };
 
     public Optional<EventRequestDevice> findById(int eventDeviceId) {
-        String sql = "SELECT * FROM event_request_devices WHERE event_device_id = :eventDeviceId";
+        String sql = """
+                SELECT erd.*,
+                       COALESCE(v.current_day_status, 'exit') AS current_day_status,
+                       v.last_event_time
+                FROM event_request_devices erd
+                LEFT JOIN v_event_device_status v ON erd.event_device_id = v.event_device_id
+                WHERE erd.event_device_id = :eventDeviceId""";
         var params = new MapSqlParameterSource("eventDeviceId", eventDeviceId);
         return jdbc.query(sql, params, rowMapper).stream().findFirst();
     }
 
     public List<EventRequestDevice> findByEventRequestId(int eventRequestId) {
-        String sql = "SELECT * FROM event_request_devices WHERE event_request_id = :eventRequestId ORDER BY created_at DESC";
+        String sql = """
+                SELECT erd.*,
+                       COALESCE(v.current_day_status, 'exit') AS current_day_status,
+                       v.last_event_time
+                FROM event_request_devices erd
+                LEFT JOIN v_event_device_status v ON erd.event_device_id = v.event_device_id
+                WHERE erd.event_request_id = :eventRequestId
+                ORDER BY erd.created_at DESC""";
         var params = new MapSqlParameterSource("eventRequestId", eventRequestId);
         return jdbc.query(sql, params, rowMapper);
     }
+
 
     public int insert(EventRequestDevice device) {
         String sql = """
@@ -126,4 +155,18 @@ public class EventRequestDeviceDAO {
 
         return jdbc.update(sql, params);
     }
-}
+
+    public List<EventRequestDevice> findReconciliationReport() {
+        String sql = """
+                SELECT erd.*,
+                       COALESCE(v.current_day_status, 'exit') AS current_day_status,
+                       v.last_event_time
+                FROM event_request_devices erd
+                JOIN event_requests er ON er.event_request_id = erd.event_request_id
+                JOIN v_event_device_status v ON v.event_device_id = erd.event_device_id
+                WHERE er.end_date < CURRENT_DATE
+                  AND v.current_day_status = 'entry'
+                ORDER BY er.end_date DESC, erd.event_device_id ASC""";
+        return jdbc.query(sql, new MapSqlParameterSource(), rowMapper);
+    }
+}

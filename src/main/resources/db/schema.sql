@@ -145,6 +145,26 @@ CREATE TABLE device_logs (
 );
 
 
+-- ── event_device_logs ─────────────────────────────────────────
+-- Per-day entry/exit logging for event request devices.
+
+CREATE TABLE event_device_logs (
+    event_log_id    SERIAL       PRIMARY KEY,
+    event_device_id INT          NOT NULL,
+    event_type      VARCHAR(10)  NOT NULL,
+    event_time      TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    handled_by      INT,
+    notes           TEXT,
+    created_at      TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (event_device_id) REFERENCES event_request_devices (event_device_id) ON DELETE CASCADE  ON UPDATE CASCADE,
+    FOREIGN KEY (handled_by)      REFERENCES users           (user_id)                          ON DELETE RESTRICT ON UPDATE CASCADE,
+
+    CONSTRAINT chk_event_device_logs_event_type CHECK (event_type IN ('entry', 'exit'))
+);
+
+
+
 -- ── audit_logs ───────────────────────────────────────────────
 -- Immutable system-wide audit trail.
 -- Write via fn_write_audit_log() only — never INSERT directly.
@@ -213,6 +233,11 @@ CREATE INDEX idx_device_logs_event_type     ON device_logs (event_type);
 CREATE INDEX idx_device_logs_open_entries   ON device_logs (event_type, event_time DESC)
     INCLUDE (device_id, student_id)
     WHERE event_type = 'entry';
+
+-- event_device_logs
+CREATE INDEX idx_event_device_logs_last_event
+    ON event_device_logs (event_device_id, event_time DESC) INCLUDE (event_type);
+
 
 -- audit_logs
 CREATE INDEX idx_audit_logs_user_time       ON audit_logs (user_id, created_at DESC);
@@ -452,6 +477,11 @@ CREATE TRIGGER trg_audit_logs_force_created_at
     BEFORE INSERT ON audit_logs
     FOR EACH ROW EXECUTE FUNCTION fn_force_created_at();
 
+CREATE TRIGGER trg_event_device_logs_force_created_at
+    BEFORE INSERT ON event_device_logs
+    FOR EACH ROW EXECUTE FUNCTION fn_force_created_at();
+
+
 
 -- ── 4.3 Guard registration_status state machine ──────────────
 -- Allowed:  pending  → approved
@@ -555,6 +585,33 @@ CREATE TRIGGER trg_device_logs_consecutive_events
     BEFORE INSERT ON device_logs
     FOR EACH ROW EXECUTE FUNCTION fn_guard_consecutive_events();
 
+CREATE OR REPLACE FUNCTION fn_guard_consecutive_event_device_events()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+DECLARE
+    v_last_event VARCHAR(10);
+BEGIN
+    SELECT event_type
+    INTO   v_last_event
+    FROM   event_device_logs
+    WHERE  event_device_id = NEW.event_device_id
+    ORDER  BY event_time DESC
+    LIMIT  1;
+
+    IF v_last_event IS NOT NULL AND v_last_event = NEW.event_type THEN
+        RAISE EXCEPTION
+            'Event device % already has a consecutive ''%'' event. Log the opposite event first or reconcile.',
+            NEW.event_device_id, NEW.event_type;
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_event_device_logs_consecutive_events
+    BEFORE INSERT ON event_device_logs
+    FOR EACH ROW EXECUTE FUNCTION fn_guard_consecutive_event_device_events();
+
+
 
 -- ── 4.6 Immutable audit_logs ──────────────────────────────────
 
@@ -586,6 +643,15 @@ $$;
 CREATE TRIGGER trg_device_log_no_delete
     BEFORE DELETE ON device_logs
     FOR EACH ROW EXECUTE FUNCTION fn_device_log_immutable();
+
+CREATE TRIGGER trg_event_device_log_no_update
+    BEFORE UPDATE ON event_device_logs
+    FOR EACH ROW EXECUTE FUNCTION fn_device_log_immutable();
+
+CREATE TRIGGER trg_event_device_log_no_delete
+    BEFORE DELETE ON event_device_logs
+    FOR EACH ROW EXECUTE FUNCTION fn_device_log_immutable();
+
 
 
 -- ── 4.8 Deletion protection: students ────────────────────────
@@ -703,10 +769,10 @@ SELECT
     d.device_id,
     d.student_id,
     d.device_name,
+    d.serial_number,
     d.brand,
     d.model,
     d.device_type,
-    d.serial_number,
     d.registration_status,
     d.device_status,
     COALESCE(last_log.event_type, 'exit') AS campus_status,
@@ -721,6 +787,31 @@ FROM devices d
     ) last_log ON TRUE
 WHERE d.registration_status IN ('approved', 'pending')
   AND d.device_status       = 'active';
+
+
+-- Current campus status per event request device.
+CREATE OR REPLACE VIEW v_event_device_status AS
+SELECT
+    erd.event_device_id,
+    erd.event_request_id,
+    erd.device_name,
+    erd.brand,
+    erd.model,
+    erd.device_type,
+    erd.serial_number,
+    erd.quantity,
+    erd.device_status AS manifest_status,
+    COALESCE(last_log.event_type, 'exit') AS current_day_status,
+    last_log.event_time AS last_event_time
+FROM event_request_devices erd
+LEFT JOIN LATERAL (
+    SELECT event_type, event_time
+    FROM   event_device_logs
+    WHERE  event_device_id = erd.event_device_id
+    ORDER  BY event_time DESC
+    LIMIT  1
+) last_log ON TRUE;
+
 
 
 -- Admin approval queue: pending devices with student name.
@@ -785,6 +876,12 @@ ALTER TABLE audit_logs SET (
     autovacuum_analyze_scale_factor = 0.005
     );
 
+ALTER TABLE event_device_logs SET (
+    autovacuum_vacuum_scale_factor  = 0.01,
+    autovacuum_analyze_scale_factor = 0.005
+    );
+
+
 
 -- ============================================================
 -- SECTION 7: COMMENTS
@@ -806,11 +903,16 @@ COMMENT ON TABLE  event_request_devices       IS 'Individual devices listed unde
 COMMENT ON TABLE  device_logs                 IS 'Immutable gate event log. Never update or delete rows.';
 COMMENT ON COLUMN device_logs.auto_exit       IS 'TRUE = generated by nightly auto-exit batch, not a human guard.';
 
+COMMENT ON TABLE  event_device_logs           IS 'Per-day entry/exit logging for event request devices.';
+COMMENT ON COLUMN event_device_logs.event_type IS 'entry or exit.';
+
 COMMENT ON TABLE  audit_logs                  IS 'Immutable audit trail. Write via fn_write_audit_log() only.';
 
 COMMENT ON VIEW   v_device_campus_status      IS 'Derives entry/exit per device from the latest device_log row.';
+COMMENT ON VIEW   v_event_device_status       IS 'Current daily campus presence status per event request device.';
 COMMENT ON VIEW   v_pending_devices           IS 'Pending device registrations for the admin approval queue.';
 COMMENT ON VIEW   v_active_event_requests     IS 'Pending and approved event requests with device counts.';
+
 
 COMMENT ON FUNCTION fn_write_audit_log        IS 'Preferred way to write to audit_logs from Java. Keeps inserts consistent.';
 COMMENT ON FUNCTION fn_set_updated_at         IS 'Auto-refreshes updated_at on every UPDATE.';

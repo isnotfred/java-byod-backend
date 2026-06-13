@@ -26,4 +26,9 @@ public class EventRequestDevice {
     private String remarks;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    // Derived fields
+    private String currentDayStatus;
+    private LocalDateTime lastEventTime;
 }
+

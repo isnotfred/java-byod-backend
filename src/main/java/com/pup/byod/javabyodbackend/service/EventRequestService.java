@@ -1,5 +1,7 @@
 package com.pup.byod.javabyodbackend.service;
 
+import com.pup.byod.javabyodbackend.dao.EventDeviceLogDAO;
+import com.pup.byod.javabyodbackend.model.EventDeviceLog;
 import com.pup.byod.javabyodbackend.dao.EventRequestDAO;
 import com.pup.byod.javabyodbackend.dao.EventRequestDeviceDAO;
 import com.pup.byod.javabyodbackend.dao.StudentDAO;
@@ -24,16 +26,20 @@ public class EventRequestService {
     private final EventRequestDeviceDAO eventRequestDeviceDAO;
     private final StudentDAO studentRepository;
     private final AuditLogService auditLogService;
+    private final EventDeviceLogDAO eventDeviceLogDAO;
 
     public EventRequestService(EventRequestDAO eventRequestDAO,
                                EventRequestDeviceDAO eventRequestDeviceDAO,
                                StudentDAO studentRepository,
-                               AuditLogService auditLogService) {
+                               AuditLogService auditLogService,
+                               EventDeviceLogDAO eventDeviceLogDAO) {
         this.eventRequestDAO = eventRequestDAO;
         this.eventRequestDeviceDAO = eventRequestDeviceDAO;
         this.studentRepository = studentRepository;
         this.auditLogService = auditLogService;
+        this.eventDeviceLogDAO = eventDeviceLogDAO;
     }
+
 
     public List<EventRequest> getAllEventRequests() {
         return eventRequestDAO.findAll();
@@ -65,6 +71,7 @@ public class EventRequestService {
                                            Boolean isSubmitted,
                                            Boolean isAccommodated,
                                            String remarks,
+                                           Integer creatorUserId,
                                            List<LineItemRequest> lineItems) {
         ValidationUtil.requireNonBlank(studentId, "Student ID");
         ValidationUtil.requireNonBlank(eventName, "Event name");
@@ -91,9 +98,11 @@ public class EventRequestService {
                 .approvalDocRef(approvalDocRef)
                 .startDate(startDate)
                 .endDate(endDate)
-                .status("pending")
-                .isSubmitted(Boolean.TRUE.equals(isSubmitted))
+                .status("approved")
+                .isSubmitted(true)
                 .isAccommodated(Boolean.TRUE.equals(isAccommodated))
+                .reviewedBy(creatorUserId)
+                .reviewedAt(LocalDateTime.now())
                 .remarks(remarks)
                 .build();
 
@@ -108,16 +117,18 @@ public class EventRequestService {
                     .deviceType(lineItem.deviceType)
                     .serialNumber(lineItem.serialNumber)
                     .quantity(lineItem.quantity == null ? 1 : lineItem.quantity)
-                    .deviceStatus("pending")
+                    .deviceStatus("approved")
                     .remarks(lineItem.remarks)
                     .build();
 
             eventRequestDeviceDAO.insert(device);
         }
 
-        auditLogService.writeAuditLog(null, "EVENT_REQUEST_CREATED", "event_requests", String.valueOf(eventRequestId), null, null, null);
+        auditLogService.writeAuditLog(creatorUserId, "EVENT_REQUEST_CREATED", "event_requests", String.valueOf(eventRequestId), null, null, null);
+        auditLogService.writeAuditLog(creatorUserId, "EVENT_REQUEST_APPROVED", "event_requests", String.valueOf(eventRequestId), null, null, null);
         return getEventRequestById(eventRequestId);
     }
+
 
     @Transactional
     public EventRequest approveEventRequest(int eventRequestId, int reviewerUserId) {
@@ -177,6 +188,68 @@ public class EventRequestService {
         device.setVerifiedAt(LocalDateTime.now());
         eventRequestDeviceDAO.update(device);
         return device;
+    }
+
+    public List<ActiveEventRequest> getGuardEventRequests() {
+        return eventRequestDAO.findApprovedActiveRequestsForGuard();
+    }
+
+    @Transactional
+    public void logDeviceEntry(List<Integer> deviceIds, int guardId) {
+        for (int eventDeviceId : deviceIds) {
+            EventRequestDevice device = eventRequestDeviceDAO.findById(eventDeviceId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Event device not found."));
+
+            if (!"approved".equalsIgnoreCase(device.getDeviceStatus())) {
+                throw new BusinessRuleException("Device " + device.getDeviceName() + " is not approved.");
+            }
+
+            var lastLog = eventDeviceLogDAO.findLastLogForDevice(eventDeviceId).orElse(null);
+            if (lastLog != null && "entry".equalsIgnoreCase(lastLog.getEventType())) {
+                throw new BusinessRuleException("Device " + device.getDeviceName() + " is already checked in.");
+            }
+
+            EventDeviceLog log = EventDeviceLog.builder()
+                    .eventDeviceId(eventDeviceId)
+                    .eventType("entry")
+                    .eventTime(LocalDateTime.now())
+                    .handledBy(guardId)
+                    .build();
+            eventDeviceLogDAO.insert(log);
+
+            auditLogService.writeAuditLog(guardId, "DEVICE_ENTRY", "event_request_devices", String.valueOf(eventDeviceId), null, null, null);
+        }
+    }
+
+    @Transactional
+    public void logDeviceExit(List<Integer> deviceIds, int guardId) {
+        for (int eventDeviceId : deviceIds) {
+            EventRequestDevice device = eventRequestDeviceDAO.findById(eventDeviceId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Event device not found."));
+
+            if (!"approved".equalsIgnoreCase(device.getDeviceStatus())) {
+                throw new BusinessRuleException("Device " + device.getDeviceName() + " is not approved.");
+            }
+
+            var lastLog = eventDeviceLogDAO.findLastLogForDevice(eventDeviceId).orElse(null);
+            if (lastLog == null || "exit".equalsIgnoreCase(lastLog.getEventType())) {
+                throw new BusinessRuleException("Device " + device.getDeviceName() + " is already checked out.");
+            }
+
+            EventDeviceLog log = EventDeviceLog.builder()
+                    .eventDeviceId(eventDeviceId)
+                    .eventType("exit")
+                    .eventTime(LocalDateTime.now())
+                    .handledBy(guardId)
+                    .build();
+            eventDeviceLogDAO.insert(log);
+
+            auditLogService.writeAuditLog(guardId, "DEVICE_EXIT", "event_request_devices", String.valueOf(eventDeviceId), null, null, null);
+        }
+    }
+
+    public List<EventRequestDevice> getReconciliationReport() {
+        return eventRequestDeviceDAO.findReconciliationReport();
     }
 
     private void validateApprovalDocType(String approvalDocType) {

@@ -1,5 +1,8 @@
 package com.pup.byod.javabyodbackend.service;
 
+import com.pup.byod.javabyodbackend.dao.EventRequestDeviceDAO;
+import com.pup.byod.javabyodbackend.model.EventRequestDevice;
+
 import com.pup.byod.javabyodbackend.dao.AuditLogDAO;
 import com.pup.byod.javabyodbackend.dao.DeviceDAO;
 import com.pup.byod.javabyodbackend.dao.DeviceLogDAO;
@@ -29,14 +32,22 @@ public class ReportService {
     private final DeviceLogDAO deviceLogDAO;
     private final DeviceDAO    deviceDAO;
     private final AuditLogDAO  auditLogDAO;
+    private final EventRequestDeviceDAO eventRequestDeviceDAO;
 
     public ReportService(DeviceLogDAO deviceLogDAO,
                          DeviceDAO    deviceDAO,
-                         AuditLogDAO  auditLogDAO) {
+                         AuditLogDAO  auditLogDAO,
+                         EventRequestDeviceDAO eventRequestDeviceDAO) {
         this.deviceLogDAO = deviceLogDAO;
         this.deviceDAO    = deviceDAO;
         this.auditLogDAO  = auditLogDAO;
+        this.eventRequestDeviceDAO = eventRequestDeviceDAO;
     }
+
+    public List<EventRequestDevice> getUnreconciledEventDevicesReport() {
+        return eventRequestDeviceDAO.findReconciliationReport();
+    }
+
 
 
     // ─────────────────────────────────────────────────────────────────────────

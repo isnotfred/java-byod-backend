@@ -1,5 +1,6 @@
 package com.pup.byod.javabyodbackend.controller;
 
+import com.pup.byod.javabyodbackend.model.EventRequestDevice;
 import com.pup.byod.javabyodbackend.model.report.*;
 import com.pup.byod.javabyodbackend.service.ReportService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -185,4 +186,10 @@ public class ReportController {
 
         return ResponseEntity.ok(reportService.getIncidentOverrideReport(from, to));
     }
+
+    @GetMapping("/unreconciled-event-devices")
+    public ResponseEntity<List<EventRequestDevice>> getUnreconciledEventDevices() {
+        return ResponseEntity.ok(reportService.getUnreconciledEventDevicesReport());
+    }
 }
+

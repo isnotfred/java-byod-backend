@@ -1,5 +1,6 @@
 package com.pup.byod.javabyodbackend.controller;
 
+import com.pup.byod.javabyodbackend.exception.BusinessRuleException;
 import com.pup.byod.javabyodbackend.model.ActiveEventRequest;
 import com.pup.byod.javabyodbackend.model.EventRequest;
 import com.pup.byod.javabyodbackend.model.EventRequestDevice;
@@ -48,6 +49,11 @@ public class EventRequestController {
         return eventRequestService.getDevicesForRequest(eventRequestId);
     }
 
+    @GetMapping("/guard")
+    public List<ActiveEventRequest> getGuardEventRequests() {
+        return eventRequestService.getGuardEventRequests();
+    }
+
     @PostMapping
     public ResponseEntity<EventRequest> createEventRequest(@RequestBody CreateEventRequestRequest request) {
         ValidationUtil.requireNonBlank(request.studentId, "Student ID");
@@ -67,9 +73,35 @@ public class EventRequestController {
                 request.isSubmitted,
                 request.isAccommodated,
                 request.remarks,
+                request.creatorUserId,
                 request.lineItems
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @PostMapping("/devices/log-entry")
+    public ResponseEntity<Void> logDeviceEntry(@RequestBody LogDevicesRequest request) {
+        ValidationUtil.requireNonNull(request.guardId, "Guard User ID");
+        if (request.deviceIds == null || request.deviceIds.isEmpty()) {
+            throw new BusinessRuleException("Device IDs must not be empty.");
+        }
+        eventRequestService.logDeviceEntry(request.deviceIds, request.guardId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/devices/log-exit")
+    public ResponseEntity<Void> logDeviceExit(@RequestBody LogDevicesRequest request) {
+        ValidationUtil.requireNonNull(request.guardId, "Guard User ID");
+        if (request.deviceIds == null || request.deviceIds.isEmpty()) {
+            throw new BusinessRuleException("Device IDs must not be empty.");
+        }
+        eventRequestService.logDeviceExit(request.deviceIds, request.guardId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/devices/reconciliation-report")
+    public List<EventRequestDevice> getReconciliationReport() {
+        return eventRequestService.getReconciliationReport();
     }
 
     @PutMapping("/{eventRequestId}/approve")
@@ -111,7 +143,13 @@ public class EventRequestController {
         public Boolean isSubmitted;
         public Boolean isAccommodated;
         public String remarks;
+        public Integer creatorUserId;
         public List<EventRequestService.LineItemRequest> lineItems;
+    }
+
+    public static class LogDevicesRequest {
+        public List<Integer> deviceIds;
+        public Integer guardId;
     }
 
     public static class ReviewActionRequest {
@@ -133,3 +171,4 @@ public class EventRequestController {
         public String deviceStatus;
     }
 }
+
