@@ -139,16 +139,16 @@ public class DeviceLogDAO {
                 JOIN students s ON s.student_id = dl.student_id
                 LEFT JOIN users u ON u.user_id = dl.handled_by
                 WHERE dl.event_time::date = :date
-                  AND (:studentId IS NULL OR dl.student_id = :studentId)
-                  AND (:deviceType IS NULL OR d.device_type = :deviceType)
-                  AND (:status IS NULL OR d.registration_status = :status)
+                  AND (cast(:studentId as text) IS NULL OR dl.student_id = :studentId)
+                  AND (cast(:deviceType as text) IS NULL OR d.device_type = :deviceType)
+                  AND (cast(:status as text) IS NULL OR d.registration_status = :status)
                 ORDER BY dl.event_time DESC
                 """;
         var params = new MapSqlParameterSource()
                 .addValue("date", date)
-                .addValue("studentId", studentId)
-                .addValue("deviceType", deviceType)
-                .addValue("status", status);
+                .addValue("studentId", studentId, java.sql.Types.VARCHAR)
+                .addValue("deviceType", deviceType, java.sql.Types.VARCHAR)
+                .addValue("status", status, java.sql.Types.VARCHAR);
         return jdbc.query(sql, params, dailyTrafficRowMapper);
     }
 
