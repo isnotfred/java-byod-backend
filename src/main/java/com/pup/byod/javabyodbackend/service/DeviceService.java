@@ -13,8 +13,21 @@ import com.pup.byod.javabyodbackend.util.ValidationUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 @Service
 public class DeviceService {
@@ -215,5 +228,154 @@ public class DeviceService {
 
         deviceDAO.setDeviceStatus(deviceId, "inactive");
         auditLogService.writeAuditLog(null, "DEVICE_DEACTIVATED", "devices", String.valueOf(deviceId), null, null, null);
+    }
+
+    @Transactional
+    public Map<String, Object> importFromCsv(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new BusinessRuleException("CSV file is required.");
+        }
+
+        String filename = file.getOriginalFilename();
+        if (filename == null || !filename.toLowerCase().endsWith(".csv")) {
+            throw new BusinessRuleException("File must be a .csv file.");
+        }
+
+        int inserted = 0;
+        int skipped = 0;
+        List<Map<String, Object>> errors = new ArrayList<>();
+        Set<String> allowedPurposes = Set.of(
+                "Academic BYOD",
+                "School Event",
+                "Organization Activity",
+                "Temporary Equipment",
+                "Other Approved Purpose",
+                "PROTOTYPE",
+                "APPLIANCE"
+        );
+
+        try (
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(file.getInputStream()));
+                CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
+                        .builder()
+                        .setHeader("student_id", "device_name", "brand", "model", "serial_number", "device_type", "device_purpose", "registration_status", "remarks")
+                        .setSkipHeaderRecord(true)
+                        .setIgnoreEmptyLines(true)
+                        .setTrim(true)
+                        .build())
+        ) {
+            for (CSVRecord record : csvParser) {
+                int rowNum = (int) record.getRecordNumber();
+
+                String studentId = record.get("student_id");
+                String deviceName = record.get("device_name");
+                String brand = record.get("brand");
+                String model = record.get("model");
+                String serialNumber = record.get("serial_number");
+                String deviceType = record.get("device_type");
+                String devicePurpose = record.get("device_purpose");
+                String registrationStatus = record.get("registration_status");
+                String remarks = record.get("remarks");
+
+                List<String> rowErrors = new ArrayList<>();
+
+                if (studentId == null || studentId.isBlank()) {
+                    rowErrors.add("student_id is required.");
+                } else if (studentDAO.findById(studentId).isEmpty()) {
+                    rowErrors.add("Student with ID '" + studentId + "' not found.");
+                }
+
+                if (deviceName == null || deviceName.isBlank()) {
+                    rowErrors.add("device_name is required.");
+                }
+
+                if (serialNumber == null || serialNumber.isBlank()) {
+                    rowErrors.add("serial_number is required.");
+                } else {
+                    try {
+                        ValidationUtil.requireValidSerialNumber(serialNumber);
+                    } catch (Exception e) {
+                        rowErrors.add(e.getMessage());
+                    }
+                }
+
+                DeviceType parsedType = null;
+                if (deviceType == null || deviceType.isBlank()) {
+                    rowErrors.add("device_type is required.");
+                } else {
+                    try {
+                        parsedType = DeviceType.fromString(deviceType);
+                    } catch (Exception e) {
+                        rowErrors.add(e.getMessage());
+                    }
+                }
+
+                if (devicePurpose == null || devicePurpose.isBlank()) {
+                    rowErrors.add("device_purpose is required.");
+                } else if (!allowedPurposes.contains(devicePurpose.trim())) {
+                    rowErrors.add("device_purpose must be one of: " + allowedPurposes);
+                }
+
+                RegistrationStatus parsedStatus = RegistrationStatus.pending;
+                if (registrationStatus != null && !registrationStatus.isBlank()) {
+                    try {
+                        parsedStatus = RegistrationStatus.fromString(registrationStatus);
+                    } catch (Exception e) {
+                        rowErrors.add(e.getMessage());
+                    }
+                }
+
+                if (!rowErrors.isEmpty()) {
+                    Map<String, Object> errorEntry = new LinkedHashMap<>();
+                    errorEntry.put("row", rowNum);
+                    errorEntry.put("serialNumber", serialNumber);
+                    errorEntry.put("reasons", rowErrors);
+                    errors.add(errorEntry);
+                    continue;
+                }
+
+                // Skip duplicates
+                if (deviceDAO.findBySerialNumber(serialNumber).isPresent()) {
+                    skipped++;
+                    continue;
+                }
+
+                // Insert
+                try {
+                    Device device = Device.builder()
+                            .studentId(studentId.trim())
+                            .deviceName(deviceName.trim())
+                            .brand(brand != null ? brand.trim() : null)
+                            .model(model != null ? model.trim() : null)
+                            .serialNumber(serialNumber.trim())
+                            .deviceType(parsedType)
+                            .devicePurpose(devicePurpose.trim())
+                            .registrationStatus(parsedStatus)
+                            .deviceStatus("active")
+                            .remarks(remarks != null ? remarks.trim() : null)
+                            .build();
+
+                    int deviceId = deviceDAO.insert(device);
+                    auditLogService.writeAuditLog(null, "DEVICE_REGISTERED", "devices", String.valueOf(deviceId), null, null, null);
+                    inserted++;
+                } catch (Exception e) {
+                    Map<String, Object> errorEntry = new LinkedHashMap<>();
+                    errorEntry.put("row", rowNum);
+                    errorEntry.put("serialNumber", serialNumber);
+                    errorEntry.put("reasons", List.of(e.getMessage()));
+                    errors.add(errorEntry);
+                }
+            }
+
+        } catch (IOException e) {
+            throw new BusinessRuleException("Failed to read CSV file: " + e.getMessage());
+        }
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("inserted", inserted);
+        result.put("skipped", skipped);
+        result.put("errors", errors);
+        return result;
     }
 }
