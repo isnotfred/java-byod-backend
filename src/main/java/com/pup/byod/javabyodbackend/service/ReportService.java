@@ -201,7 +201,7 @@ public class ReportService {
      *   FROM   v_device_campus_status vcs
      *   JOIN   devices  d ON d.device_id  = vcs.device_id
      *   JOIN   students s ON s.student_id = vcs.student_id
-     *   WHERE  vcs.campus_status = 'inside'
+     *   WHERE  vcs.campus_status = 'entry'
      *   ORDER  BY vcs.last_event_time DESC;
      */
     public List<ActiveDeviceRow> getActiveDevicesOnCampus() {
