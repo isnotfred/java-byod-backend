@@ -1281,21 +1281,34 @@ Retrieves all system configuration parameters and policies. Available to all aut
   [
     {
       "settingKey": "max_devices_per_student",
-      "settingValue": "3",
+      "settingValue": "5",
       "description": "Maximum number of active registered devices allowed per student",
-      "updatedAt": "2026-06-09T10:30:00"
+      "updatedAt": "2026-06-14T14:00:00"
     },
     {
       "settingKey": "allow_unregistered_devices",
-      "settingValue": "false",
+      "settingValue": "true",
       "description": "Whether unapproved devices can be checked in by guards",
-      "updatedAt": "2026-06-09T10:30:00"
+      "updatedAt": "2026-06-14T14:00:00"
+    },
+    {
+      "settingKey": "event_request_max_duration_days",
+      "settingValue": "7",
+      "description": "Maximum duration in days for an event request",
+      "updatedAt": "2026-06-14T14:00:00"
+    },
+    {
+      "settingKey": "auto_exit_cutoff_time",
+      "settingValue": "22:00",
+      "description": "Cutoff time after which checked-in devices are auto-exited",
+      "updatedAt": "2026-06-14T14:00:00"
     }
   ]
   ```
 
 #### `PUT /api/v1/settings/{key}`
 Modifies a specific system configuration parameter. Only allowed for `super_admin` role. Generates a `SYSTEM_CONFIG_UPDATED` audit log row.
+*Note: For the key `auto_exit_cutoff_time`, updates are validated and only permit values of `'20:00'`, `'21:00'`, or `'22:00'` (returns `400 Bad Request` / `BusinessRuleException` on other values).*
 - **Request Body:**
   ```json
   {
@@ -1309,7 +1322,7 @@ Modifies a specific system configuration parameter. Only allowed for `super_admi
     "settingKey": "max_devices_per_student",
     "settingValue": "4",
     "description": "Maximum number of active registered devices allowed per student",
-    "updatedAt": "2026-06-09T10:53:00"
+    "updatedAt": "2026-06-14T14:05:00"
   }
   ```
 
