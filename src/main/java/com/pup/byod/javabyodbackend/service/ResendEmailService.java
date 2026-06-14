@@ -21,11 +21,12 @@ public class ResendEmailService {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
-    public void sendWelcomeEmail(String toEmail, String fullName, String password) {
+    public void sendWelcomeEmail(String toEmail, String username, String fullName, String password) {
         if (apiKey == null || apiKey.isBlank()) {
             System.out.println("Resend API Key is not set. Simulated Email sending:");
             System.out.println("To: " + toEmail);
             System.out.println("Subject: Welcome to BYOD Device Management System");
+            System.out.println("Username: " + username);
             System.out.println("Password: " + password);
             return;
         }
@@ -36,12 +37,13 @@ public class ResendEmailService {
                 "<p>An account has been created for you in the BYOD Device Management System.</p>" +
                 "<p>Here are your credentials for your first login:</p>" +
                 "<ul>" +
+                "  <li><b>Username:</b> %s</li>" +
                 "  <li><b>Email:</b> %s</li>" +
                 "  <li><b>Password:</b> %s</li>" +
                 "</ul>" +
                 "<p><b>Important:</b> Please reset your password immediately after logging in for security purposes.</p>" +
                 "<p>Best regards,<br>BYOD System Admin</p>",
-                fullName, toEmail, password
+                fullName, username, toEmail, password
         );
 
         // Escape JSON quotes/newlines

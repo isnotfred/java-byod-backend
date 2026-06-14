@@ -248,15 +248,16 @@ public class SuperAdminService {
             throw new BusinessRuleException("Cannot create a super_admin account via this endpoint.");
         }
 
-        if (userDAO.findByUsername(email).isPresent()) {
+        if (userDAO.findByUsernameOrEmail(email).isPresent()) {
             throw new BusinessRuleException("An account with this email/username already exists.");
         }
 
+        String generatedUsername = generateUniqueUsername(role);
         String randomPassword = PasswordUtil.generateRandomPassword();
         String hashedPassword = PasswordUtil.hash(randomPassword);
 
         User user = User.builder()
-                .username(email)
+                .username(generatedUsername)
                 .email(email)
                 .passwordHash(hashedPassword)
                 .fullName(fullName)
@@ -271,8 +272,17 @@ public class SuperAdminService {
         String actionType = (role == Role.admin) ? AuditActionTypes.ADMIN_CREATED : AuditActionTypes.GUARD_CREATED;
         auditLogDAO.writeAuditLog(actingUserId, actionType, "users", String.valueOf(userId), null, toJson(created), null);
 
-        resendEmailService.sendWelcomeEmail(email, fullName, randomPassword);
+        resendEmailService.sendWelcomeEmail(email, generatedUsername, fullName, randomPassword);
 
         return created;
+    }
+
+    private String generateUniqueUsername(Role role) {
+        String prefix = (role != null ? role.name().toLowerCase() : "user") + "_";
+        String username;
+        do {
+            username = prefix + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        } while (userDAO.findByUsername(username).isPresent());
+        return username;
     }
 }
