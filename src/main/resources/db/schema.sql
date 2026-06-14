@@ -925,8 +925,10 @@ COMMENT ON TABLE  system_settings             IS 'System settings and policy par
 -- ============================================================
 
 INSERT INTO system_settings (setting_key, setting_value, description) VALUES
-('max_devices_per_student', '3', 'Maximum number of active registered devices allowed per student'),
-('allow_unregistered_devices', 'false', 'Whether unapproved devices can be checked in by guards');
+('max_devices_per_student', '5', 'Maximum number of active registered devices allowed per student'),
+('allow_unregistered_devices', 'true', 'Whether unapproved devices can be checked in by guards'),
+('event_request_max_duration_days', '7', 'Maximum duration in days for an event request'),
+('auto_exit_cutoff_time', '22:00', 'Cutoff time after which checked-in devices are auto-exited');
 
 
 -- ============================================================

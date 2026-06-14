@@ -7,10 +7,14 @@ import com.pup.byod.javabyodbackend.exception.ResourceNotFoundException;
 import com.pup.byod.javabyodbackend.model.Device;
 import com.pup.byod.javabyodbackend.model.DeviceLog;
 import com.pup.byod.javabyodbackend.util.ValidationUtil;
+import com.pup.byod.javabyodbackend.dao.SystemSettingDAO;
+import com.pup.byod.javabyodbackend.model.enums.RegistrationStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +24,13 @@ public class DeviceLogService {
     private final DeviceDAO deviceRepository;
     private final DeviceLogDAO deviceLogDAO;
     private final AuditLogService auditLogService;
+    private final SystemSettingDAO systemSettingDAO;
 
-    public DeviceLogService(DeviceDAO deviceRepository, DeviceLogDAO deviceLogDAO, AuditLogService auditLogService) {
+    public DeviceLogService(DeviceDAO deviceRepository, DeviceLogDAO deviceLogDAO, AuditLogService auditLogService, SystemSettingDAO systemSettingDAO) {
         this.deviceRepository = deviceRepository;
         this.deviceLogDAO = deviceLogDAO;
         this.auditLogService = auditLogService;
+        this.systemSettingDAO = systemSettingDAO;
     }
 
     public List<DeviceLog> getLogsByDeviceId(int deviceId, int limit, int offset) {
@@ -58,24 +64,47 @@ public class DeviceLogService {
             latest.add(existing);
         }
 
+        String cutoffStr = systemSettingDAO.getValue("auto_exit_cutoff_time", "22:00");
+        LocalTime cutoff = LocalTime.parse("22:00");
+        try {
+            cutoff = LocalTime.parse(cutoffStr);
+        } catch (Exception e) {
+            // fallback
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        boolean passedCutoffToday = !now.toLocalTime().isBefore(cutoff);
+
         var campusStatuses = deviceRepository.findCampusStatus();
         for (var status : campusStatuses) {
             if (!"entry".equalsIgnoreCase(status.getCampusStatus())) {
                 continue;
             }
 
-            Device device = deviceRepository.findById(status.getDeviceId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Device not found."));
+            LocalDateTime lastEventTime = status.getLastEventTime();
+            if (lastEventTime == null) {
+                continue;
+            }
 
-            DeviceLog insertedLog = insertDeviceLog(
-                    device.getSerialNumber(),
-                    "exit",
-                    null,
-                    "automatic",
-                    true,
-                    "Automatic logout batch"
-            );
-            inserted.add(insertedLog);
+            boolean isPreviousDay = lastEventTime.toLocalDate().isBefore(now.toLocalDate());
+            boolean isTodayBeforeCutoff = lastEventTime.toLocalDate().isEqual(now.toLocalDate())
+                    && passedCutoffToday
+                    && lastEventTime.toLocalTime().isBefore(cutoff);
+
+            if (isPreviousDay || isTodayBeforeCutoff) {
+                Device device = deviceRepository.findById(status.getDeviceId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Device not found."));
+
+                DeviceLog insertedLog = insertDeviceLog(
+                        device.getSerialNumber(),
+                        "exit",
+                        null,
+                        "automatic",
+                        true,
+                        "Automatic logout batch"
+                );
+                inserted.add(insertedLog);
+            }
         }
 
         return inserted;
@@ -92,10 +121,23 @@ public class DeviceLogService {
         Device device = deviceRepository.findBySerialNumber(serialNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Device not found."));
 
-        if (device.getRegistrationStatus() == null ||
-                (!"approved".equalsIgnoreCase(device.getRegistrationStatus().name()) &&
-                 !"pending".equalsIgnoreCase(device.getRegistrationStatus().name()))) {
-            throw new BusinessRuleException("Device is not approved or pending and cannot be logged.");
+        boolean allowUnregistered = Boolean.parseBoolean(
+                systemSettingDAO.getValue("allow_unregistered_devices", "true")
+        );
+
+        if (device.getRegistrationStatus() == null) {
+            throw new BusinessRuleException("Device registration status is unknown.");
+        }
+
+        RegistrationStatus status = device.getRegistrationStatus();
+        if (allowUnregistered) {
+            if (status != RegistrationStatus.approved && status != RegistrationStatus.pending) {
+                throw new BusinessRuleException("Device is not approved or pending and cannot be logged.");
+            }
+        } else {
+            if (status != RegistrationStatus.approved) {
+                throw new BusinessRuleException("Device is not approved and cannot be logged.");
+            }
         }
 
         if (device.getDeviceStatus() != null && "inactive".equalsIgnoreCase(device.getDeviceStatus())) {

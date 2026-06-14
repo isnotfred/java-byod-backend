@@ -10,6 +10,7 @@ import com.pup.byod.javabyodbackend.model.PendingDevice;
 import com.pup.byod.javabyodbackend.model.enums.DeviceType;
 import com.pup.byod.javabyodbackend.model.enums.RegistrationStatus;
 import com.pup.byod.javabyodbackend.util.ValidationUtil;
+import com.pup.byod.javabyodbackend.dao.SystemSettingDAO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,11 +36,13 @@ public class DeviceService {
     private final DeviceDAO deviceDAO;
     private final StudentDAO studentDAO;
     private final AuditLogService auditLogService;
+    private final SystemSettingDAO systemSettingDAO;
 
-    public DeviceService(DeviceDAO deviceDAO, StudentDAO studentDAO, AuditLogService auditLogService) {
+    public DeviceService(DeviceDAO deviceDAO, StudentDAO studentDAO, AuditLogService auditLogService, SystemSettingDAO systemSettingDAO) {
         this.deviceDAO = deviceDAO;
         this.studentDAO = studentDAO;
         this.auditLogService = auditLogService;
+        this.systemSettingDAO = systemSettingDAO;
     }
 
     public List<Device> getAllDevices() {
@@ -91,6 +94,24 @@ public class DeviceService {
 
         if (studentDAO.findById(studentId).isEmpty()) {
             throw new ResourceNotFoundException("Student not found.");
+        }
+
+        // Validate max active devices per student
+        int maxDevices = 5;
+        try {
+            maxDevices = Integer.parseInt(systemSettingDAO.getValue("max_devices_per_student", "5"));
+        } catch (NumberFormatException e) {
+            // fallback
+        }
+
+        long activeCount = deviceDAO.findByStudentId(studentId).stream()
+                .filter(d -> "active".equalsIgnoreCase(d.getDeviceStatus())
+                        && (d.getRegistrationStatus() == RegistrationStatus.approved
+                        || d.getRegistrationStatus() == RegistrationStatus.pending))
+                .count();
+
+        if (activeCount >= maxDevices) {
+            throw new BusinessRuleException("Maximum active devices limit reached (limit: " + maxDevices + ").");
         }
 
         if (deviceDAO.findBySerialNumber(serialNumber).isPresent()) {
@@ -323,6 +344,26 @@ public class DeviceService {
                         parsedStatus = RegistrationStatus.fromString(registrationStatus);
                     } catch (Exception e) {
                         rowErrors.add(e.getMessage());
+                    }
+                }
+
+                // Validate max active devices per student
+                if (studentId != null && !studentId.isBlank() && studentDAO.findById(studentId.trim()).isPresent()) {
+                    int maxDevices = 5;
+                    try {
+                        maxDevices = Integer.parseInt(systemSettingDAO.getValue("max_devices_per_student", "5"));
+                    } catch (NumberFormatException e) {
+                        // fallback
+                    }
+
+                    long activeCount = deviceDAO.findByStudentId(studentId.trim()).stream()
+                            .filter(d -> "active".equalsIgnoreCase(d.getDeviceStatus())
+                                    && (d.getRegistrationStatus() == RegistrationStatus.approved
+                                    || d.getRegistrationStatus() == RegistrationStatus.pending))
+                            .count();
+
+                    if (activeCount >= maxDevices) {
+                        rowErrors.add("Maximum active devices limit reached (limit: " + maxDevices + ").");
                     }
                 }
 

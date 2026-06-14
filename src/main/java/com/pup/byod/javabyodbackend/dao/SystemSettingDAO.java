@@ -44,4 +44,8 @@ public class SystemSettingDAO {
                 .addValue("key", key);
         return jdbc.update(sql, params);
     }
+
+    public String getValue(String key, String defaultValue) {
+        return findByKey(key).map(SystemSetting::getSettingValue).orElse(defaultValue);
+    }
 }

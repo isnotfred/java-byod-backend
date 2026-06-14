@@ -4,6 +4,7 @@ import com.pup.byod.javabyodbackend.dao.SystemSettingDAO;
 import com.pup.byod.javabyodbackend.dao.UserDAO;
 import com.pup.byod.javabyodbackend.exception.ForbiddenException;
 import com.pup.byod.javabyodbackend.exception.ResourceNotFoundException;
+import com.pup.byod.javabyodbackend.exception.BusinessRuleException;
 import com.pup.byod.javabyodbackend.model.SystemSetting;
 import com.pup.byod.javabyodbackend.model.User;
 import com.pup.byod.javabyodbackend.model.enums.Role;
@@ -42,6 +43,14 @@ public class SystemSettingService {
 
         SystemSetting existing = systemSettingDAO.findByKey(key)
                 .orElseThrow(() -> new ResourceNotFoundException("Setting key '" + key + "' not found."));
+
+        if ("auto_exit_cutoff_time".equals(key)) {
+            if (!List.of("20:00", "21:00", "22:00").contains(value)) {
+                throw new BusinessRuleException(
+                        "Auto-exit cutoff time must be '20:00' (8 PM), '21:00' (9 PM), or '22:00' (10 PM)."
+                );
+            }
+        }
 
         String oldValue = existing.getSettingValue();
         systemSettingDAO.update(key, value);

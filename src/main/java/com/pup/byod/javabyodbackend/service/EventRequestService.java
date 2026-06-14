@@ -11,8 +11,11 @@ import com.pup.byod.javabyodbackend.model.ActiveEventRequest;
 import com.pup.byod.javabyodbackend.model.EventRequest;
 import com.pup.byod.javabyodbackend.model.EventRequestDevice;
 import com.pup.byod.javabyodbackend.util.ValidationUtil;
+import com.pup.byod.javabyodbackend.dao.SystemSettingDAO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.temporal.ChronoUnit;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,17 +30,20 @@ public class EventRequestService {
     private final StudentDAO studentRepository;
     private final AuditLogService auditLogService;
     private final EventDeviceLogDAO eventDeviceLogDAO;
+    private final SystemSettingDAO systemSettingDAO;
 
     public EventRequestService(EventRequestDAO eventRequestDAO,
                                EventRequestDeviceDAO eventRequestDeviceDAO,
                                StudentDAO studentRepository,
                                AuditLogService auditLogService,
-                               EventDeviceLogDAO eventDeviceLogDAO) {
+                               EventDeviceLogDAO eventDeviceLogDAO,
+                               SystemSettingDAO systemSettingDAO) {
         this.eventRequestDAO = eventRequestDAO;
         this.eventRequestDeviceDAO = eventRequestDeviceDAO;
         this.studentRepository = studentRepository;
         this.auditLogService = auditLogService;
         this.eventDeviceLogDAO = eventDeviceLogDAO;
+        this.systemSettingDAO = systemSettingDAO;
     }
 
 
@@ -259,8 +265,21 @@ public class EventRequestService {
     }
 
     private void validateDateRange(LocalDate startDate, LocalDate endDate) {
-        if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
-            throw new BusinessRuleException("End date must not be before start date.");
+        if (startDate != null && endDate != null) {
+            if (endDate.isBefore(startDate)) {
+                throw new BusinessRuleException("End date must not be before start date.");
+            }
+
+            int maxDays = 7;
+            try {
+                maxDays = Integer.parseInt(systemSettingDAO.getValue("event_request_max_duration_days", "7"));
+            } catch (NumberFormatException e) {
+                // fallback
+            }
+
+            if (ChronoUnit.DAYS.between(startDate, endDate) > maxDays) {
+                throw new BusinessRuleException("Event duration exceeds the maximum allowed limit of " + maxDays + " days.");
+            }
         }
     }
 
