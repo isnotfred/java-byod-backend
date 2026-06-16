@@ -101,5 +101,41 @@ public final class ValidationUtil {
             throw new BusinessRuleException("Email format is invalid.");
         }
     }
+
+    public static void requireValidOrganization(String org) {
+        if (org != null && !org.isBlank()) {
+            requireMaxLength(org, 255, "Organization");
+            if (!org.matches("^[\\p{L}0-9\\s\\-\\.\\'&()]+$")) {
+                throw new BusinessRuleException("Organization format is invalid.");
+            }
+        }
+    }
+
+    public static void requireValidEventName(String eventName) {
+        requireNonBlank(eventName, "Event name");
+        requireMaxLength(eventName, 255, "Event name");
+        if (!eventName.matches("^[\\p{L}0-9\\s\\-\\.\\'\\!\\:\\,\\(\\)]+$")) {
+            throw new BusinessRuleException("Event name must contain only letters, numbers, spaces, and basic punctuation (hyphens, periods, apostrophes, colons, exclamation marks, commas, parentheses).");
+        }
+    }
+
+    public static void requireValidEventPurpose(String purpose) {
+        if (purpose != null && !purpose.isBlank()) {
+            requireMaxLength(purpose, 255, "Event purpose");
+            if (!purpose.matches("^[\\p{L}0-9\\s\\-\\.\\,\\'\\(\\)]+$")) {
+                throw new BusinessRuleException("Event purpose format is invalid.");
+            }
+        }
+    }
+
+    public static void requireValidDocRef(String ref) {
+        if (ref != null && !ref.isBlank()) {
+            requireMaxLength(ref, 255, "Approval document reference");
+            if (!ref.matches("^[A-Za-z0-9\\-\\_\\.\\/\\:]+$")) {
+                throw new BusinessRuleException("Approval document reference format is invalid.");
+            }
+        }
+    }
 }
+
 

@@ -80,8 +80,22 @@ public class EventRequestService {
                                            Integer creatorUserId,
                                            List<LineItemRequest> lineItems) {
         ValidationUtil.requireNonBlank(studentId, "Student ID");
-        ValidationUtil.requireNonBlank(eventName, "Event name");
+        ValidationUtil.requireValidEventName(eventName);
         ValidationUtil.requireNonBlank(approvalDocType, "Approval document type");
+
+        if (responsiblePerson != null && !responsiblePerson.isBlank()) {
+            ValidationUtil.requireMaxLength(responsiblePerson, 255, "Responsible person");
+            ValidationUtil.requireValidName(responsiblePerson, "Responsible person");
+        }
+        if (organization != null && !organization.isBlank()) {
+            ValidationUtil.requireValidOrganization(organization);
+        }
+        if (eventPurpose != null && !eventPurpose.isBlank()) {
+            ValidationUtil.requireValidEventPurpose(eventPurpose);
+        }
+        if (approvalDocRef != null && !approvalDocRef.isBlank()) {
+            ValidationUtil.requireValidDocRef(approvalDocRef);
+        }
 
         if (studentRepository.findById(studentId).isEmpty()) {
             throw new ResourceNotFoundException("Student not found.");
