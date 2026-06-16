@@ -90,12 +90,12 @@ public class AuthService {
 
         var userOpt = userDAO.findByUsernameOrEmail(email);
         if (userOpt.isEmpty()) {
-            return;
+            throw new BusinessRuleException("Email not found.");
         }
 
         User user = userOpt.get();
         if ("inactive".equalsIgnoreCase(user.getStatus())) {
-            return;
+            throw new BusinessRuleException("Account is inactive.");
         }
 
         String token = UUID.randomUUID().toString();
