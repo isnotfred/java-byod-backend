@@ -88,9 +88,15 @@ public class DeviceService {
                                 String remarks,
                                 String imagePath) {
         ValidationUtil.requireNonBlank(studentId, "Student ID");
-        ValidationUtil.requireValidSerialNumber(serialNumber);
         ValidationUtil.requireNonBlank(deviceType, "Device type");
         ValidationUtil.requireNonBlank(devicePurpose, "Device purpose");
+
+        DeviceType parsedType = DeviceType.fromString(deviceType);
+        if (parsedType != DeviceType.PROJECT_PROTOTYPES) {
+            ValidationUtil.requireValidSerialNumber(serialNumber);
+        } else if (serialNumber != null && !serialNumber.isBlank()) {
+            ValidationUtil.requireValidSerialNumber(serialNumber);
+        }
 
         if (studentDAO.findById(studentId).isEmpty()) {
             throw new ResourceNotFoundException("Student not found.");
@@ -118,7 +124,6 @@ public class DeviceService {
             throw new BusinessRuleException("Serial number already exists.");
         }
 
-        DeviceType parsedType = DeviceType.fromString(deviceType);
         RegistrationStatus parsedStatus = registrationStatus == null
                 ? RegistrationStatus.pending
                 : RegistrationStatus.fromString(registrationStatus);
@@ -311,22 +316,30 @@ public class DeviceService {
                     rowErrors.add("device_name is required.");
                 }
 
-                if (serialNumber == null || serialNumber.isBlank()) {
-                    rowErrors.add("serial_number is required.");
-                } else {
-                    try {
-                        ValidationUtil.requireValidSerialNumber(serialNumber);
-                    } catch (Exception e) {
-                        rowErrors.add(e.getMessage());
-                    }
-                }
-
                 DeviceType parsedType = null;
                 if (deviceType == null || deviceType.isBlank()) {
                     rowErrors.add("device_type is required.");
                 } else {
                     try {
                         parsedType = DeviceType.fromString(deviceType);
+                    } catch (Exception e) {
+                        rowErrors.add(e.getMessage());
+                    }
+                }
+
+                if (parsedType != DeviceType.PROJECT_PROTOTYPES) {
+                    if (serialNumber == null || serialNumber.isBlank()) {
+                        rowErrors.add("serial_number is required.");
+                    } else {
+                        try {
+                            ValidationUtil.requireValidSerialNumber(serialNumber);
+                        } catch (Exception e) {
+                            rowErrors.add(e.getMessage());
+                        }
+                    }
+                } else if (serialNumber != null && !serialNumber.isBlank()) {
+                    try {
+                        ValidationUtil.requireValidSerialNumber(serialNumber);
                     } catch (Exception e) {
                         rowErrors.add(e.getMessage());
                     }

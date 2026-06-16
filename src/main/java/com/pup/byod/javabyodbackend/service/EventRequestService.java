@@ -134,7 +134,9 @@ public class EventRequestService {
                 throw new BusinessRuleException("Quantity must be greater than zero.");
             }
 
-            if (lineItem.serialNumber != null && !lineItem.serialNumber.isBlank()) {
+            if (!"Project Prototypes (Optional SN)".equals(lineItem.deviceType)) {
+                ValidationUtil.requireValidSerialNumber(lineItem.serialNumber);
+            } else if (lineItem.serialNumber != null && !lineItem.serialNumber.isBlank()) {
                 ValidationUtil.requireValidSerialNumber(lineItem.serialNumber);
             }
 

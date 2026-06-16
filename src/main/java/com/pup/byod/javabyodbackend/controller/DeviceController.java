@@ -73,9 +73,13 @@ public class DeviceController {
         ValidationUtil.requireNonBlank(request.deviceName, "Device name");
         ValidationUtil.requireNonBlank(request.deviceType, "Device type");
         ValidationUtil.requireNonBlank(request.devicePurpose, "Device purpose");
-        ValidationUtil.requireValidSerialNumber(request.serialNumber);
 
-        DeviceType.fromString(request.deviceType);
+        DeviceType parsedType = DeviceType.fromString(request.deviceType);
+        if (parsedType != DeviceType.PROJECT_PROTOTYPES) {
+            ValidationUtil.requireValidSerialNumber(request.serialNumber);
+        } else if (request.serialNumber != null && !request.serialNumber.isBlank()) {
+            ValidationUtil.requireValidSerialNumber(request.serialNumber);
+        }
 
         Device created = deviceService.registerDevice(
                 request.studentId,

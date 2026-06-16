@@ -51,7 +51,7 @@ CREATE TABLE devices (
     device_name         VARCHAR(255),
     brand               VARCHAR(100),
     model               VARCHAR(100),
-    serial_number       VARCHAR(255)    NOT NULL UNIQUE,
+    serial_number       VARCHAR(255)    UNIQUE,
     device_type         VARCHAR(50),
     device_purpose      VARCHAR(100),
     registration_status VARCHAR(10)     NOT NULL DEFAULT 'pending',
