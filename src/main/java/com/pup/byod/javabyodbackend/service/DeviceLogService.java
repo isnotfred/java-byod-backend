@@ -132,11 +132,15 @@ public class DeviceLogService {
         RegistrationStatus status = device.getRegistrationStatus();
         if (allowUnregistered) {
             if (status != RegistrationStatus.approved && status != RegistrationStatus.pending) {
-                throw new BusinessRuleException("Device is not approved or pending and cannot be logged.");
+                if (!("exit".equalsIgnoreCase(eventType) && status == RegistrationStatus.rejected)) {
+                    throw new BusinessRuleException("Device is not approved or pending and cannot be logged.");
+                }
             }
         } else {
             if (status != RegistrationStatus.approved) {
-                throw new BusinessRuleException("Device is not approved and cannot be logged.");
+                if (!("exit".equalsIgnoreCase(eventType) && status == RegistrationStatus.rejected)) {
+                    throw new BusinessRuleException("Device is not approved and cannot be logged.");
+                }
             }
         }
 

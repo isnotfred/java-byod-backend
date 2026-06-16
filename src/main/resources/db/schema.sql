@@ -529,7 +529,7 @@ INTO   v_reg_status, v_dev_status
 FROM   devices
 WHERE  device_id = NEW.device_id;
 
-IF v_reg_status NOT IN ('approved', 'pending') THEN
+IF v_reg_status NOT IN ('approved', 'pending') AND NOT (v_reg_status = 'rejected' AND NEW.event_type = 'exit') THEN
         RAISE EXCEPTION
             'Device % is not approved or pending (status: ''%''). Cannot log entry/exit.',
             NEW.device_id, v_reg_status;
@@ -785,8 +785,11 @@ FROM devices d
     ORDER  BY event_time DESC
         LIMIT  1
     ) last_log ON TRUE
-WHERE d.registration_status IN ('approved', 'pending')
-  AND d.device_status       = 'active';
+WHERE d.device_status = 'active'
+  AND (
+    d.registration_status IN ('approved', 'pending')
+    OR (d.registration_status = 'rejected' AND last_log.event_type = 'entry')
+  );
 
 
 -- Current campus status per event request device.
