@@ -556,6 +556,27 @@ Deactivates a device registration (soft-delete).
   }
   ```
 
+#### `POST /api/v1/devices/import`
+Bulk imports devices from a CSV file.
+- **Request format:** `multipart/form-data`
+- **File parameter:** `file` (MultipartFile)
+- **Response Body (`200 OK`):**
+  ```json
+  {
+    "inserted": 120,
+    "skipped": 3,
+    "errors": [
+      {
+        "row": 15,
+        "serialNumber": "SN-XYZ-123",
+        "reasons": [
+          "Serial number already exists."
+        ]
+      }
+    ]
+  }
+  ```
+
 ---
 
 ### 2.5 Event Request Lifecycle (`/api/v1/event-requests`)
@@ -785,6 +806,71 @@ Verifies a single device under an event request, updates status when scanned.
     "verifiedBy": 1,
     "verifiedAt": "2026-06-15T08:00:00"
   }
+  ```
+
+#### `GET /api/v1/event-requests/guard`
+Retrieves active event requests filtered for guard view.
+- **Response Body (`200 OK`):**
+  ```json
+  [
+    {
+      "eventRequestId": 1,
+      "studentId": "2021-10023",
+      "studentName": "Juan Dela Cruz",
+      "eventName": "Tech Fair 2026",
+      "organization": "Acm Student Chapter",
+      "startDate": "2026-06-15",
+      "endDate": "2026-06-17",
+      "status": "approved",
+      "deviceCount": 3
+    }
+  ]
+  ```
+
+#### `POST /api/v1/event-requests/devices/log-entry`
+Logs campus entry for one or more event request devices.
+- **Request Body:**
+  ```json
+  {
+    "deviceIds": [5, 6],
+    "guardId": 1
+  }
+  ```
+- **Response Body (`200 OK`):** Empty response.
+
+#### `POST /api/v1/event-requests/devices/log-exit`
+Logs campus exit for one or more event request devices.
+- **Request Body:**
+  ```json
+  {
+    "deviceIds": [5, 6],
+    "guardId": 1
+  }
+  ```
+- **Response Body (`200 OK`):** Empty response.
+
+#### `GET /api/v1/event-requests/devices/reconciliation-report`
+Retrieves all event request devices and their statuses for reconciliation reports.
+- **Response Body (`200 OK`):**
+  ```json
+  [
+    {
+      "eventDeviceId": 5,
+      "eventRequestId": 1,
+      "deviceName": "Project Prototype Unit 1",
+      "brand": "Custom Build",
+      "model": "RPi4-A1",
+      "deviceType": "Project Prototypes (Optional SN)",
+      "serialNumber": "SN-CUSTOM-PROT-1",
+      "quantity": 1,
+      "verifiedBy": 1,
+      "verifiedAt": "2026-06-15T08:00:00",
+      "deviceStatus": "approved",
+      "remarks": "Hardware prototype verified at entrance",
+      "createdAt": "2026-06-09T11:15:00",
+      "updatedAt": "2026-06-15T08:00:00"
+    }
+  ]
   ```
 
 ---

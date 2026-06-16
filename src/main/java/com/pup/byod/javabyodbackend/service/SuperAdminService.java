@@ -66,7 +66,7 @@ public class SuperAdminService {
         requireSuperAdmin(actingUserId);
         ValidationUtil.requireValidUsername(username);
         ValidationUtil.requireValidPassword(password);
-        ValidationUtil.requireNonBlank(fullName, "Full name");
+        ValidationUtil.requireValidName(fullName, "Full name");
 
         if (userDAO.findByUsername(username).isPresent()) {
             throw new BusinessRuleException("Username already exists.");
@@ -93,7 +93,7 @@ public class SuperAdminService {
         requireSuperAdmin(actingUserId);
         ValidationUtil.requireValidUsername(username);
         ValidationUtil.requireValidPassword(password);
-        ValidationUtil.requireNonBlank(fullName, "Full name");
+        ValidationUtil.requireValidName(fullName, "Full name");
 
         if (userDAO.findByUsername(username).isPresent()) {
             throw new BusinessRuleException("Username already exists.");
@@ -121,7 +121,7 @@ public class SuperAdminService {
         User existing = userDAO.findById(targetUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("User to update not found."));
 
-        ValidationUtil.requireNonBlank(fullName, "Full name");
+        ValidationUtil.requireValidName(fullName, "Full name");
         ValidationUtil.requireNonBlank(status, "Status");
 
         String oldPayload = toJson(existing);
@@ -235,13 +235,9 @@ public class SuperAdminService {
     @Transactional
     public User createUserAccount(int actingUserId, String fullName, String email, String roleStr) {
         requireSuperAdmin(actingUserId);
-        ValidationUtil.requireNonBlank(fullName, "Full name");
-        ValidationUtil.requireNonBlank(email, "Email");
+        ValidationUtil.requireValidName(fullName, "Full name");
+        ValidationUtil.requireValidEmail(email);
         ValidationUtil.requireNonBlank(roleStr, "Role");
-
-        if (!email.contains("@") || !email.contains(".")) {
-            throw new BusinessRuleException("Email format is invalid.");
-        }
 
         Role role = Role.fromString(roleStr);
         if (role == Role.super_admin) {

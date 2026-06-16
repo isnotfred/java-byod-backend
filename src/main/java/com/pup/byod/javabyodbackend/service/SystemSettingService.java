@@ -52,6 +52,35 @@ public class SystemSettingService {
             }
         }
 
+        if ("max_devices_per_student".equals(key)) {
+            try {
+                int limit = Integer.parseInt(value);
+                if (limit < 1 || limit > 20) {
+                    throw new BusinessRuleException("Maximum devices per student must be between 1 and 20.");
+                }
+            } catch (NumberFormatException e) {
+                throw new BusinessRuleException("Maximum devices per student must be a valid integer.");
+            }
+        }
+
+        if ("allow_unregistered_devices".equals(key)) {
+            if (!"true".equalsIgnoreCase(value) && !"false".equalsIgnoreCase(value)) {
+                throw new BusinessRuleException("Allow unregistered devices setting must be 'true' or 'false'.");
+            }
+        }
+
+        if ("event_request_max_duration_days".equals(key)) {
+            try {
+                int days = Integer.parseInt(value);
+                if (days < 1 || days > 30) {
+                    throw new BusinessRuleException("Maximum event duration days must be between 1 and 30.");
+                }
+            } catch (NumberFormatException e) {
+                throw new BusinessRuleException("Maximum event duration days must be a valid integer.");
+            }
+        }
+
+
         String oldValue = existing.getSettingValue();
         systemSettingDAO.update(key, value);
 

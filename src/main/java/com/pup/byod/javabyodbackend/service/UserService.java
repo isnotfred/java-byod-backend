@@ -53,10 +53,7 @@ public class UserService {
     }
 
     public User updateProfileUsername(int userId, String newUsername) {
-        ValidationUtil.requireNonBlank(newUsername, "Username");
-        if (newUsername.trim().length() < 3) {
-            throw new BusinessRuleException("Username must be at least 3 characters.");
-        }
+        ValidationUtil.requireValidUsername(newUsername);
         
         User existing = getUserById(userId);
         String trimmed = newUsername.trim();

@@ -115,6 +115,29 @@ public class EventRequestService {
         int eventRequestId = eventRequestDAO.insert(request);
 
         for (LineItemRequest lineItem : lineItems) {
+            ValidationUtil.requireNonBlank(lineItem.deviceName, "Device name");
+            ValidationUtil.requireNonBlank(lineItem.deviceType, "Device type");
+
+            List<String> allowedTypes = List.of(
+                "Personal Computers",
+                "Components & Peripherals",
+                "Display & Projection",
+                "Project Prototypes (Optional SN)",
+                "Appliances (TLE)",
+                "Other"
+            );
+            if (!allowedTypes.contains(lineItem.deviceType)) {
+                throw new BusinessRuleException("Device type must be one of: " + allowedTypes);
+            }
+
+            if (lineItem.quantity != null && lineItem.quantity <= 0) {
+                throw new BusinessRuleException("Quantity must be greater than zero.");
+            }
+
+            if (lineItem.serialNumber != null && !lineItem.serialNumber.isBlank()) {
+                ValidationUtil.requireValidSerialNumber(lineItem.serialNumber);
+            }
+
             EventRequestDevice device = EventRequestDevice.builder()
                     .eventRequestId(eventRequestId)
                     .deviceName(lineItem.deviceName)
@@ -265,6 +288,16 @@ public class EventRequestService {
     }
 
     private void validateDateRange(LocalDate startDate, LocalDate endDate) {
+        LocalDate today = LocalDate.now();
+
+        if (startDate != null && startDate.isBefore(today)) {
+            throw new BusinessRuleException("Start date cannot be in the past.");
+        }
+
+        if (endDate != null && endDate.isBefore(today)) {
+            throw new BusinessRuleException("End date cannot be in the past.");
+        }
+
         if (startDate != null && endDate != null) {
             if (endDate.isBefore(startDate)) {
                 throw new BusinessRuleException("End date must not be before start date.");

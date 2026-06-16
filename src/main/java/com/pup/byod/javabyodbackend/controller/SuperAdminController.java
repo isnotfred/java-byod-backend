@@ -27,7 +27,7 @@ public class SuperAdminController {
         ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
         ValidationUtil.requireNonBlank(request.username, "Username");
         ValidationUtil.requireNonBlank(request.password, "Password");
-        ValidationUtil.requireNonBlank(request.fullName, "Full name");
+        ValidationUtil.requireValidName(request.fullName, "Full name");
 
         User created = superAdminService.createAdminAccount(
                 request.actingUserId,
@@ -44,7 +44,7 @@ public class SuperAdminController {
         ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
         ValidationUtil.requireNonBlank(request.username, "Username");
         ValidationUtil.requireNonBlank(request.password, "Password");
-        ValidationUtil.requireNonBlank(request.fullName, "Full name");
+        ValidationUtil.requireValidName(request.fullName, "Full name");
 
         User created = superAdminService.createGuardAccount(
                 request.actingUserId,
@@ -59,8 +59,8 @@ public class SuperAdminController {
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequest request) {
         ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
-        ValidationUtil.requireNonBlank(request.fullName, "Full name");
-        ValidationUtil.requireNonBlank(request.email, "Email");
+        ValidationUtil.requireValidName(request.fullName, "Full name");
+        ValidationUtil.requireValidEmail(request.email);
         ValidationUtil.requireNonBlank(request.role, "Role");
 
         User created = superAdminService.createUserAccount(
@@ -76,7 +76,7 @@ public class SuperAdminController {
     @PutMapping("/users/{userId}")
     public User updateAccount(@PathVariable int userId, @RequestBody UpdateAccountRequest request) {
         ValidationUtil.requireNonNull(request.actingUserId, "actingUserId");
-        ValidationUtil.requireNonBlank(request.fullName, "Full name");
+        ValidationUtil.requireValidName(request.fullName, "Full name");
         ValidationUtil.requireNonBlank(request.status, "Status");
 
         User updated = superAdminService.updateAccount(

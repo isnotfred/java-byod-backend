@@ -81,4 +81,25 @@ public final class ValidationUtil {
             throw new BusinessRuleException("Serial number must not contain whitespace.");
         }
     }
+
+    /**
+     * Validates a name: allows only letters (Unicode), spaces, hyphens, periods, and apostrophes.
+     */
+    public static void requireValidName(String name, String fieldName) {
+        requireNonBlank(name, fieldName);
+        if (!name.matches("^[\\p{L}\\s\\-\\.\\']+$")) {
+            throw new BusinessRuleException(fieldName + " must contain only letters and name-appropriate symbols (spaces, hyphens, periods, apostrophes).");
+        }
+    }
+
+    /**
+     * Validates email format.
+     */
+    public static void requireValidEmail(String email) {
+        requireNonBlank(email, "Email");
+        if (!email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            throw new BusinessRuleException("Email format is invalid.");
+        }
+    }
 }
+

@@ -45,7 +45,7 @@ public class DeviceLogController {
 
     @PostMapping("/entry")
     public ResponseEntity<DeviceLog> logEntry(@RequestBody GateScanRequest request) {
-        ValidationUtil.requireNonBlank(request.serialNumber, "Serial number");
+        ValidationUtil.requireValidSerialNumber(request.serialNumber);
         ValidationUtil.requireNonNull(request.handledBy, "Handled by");
 
         DeviceLog log = deviceLogService.logEntry(request.serialNumber, request.handledBy, request.notes);
@@ -54,7 +54,7 @@ public class DeviceLogController {
 
     @PostMapping("/exit")
     public ResponseEntity<DeviceLog> logExit(@RequestBody GateScanRequest request) {
-        ValidationUtil.requireNonBlank(request.serialNumber, "Serial number");
+        ValidationUtil.requireValidSerialNumber(request.serialNumber);
         ValidationUtil.requireNonNull(request.handledBy, "Handled by");
 
         DeviceLog log = deviceLogService.logExit(request.serialNumber, request.handledBy, request.notes);

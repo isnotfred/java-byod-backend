@@ -49,8 +49,8 @@ public class StudentService {
     @Transactional
     public Student createStudent(String studentId, String firstName, String lastName, String courseYearLevel) {
         ValidationUtil.requireValidStudentId(studentId);
-        ValidationUtil.requireNonBlank(firstName, "First name");
-        ValidationUtil.requireNonBlank(lastName, "Last name");
+        ValidationUtil.requireValidName(firstName, "First name");
+        ValidationUtil.requireValidName(lastName, "Last name");
 
         if (studentRepository.findById(studentId).isPresent()) {
             throw new BusinessRuleException("Student ID already exists.");
@@ -73,8 +73,8 @@ public class StudentService {
     @Transactional
     public Student updateStudent(String studentId, String firstName, String lastName, String courseYearLevel, String status) {
         Student existing = getStudentById(studentId);
-        ValidationUtil.requireNonBlank(firstName, "First name");
-        ValidationUtil.requireNonBlank(lastName, "Last name");
+        ValidationUtil.requireValidName(firstName, "First name");
+        ValidationUtil.requireValidName(lastName, "Last name");
         ValidationUtil.requireNonBlank(status, "Status");
 
         Student updated = Student.builder()
@@ -144,11 +144,15 @@ public class StudentService {
                 if (studentId == null || studentId.isBlank()) {
                     rowErrors.add("student_id is required.");
                 }
-                if (firstName == null || firstName.isBlank()) {
-                    rowErrors.add("first_name is required.");
+                try {
+                    ValidationUtil.requireValidName(firstName, "first_name");
+                } catch (Exception e) {
+                    rowErrors.add(e.getMessage());
                 }
-                if (lastName == null || lastName.isBlank()) {
-                    rowErrors.add("last_name is required.");
+                try {
+                    ValidationUtil.requireValidName(lastName, "last_name");
+                } catch (Exception e) {
+                    rowErrors.add(e.getMessage());
                 }
 
                 if (!rowErrors.isEmpty()) {

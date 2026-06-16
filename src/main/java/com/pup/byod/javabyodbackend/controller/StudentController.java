@@ -47,8 +47,8 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody CreateStudentRequest request) {
         ValidationUtil.requireValidStudentId(request.studentId);
-        ValidationUtil.requireNonBlank(request.firstName, "First name");
-        ValidationUtil.requireNonBlank(request.lastName, "Last name");
+        ValidationUtil.requireValidName(request.firstName, "First name");
+        ValidationUtil.requireValidName(request.lastName, "Last name");
 
         Student created = studentService.createStudent(
                 request.studentId,
@@ -61,8 +61,8 @@ public class StudentController {
 
     @PutMapping("/{studentId}")
     public Student updateStudent(@PathVariable String studentId, @RequestBody UpdateStudentRequest request) {
-        ValidationUtil.requireNonBlank(request.firstName, "First name");
-        ValidationUtil.requireNonBlank(request.lastName, "Last name");
+        ValidationUtil.requireValidName(request.firstName, "First name");
+        ValidationUtil.requireValidName(request.lastName, "Last name");
         ValidationUtil.requireNonBlank(request.status, "Status");
 
         return studentService.updateStudent(
