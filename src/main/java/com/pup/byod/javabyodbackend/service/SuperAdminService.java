@@ -124,6 +124,10 @@ public class SuperAdminService {
         ValidationUtil.requireValidName(fullName, "Full name");
         ValidationUtil.requireNonBlank(status, "Status");
 
+        if (existing.getRole() == Role.super_admin && !"active".equalsIgnoreCase(status)) {
+            throw new BusinessRuleException("Super admin accounts cannot be deactivated.");
+        }
+
         String oldPayload = toJson(existing);
 
         User updated = User.builder()
