@@ -40,129 +40,111 @@ CREATE TABLE students (
 );
 
 
--- ── devices ──────────────────────────────────────────────────
--- Permanent BYOD registered devices.
--- Whether a device is currently inside/outside campus is
--- derived from device_logs — not stored here.
+-- ── requests ─────────────────────────────────────────────────
+-- Unified header for individual (normal) and group (event) device requests.
+-- Consolidates old event requests and permanent device bypass registrations.
 
-CREATE TABLE devices (
-    device_id           SERIAL          PRIMARY KEY,
-    student_id          VARCHAR(50)     NOT NULL,
-    device_name         VARCHAR(255),
-    brand               VARCHAR(100),
-    model               VARCHAR(100),
-    serial_number       VARCHAR(255)    UNIQUE,
-    device_type         VARCHAR(50),
-    device_purpose      VARCHAR(100),
-    registration_status VARCHAR(10)     NOT NULL DEFAULT 'pending',
-    device_status       VARCHAR(10)     NOT NULL DEFAULT 'active',
-    reviewed_by         INT,
-    reviewed_at         TIMESTAMPTZ,
-    remarks             TEXT,
-    image_path          VARCHAR(500),
-    created_at          TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at          TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
+CREATE TABLE requests (
+    request_id            SERIAL          PRIMARY KEY,
+    request_type          VARCHAR(20)     NOT NULL, -- 'normal', 'event'
+    student_id            VARCHAR(50)     NOT NULL,
+    
+    -- Event-specific fields (nullable for normal requests)
+    event_name            VARCHAR(255),
+    organization          VARCHAR(255),
+    responsible_person    VARCHAR(255),
+    approval_doc_type     VARCHAR(20),
+    approval_doc_ref      VARCHAR(255),
+    
+    -- Purpose (applies to both, e.g., 'Academic BYOD' or 'Event Participation')
+    purpose               VARCHAR(255)    NOT NULL,
+    
+    -- Range date and times
+    start_date            DATE            NOT NULL,
+    end_date              DATE            NOT NULL,
+    expected_ingress_time TIME            NOT NULL,
+    expected_egress_time  TIME            NOT NULL,
+    
+    -- Status and review
+    status                VARCHAR(20)     NOT NULL DEFAULT 'pending', -- 'pending', 'approved', 'rejected', 'returned'
+    is_submitted          BOOLEAN         NOT NULL DEFAULT FALSE,
+    is_accommodated       BOOLEAN         NOT NULL DEFAULT FALSE,
+    reviewed_by           INT,
+    reviewed_at           TIMESTAMPTZ,
+    remarks               TEXT,
+    
+    created_at            TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at            TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
     FOREIGN KEY (student_id)  REFERENCES students (student_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (reviewed_by) REFERENCES users    (user_id)    ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 
--- ── event_requests ───────────────────────────────────────────
--- Header for a temporary device access request
--- (school events, org activities, etc.).
+-- ── request_devices ──────────────────────────────────────────
+-- Individual devices attached to a request.
+-- Replaces old devices and event_request_devices tables.
 
-CREATE TABLE event_requests (
-    event_request_id  SERIAL          PRIMARY KEY,
-    student_id        VARCHAR(50)     NOT NULL,
-    responsible_person VARCHAR(255),
-    organization      VARCHAR(255),
-    event_name        VARCHAR(255)    NOT NULL,
-    event_purpose     VARCHAR(255),
-    approval_doc_type VARCHAR(20),
-    approval_doc_ref  VARCHAR(255),
-    start_date        DATE,
-    end_date          DATE,
-    status            VARCHAR(10)     NOT NULL DEFAULT 'pending',
-    is_submitted      BOOLEAN         NOT NULL DEFAULT FALSE,
-    is_accommodated   BOOLEAN         NOT NULL DEFAULT FALSE,
-    reviewed_by       INT,
-    reviewed_at       TIMESTAMPTZ,
-    remarks           TEXT,
-    created_at        TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at        TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (student_id)  REFERENCES students (student_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (reviewed_by) REFERENCES users    (user_id)    ON DELETE RESTRICT ON UPDATE CASCADE
+CREATE TABLE request_devices (
+    request_device_id     SERIAL          PRIMARY KEY,
+    request_id            INT             NOT NULL,
+    device_name           VARCHAR(255)    NOT NULL,
+    brand                 VARCHAR(100),
+    model                 VARCHAR(100),
+    device_type           VARCHAR(50)     NOT NULL,
+    serial_number         VARCHAR(255)    NOT NULL,
+    quantity              INT             NOT NULL DEFAULT 1,
+    image_path            VARCHAR(500), -- For normal requests to show photo of the device
+    
+    -- Verification status per device (guards or admins can verify)
+    device_status         VARCHAR(20)     NOT NULL DEFAULT 'pending', -- 'pending', 'approved', 'rejected'
+    verified_by           INT,
+    verified_at           TIMESTAMPTZ,
+    remarks               TEXT,
+    
+    created_at            TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at            TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (request_id)  REFERENCES requests (request_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (verified_by) REFERENCES users    (user_id)    ON DELETE RESTRICT ON UPDATE CASCADE,
+    
+    -- Prevent duplicate serial numbers within the SAME request, but allow serial reuse across requests over time
+    UNIQUE (request_id, serial_number)
 );
 
 
--- ── event_request_devices ────────────────────────────────────
--- Individual devices listed under an event request.
+-- ── device_transactions ──────────────────────────────────────
+-- Daily ingress/egress transactions per device.
+-- Replaces old device_logs and event_device_logs tables.
+-- Rows are updated only to log egress_time or to mark no_egress_marked.
 
-CREATE TABLE event_request_devices (
-    event_device_id  SERIAL         PRIMARY KEY,
-    event_request_id INT            NOT NULL,
-    device_name      VARCHAR(255),
-    brand            VARCHAR(100),
-    model            VARCHAR(100),
-    device_type      VARCHAR(50),
-    serial_number    VARCHAR(255),
-    quantity         INT            NOT NULL DEFAULT 1,
-    verified_by      INT,
-    verified_at      TIMESTAMPTZ,
-    device_status    VARCHAR(10)    NOT NULL DEFAULT 'pending',
-    remarks          TEXT,
-    created_at       TIMESTAMPTZ    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at       TIMESTAMPTZ    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    UNIQUE (event_request_id, serial_number),
-
-    FOREIGN KEY (event_request_id) REFERENCES event_requests (event_request_id) ON DELETE CASCADE  ON UPDATE CASCADE,
-    FOREIGN KEY (verified_by)      REFERENCES users           (user_id)          ON DELETE RESTRICT ON UPDATE CASCADE
+CREATE TABLE device_transactions (
+    transaction_id        SERIAL          PRIMARY KEY,
+    request_device_id     INT             NOT NULL,
+    log_date              DATE            NOT NULL,
+    
+    -- Ingress details
+    ingress_time          TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ingress_handled_by    INT             NOT NULL,
+    
+    -- Egress details (nullable until egress occurs)
+    egress_time           TIMESTAMPTZ,
+    egress_handled_by     INT,
+    
+    -- Missed egress marker (Requirement 7)
+    no_egress_marked      BOOLEAN         NOT NULL DEFAULT FALSE,
+    
+    notes                 TEXT,
+    created_at            TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at            TIMESTAMPTZ     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (request_device_id) REFERENCES request_devices (request_device_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (ingress_handled_by) REFERENCES users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (egress_handled_by)  REFERENCES users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    
+    -- Enforce Requirement 6: Max 1 ingress/egress transaction per device per day
+    CONSTRAINT uq_device_transactions_date UNIQUE (request_device_id, log_date)
 );
-
-
--- ── device_logs ──────────────────────────────────────────────
--- Immutable gate event log. One row per entry or exit scan.
--- Rows are never updated or deleted (enforced by trigger).
-
-CREATE TABLE device_logs (
-    log_id       SERIAL         PRIMARY KEY,
-    device_id    INT            NOT NULL,
-    student_id   VARCHAR(50)    NOT NULL,
-    event_type   VARCHAR(10)    NOT NULL,
-    event_time   TIMESTAMPTZ    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    handled_by   INT,
-    logout_type  VARCHAR(10),
-    auto_exit    BOOLEAN        NOT NULL DEFAULT FALSE,
-    notes        TEXT,
-    created_at   TIMESTAMPTZ    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (device_id)  REFERENCES devices  (device_id)  ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (student_id) REFERENCES students (student_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (handled_by) REFERENCES users    (user_id)    ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
-
--- ── event_device_logs ─────────────────────────────────────────
--- Per-day entry/exit logging for event request devices.
-
-CREATE TABLE event_device_logs (
-    event_log_id    SERIAL       PRIMARY KEY,
-    event_device_id INT          NOT NULL,
-    event_type      VARCHAR(10)  NOT NULL,
-    event_time      TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    handled_by      INT,
-    notes           TEXT,
-    created_at      TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (event_device_id) REFERENCES event_request_devices (event_device_id) ON DELETE CASCADE  ON UPDATE CASCADE,
-    FOREIGN KEY (handled_by)      REFERENCES users           (user_id)                          ON DELETE RESTRICT ON UPDATE CASCADE,
-
-    CONSTRAINT chk_event_device_logs_event_type CHECK (event_type IN ('entry', 'exit'))
-);
-
 
 
 -- ── audit_logs ───────────────────────────────────────────────
@@ -196,53 +178,35 @@ CREATE TABLE system_settings (
 );
 
 
-
-
-
 -- ============================================================
 -- SECTION 2: INDEXES
 -- ============================================================
 
 -- students
-CREATE INDEX idx_students_name   ON students (last_name, first_name);
-CREATE INDEX idx_students_status ON students (status);
+CREATE INDEX idx_students_name             ON students (last_name, first_name);
+CREATE INDEX idx_students_status           ON students (status);
 
--- devices
-CREATE INDEX idx_devices_student            ON devices (student_id);
-CREATE INDEX idx_devices_serial             ON devices (serial_number);
-CREATE INDEX idx_devices_registration       ON devices (registration_status);
-CREATE INDEX idx_devices_student_status     ON devices (student_id, registration_status, device_status);
--- Partial index: admin approval queue (only indexes pending rows)
-CREATE INDEX idx_devices_pending_queue      ON devices (created_at DESC)
-    WHERE registration_status = 'pending';
+-- requests
+CREATE INDEX idx_requests_student          ON requests (student_id);
+CREATE INDEX idx_requests_status           ON requests (status);
+CREATE INDEX idx_requests_dates            ON requests (start_date, end_date);
+CREATE INDEX idx_requests_type             ON requests (request_type);
 
--- event_requests
-CREATE INDEX idx_event_requests_student     ON event_requests (student_id);
-CREATE INDEX idx_event_requests_status      ON event_requests (status);
-CREATE INDEX idx_event_requests_dates       ON event_requests (start_date, end_date);
+-- request_devices
+CREATE INDEX idx_request_devices_req       ON request_devices (request_id);
+CREATE INDEX idx_request_devices_serial    ON request_devices (serial_number);
+CREATE INDEX idx_request_devices_status    ON request_devices (device_status);
 
--- event_request_devices
-CREATE INDEX idx_event_request_devices_req  ON event_request_devices (event_request_id);
-
--- device_logs
--- Hottest query: last event per device (runs on every gate scan)
-CREATE INDEX idx_device_logs_last_event     ON device_logs (device_id, event_time DESC) INCLUDE (event_type);
-CREATE INDEX idx_device_logs_student        ON device_logs (student_id);
-CREATE INDEX idx_device_logs_event_type     ON device_logs (event_type);
--- Nightly auto-exit batch: find all devices still inside
-CREATE INDEX idx_device_logs_open_entries   ON device_logs (event_type, event_time DESC)
-    INCLUDE (device_id, student_id)
-    WHERE event_type = 'entry';
-
--- event_device_logs
-CREATE INDEX idx_event_device_logs_last_event
-    ON event_device_logs (event_device_id, event_time DESC) INCLUDE (event_type);
-
+-- device_transactions
+CREATE INDEX idx_device_transactions_dev   ON device_transactions (request_device_id);
+CREATE INDEX idx_device_transactions_date  ON device_transactions (log_date);
+CREATE INDEX idx_device_transactions_state ON device_transactions (request_device_id, log_date, egress_time) 
+    WHERE egress_time IS NULL AND no_egress_marked = FALSE;
 
 -- audit_logs
-CREATE INDEX idx_audit_logs_user_time       ON audit_logs (user_id, created_at DESC);
-CREATE INDEX idx_audit_logs_target          ON audit_logs (target_table, target_id);
-CREATE INDEX idx_audit_logs_created_at      ON audit_logs (created_at DESC);
+CREATE INDEX idx_audit_logs_user_time      ON audit_logs (user_id, created_at DESC);
+CREATE INDEX idx_audit_logs_target         ON audit_logs (target_table, target_id);
+CREATE INDEX idx_audit_logs_created_at     ON audit_logs (created_at DESC);
 
 
 -- ============================================================
@@ -275,57 +239,18 @@ ALTER TABLE students
         CHECK (char_length(trim(last_name)) > 0);
 
 
--- ── devices ──────────────────────────────────────────────────
-ALTER TABLE devices
-    ADD CONSTRAINT chk_devices_type
-        CHECK (device_type IN (
-            'Personal Computers',
-            'Components & Peripherals',
-            'Display & Projection',
-            'Project Prototypes (Optional SN)',
-            'Appliances (TLE)'
-        )),
-    ADD CONSTRAINT chk_devices_purpose
-        CHECK (device_purpose IN (
-            'Academic BYOD',
-            'School Event',
-            'Organization Activity',
-            'Temporary Equipment',
-            'Other Approved Purpose',
-            'PROTOTYPE',
-            'APPLIANCE'
-        )),
-    ADD CONSTRAINT chk_devices_registration_status
-        CHECK (registration_status IN ('pending', 'approved', 'rejected')),
-    ADD CONSTRAINT chk_devices_device_status
-        CHECK (device_status IN ('active', 'inactive')),
-    -- reviewed_by and reviewed_at must appear together
-    ADD CONSTRAINT chk_devices_review_consistency
-        CHECK (
-            (reviewed_by IS NULL AND reviewed_at IS NULL)
-            OR
-            (reviewed_by IS NOT NULL AND reviewed_at IS NOT NULL)
-        ),
-    -- A rejected device must always have a remark
-    ADD CONSTRAINT chk_devices_rejection_requires_remark
-        CHECK (
-            registration_status <> 'rejected'
-            OR (remarks IS NOT NULL AND char_length(trim(remarks)) > 0)
-        );
-
-
--- ── event_requests ───────────────────────────────────────────
-ALTER TABLE event_requests
-    ADD CONSTRAINT chk_event_requests_status
-        CHECK (status IN ('pending', 'approved', 'returned', 'rejected')),
-    ADD CONSTRAINT chk_event_requests_approval_doc_type
+-- ── requests ─────────────────────────────────────────────────
+ALTER TABLE requests
+    ADD CONSTRAINT chk_requests_type
+        CHECK (request_type IN ('normal', 'event')),
+    ADD CONSTRAINT chk_requests_status
+        CHECK (status IN ('pending', 'approved', 'rejected', 'returned')),
+    ADD CONSTRAINT chk_requests_approval_doc_type
         CHECK (approval_doc_type IN ('Paper Approval', 'Signed GPOA')),
-    ADD CONSTRAINT chk_event_requests_event_name_nonempty
-        CHECK (char_length(trim(event_name)) > 0),
     -- End date must be on or after start date
-    ADD CONSTRAINT chk_event_requests_date_range
-        CHECK (end_date IS NULL OR start_date IS NULL OR end_date >= start_date),
-    ADD CONSTRAINT chk_event_requests_review_consistency
+    ADD CONSTRAINT chk_requests_date_range
+        CHECK (end_date >= start_date),
+    ADD CONSTRAINT chk_requests_review_consistency
         CHECK (
             (reviewed_by IS NULL AND reviewed_at IS NULL)
             OR
@@ -333,11 +258,11 @@ ALTER TABLE event_requests
         );
 
 
--- ── event_request_devices ────────────────────────────────────
-ALTER TABLE event_request_devices
-    ADD CONSTRAINT chk_event_request_devices_quantity
+-- ── request_devices ──────────────────────────────────────────
+ALTER TABLE request_devices
+    ADD CONSTRAINT chk_request_devices_quantity
         CHECK (quantity > 0),
-    ADD CONSTRAINT chk_event_request_devices_type
+    ADD CONSTRAINT chk_request_devices_type
         CHECK (device_type IN (
             'Personal Computers',
             'Components & Peripherals',
@@ -346,32 +271,25 @@ ALTER TABLE event_request_devices
             'Appliances (TLE)',
             'Other'
         )),
-    ADD CONSTRAINT chk_event_request_devices_status
-        CHECK (device_status IN ('pending', 'approved', 'returned'));
+    ADD CONSTRAINT chk_request_devices_status
+        CHECK (device_status IN ('pending', 'approved', 'rejected')),
+    ADD CONSTRAINT chk_request_devices_review_consistency
+        CHECK (
+            (verified_by IS NULL AND verified_at IS NULL)
+            OR
+            (verified_by IS NOT NULL AND verified_at IS NOT NULL)
+        );
 
 
--- ── device_logs ──────────────────────────────────────────────
-ALTER TABLE device_logs
-    ADD CONSTRAINT chk_device_logs_event_type
-        CHECK (event_type IN ('entry', 'exit')),
-    ADD CONSTRAINT chk_device_logs_logout_type
-        CHECK (logout_type IN ('manual', 'automatic')),
-    -- Auto-exit rows are system-generated; no human actor
-    ADD CONSTRAINT chk_device_logs_auto_exit_consistency
+-- ── device_transactions ──────────────────────────────────────
+ALTER TABLE device_transactions
+    ADD CONSTRAINT chk_device_transactions_times 
+        CHECK (egress_time IS NULL OR egress_time >= ingress_time),
+    ADD CONSTRAINT chk_device_transactions_egress_handled 
         CHECK (
-            (auto_exit = TRUE  AND handled_by IS NULL)
+            (egress_time IS NULL AND egress_handled_by IS NULL)
             OR
-            (auto_exit = FALSE AND handled_by IS NOT NULL)
-        ),
-    -- Auto-exits are always exits, never entries
-    ADD CONSTRAINT chk_device_logs_auto_exit_is_exit
-        CHECK (auto_exit = FALSE OR event_type = 'exit'),
-    ADD CONSTRAINT chk_device_logs_logout_type_consistency
-        CHECK (
-            (auto_exit = TRUE  AND logout_type = 'automatic')
-            OR
-            (auto_exit = FALSE AND logout_type = 'manual')
-            OR logout_type IS NULL
+            (egress_time IS NOT NULL AND egress_handled_by IS NOT NULL)
         );
 
 
@@ -429,7 +347,7 @@ CREATE OR REPLACE FUNCTION fn_set_updated_at()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
     NEW.updated_at := CURRENT_TIMESTAMP;
-RETURN NEW;
+    RETURN NEW;
 END;
 $$;
 
@@ -441,22 +359,21 @@ CREATE TRIGGER trg_students_updated_at
     BEFORE UPDATE ON students
     FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
 
-CREATE TRIGGER trg_devices_updated_at
-    BEFORE UPDATE ON devices
+CREATE TRIGGER trg_requests_updated_at
+    BEFORE UPDATE ON requests
     FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
 
-CREATE TRIGGER trg_event_requests_updated_at
-    BEFORE UPDATE ON event_requests
+CREATE TRIGGER trg_request_devices_updated_at
+    BEFORE UPDATE ON request_devices
     FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
 
-CREATE TRIGGER trg_event_request_devices_updated_at
-    BEFORE UPDATE ON event_request_devices
+CREATE TRIGGER trg_device_transactions_updated_at
+    BEFORE UPDATE ON device_transactions
     FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
 
 CREATE TRIGGER trg_system_settings_updated_at
     BEFORE UPDATE ON system_settings
     FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
-
 
 
 -- ── 4.2 Force server-side created_at (prevent backdating) ────
@@ -465,155 +382,51 @@ CREATE OR REPLACE FUNCTION fn_force_created_at()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
     NEW.created_at := CURRENT_TIMESTAMP;
-RETURN NEW;
+    RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER trg_device_logs_force_created_at
-    BEFORE INSERT ON device_logs
+CREATE TRIGGER trg_device_transactions_force_created_at
+    BEFORE INSERT ON device_transactions
     FOR EACH ROW EXECUTE FUNCTION fn_force_created_at();
 
 CREATE TRIGGER trg_audit_logs_force_created_at
     BEFORE INSERT ON audit_logs
     FOR EACH ROW EXECUTE FUNCTION fn_force_created_at();
 
-CREATE TRIGGER trg_event_device_logs_force_created_at
-    BEFORE INSERT ON event_device_logs
-    FOR EACH ROW EXECUTE FUNCTION fn_force_created_at();
 
+-- ── 4.3 Block gate transactions on unapproved devices/requests ────
 
-
--- ── 4.3 Guard registration_status state machine ──────────────
--- Allowed:  pending  → approved
---           pending  → rejected
---           rejected → pending   (re-submission)
--- Denied:   approved → rejected  (deactivate instead)
---           rejected → approved  (must go through pending)
-
-CREATE OR REPLACE FUNCTION fn_guard_registration_transition()
-RETURNS TRIGGER LANGUAGE plpgsql AS $$
-BEGIN
-    IF OLD.registration_status = 'approved'
-       AND NEW.registration_status = 'rejected' THEN
-        RAISE EXCEPTION
-            'Cannot go directly from approved to rejected. '
-            'Set device_status to inactive instead.';
-END IF;
-
-    IF OLD.registration_status = 'rejected'
-       AND NEW.registration_status = 'approved' THEN
-        RAISE EXCEPTION
-            'Cannot go directly from rejected to approved. '
-            'Reset to pending first.';
-END IF;
-
-RETURN NEW;
-END;
-$$;
-
-CREATE TRIGGER trg_devices_registration_transition
-    BEFORE UPDATE OF registration_status ON devices
-    FOR EACH ROW EXECUTE FUNCTION fn_guard_registration_transition();
-
-
--- ── 4.4 Block gate log on unapproved or inactive devices ─────
-
-CREATE OR REPLACE FUNCTION fn_guard_device_log_approved_only()
+CREATE OR REPLACE FUNCTION fn_guard_device_transaction_approved_only()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 DECLARE
-v_reg_status VARCHAR(10);
-    v_dev_status VARCHAR(10);
+    v_req_status VARCHAR(20);
+    v_dev_status VARCHAR(20);
 BEGIN
-SELECT registration_status, device_status
-INTO   v_reg_status, v_dev_status
-FROM   devices
-WHERE  device_id = NEW.device_id;
+    SELECT r.status, rd.device_status
+    INTO   v_req_status, v_dev_status
+    FROM   request_devices rd
+    JOIN   requests r ON r.request_id = rd.request_id
+    WHERE  rd.request_device_id = NEW.request_device_id;
 
-IF v_reg_status NOT IN ('approved', 'pending') AND NOT (v_reg_status = 'rejected' AND NEW.event_type = 'exit') THEN
-        RAISE EXCEPTION
-            'Device % is not approved or pending (status: ''%''). Cannot log entry/exit.',
-            NEW.device_id, v_reg_status;
-END IF;
+    IF v_req_status <> 'approved' THEN
+        RAISE EXCEPTION 'Parent request is not approved (status: %). Cannot log transaction.', v_req_status;
+    END IF;
 
-    IF v_dev_status = 'inactive' THEN
-        RAISE EXCEPTION
-            'Device % is inactive and cannot be logged.',
-            NEW.device_id;
-END IF;
-
-RETURN NEW;
-END;
-$$;
-
-CREATE TRIGGER trg_device_logs_approved_only
-    BEFORE INSERT ON device_logs
-    FOR EACH ROW EXECUTE FUNCTION fn_guard_device_log_approved_only();
-
-
--- ── 4.5 Block consecutive same-type events ───────────────────
--- Two consecutive 'entry' rows = missed exit scan.
--- Auto-exit rows are exempt (they are reconciliation rows).
-
-CREATE OR REPLACE FUNCTION fn_guard_consecutive_events()
-RETURNS TRIGGER LANGUAGE plpgsql AS $$
-DECLARE
-v_last_event VARCHAR(10);
-BEGIN
-    IF NEW.auto_exit = TRUE THEN
-        RETURN NEW;
-END IF;
-
-SELECT event_type
-INTO   v_last_event
-FROM   device_logs
-WHERE  device_id = NEW.device_id
-ORDER  BY event_time DESC
-    LIMIT  1;
-
-IF v_last_event IS NOT NULL AND v_last_event = NEW.event_type THEN
-        RAISE EXCEPTION
-            'Device % already has a consecutive ''%'' event. '
-            'Log the opposite event first or reconcile.',
-            NEW.device_id, NEW.event_type;
-END IF;
-
-RETURN NEW;
-END;
-$$;
-
-CREATE TRIGGER trg_device_logs_consecutive_events
-    BEFORE INSERT ON device_logs
-    FOR EACH ROW EXECUTE FUNCTION fn_guard_consecutive_events();
-
-CREATE OR REPLACE FUNCTION fn_guard_consecutive_event_device_events()
-RETURNS TRIGGER LANGUAGE plpgsql AS $$
-DECLARE
-    v_last_event VARCHAR(10);
-BEGIN
-    SELECT event_type
-    INTO   v_last_event
-    FROM   event_device_logs
-    WHERE  event_device_id = NEW.event_device_id
-    ORDER  BY event_time DESC
-    LIMIT  1;
-
-    IF v_last_event IS NOT NULL AND v_last_event = NEW.event_type THEN
-        RAISE EXCEPTION
-            'Event device % already has a consecutive ''%'' event. Log the opposite event first or reconcile.',
-            NEW.event_device_id, NEW.event_type;
+    IF v_dev_status <> 'approved' THEN
+        RAISE EXCEPTION 'Device status is not approved (status: %). Cannot log transaction.', v_dev_status;
     END IF;
 
     RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER trg_event_device_logs_consecutive_events
-    BEFORE INSERT ON event_device_logs
-    FOR EACH ROW EXECUTE FUNCTION fn_guard_consecutive_event_device_events();
+CREATE TRIGGER trg_device_transactions_approved_only
+    BEFORE INSERT OR UPDATE ON device_transactions
+    FOR EACH ROW EXECUTE FUNCTION fn_guard_device_transaction_approved_only();
 
 
-
--- ── 4.6 Immutable audit_logs ──────────────────────────────────
+-- ── 4.4 Immutable audit_logs ──────────────────────────────────
 
 CREATE OR REPLACE FUNCTION fn_audit_log_immutable()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
@@ -631,48 +444,70 @@ CREATE TRIGGER trg_audit_log_no_delete
     FOR EACH ROW EXECUTE FUNCTION fn_audit_log_immutable();
 
 
--- ── 4.7 Immutable device_logs ─────────────────────────────────
+-- ── 4.5 Deletion protection: request_devices ──────────────────
 
-CREATE OR REPLACE FUNCTION fn_device_log_immutable()
+CREATE OR REPLACE FUNCTION fn_protect_request_device_delete()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
+DECLARE
+    v_tx_count INT;
 BEGIN
-    RAISE EXCEPTION 'device_logs rows are immutable. Hard-delete is not permitted.';
+    SELECT COUNT(*) INTO v_tx_count FROM device_transactions WHERE request_device_id = OLD.request_device_id;
+    IF v_tx_count > 0 THEN
+        RAISE EXCEPTION 'Cannot delete device. It has % gate transaction(s). Set device status to rejected or deactivate parent request instead.', v_tx_count;
+    END IF;
+    RETURN OLD;
 END;
 $$;
 
-CREATE TRIGGER trg_device_log_no_delete
-    BEFORE DELETE ON device_logs
-    FOR EACH ROW EXECUTE FUNCTION fn_device_log_immutable();
-
-CREATE TRIGGER trg_event_device_log_no_update
-    BEFORE UPDATE ON event_device_logs
-    FOR EACH ROW EXECUTE FUNCTION fn_device_log_immutable();
-
-CREATE TRIGGER trg_event_device_log_no_delete
-    BEFORE DELETE ON event_device_logs
-    FOR EACH ROW EXECUTE FUNCTION fn_device_log_immutable();
+CREATE TRIGGER trg_protect_request_device_delete
+    BEFORE DELETE ON request_devices
+    FOR EACH ROW EXECUTE FUNCTION fn_protect_request_device_delete();
 
 
+-- ── 4.6 Deletion protection: requests ─────────────────────────
 
--- ── 4.8 Deletion protection: students ────────────────────────
+CREATE OR REPLACE FUNCTION fn_protect_request_delete()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+DECLARE
+    v_tx_count INT;
+BEGIN
+    SELECT COUNT(*) INTO v_tx_count
+    FROM device_transactions dt
+    JOIN request_devices rd ON rd.request_device_id = dt.request_device_id
+    WHERE rd.request_id = OLD.request_id;
+
+    IF v_tx_count > 0 THEN
+        RAISE EXCEPTION 'Cannot delete request. It has % associated gate transaction(s). Archive or reject the request instead.', v_tx_count;
+    END IF;
+    RETURN OLD;
+END;
+$$;
+
+CREATE TRIGGER trg_protect_request_delete
+    BEFORE DELETE ON requests
+    FOR EACH ROW EXECUTE FUNCTION fn_protect_request_delete();
+
+
+-- ── 4.7 Deletion protection: students ────────────────────────
 
 CREATE OR REPLACE FUNCTION fn_protect_student_delete()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 DECLARE
-v_device_count INT;
-    v_log_count    INT;
+    v_req_count INT;
+    v_tx_count  INT;
 BEGIN
-SELECT COUNT(*) INTO v_device_count FROM devices     WHERE student_id = OLD.student_id;
-SELECT COUNT(*) INTO v_log_count    FROM device_logs WHERE student_id = OLD.student_id;
+    SELECT COUNT(*) INTO v_req_count FROM requests WHERE student_id = OLD.student_id;
+    
+    SELECT COUNT(*) INTO v_tx_count 
+    FROM device_transactions dt
+    JOIN request_devices rd ON rd.request_device_id = dt.request_device_id
+    JOIN requests r ON r.request_id = rd.request_id
+    WHERE r.student_id = OLD.student_id;
 
-IF v_device_count > 0 OR v_log_count > 0 THEN
-        RAISE EXCEPTION
-            'Cannot delete student ''%''. They have % device(s) and % log entry(ies). '
-            'Set status to ''inactive'' instead.',
-            OLD.student_id, v_device_count, v_log_count;
-END IF;
-
-RETURN OLD;
+    IF v_req_count > 0 OR v_tx_count > 0 THEN
+        RAISE EXCEPTION 'Cannot delete student %. They have % request(s) and % transaction(s). Set status to inactive instead.', OLD.student_id, v_req_count, v_tx_count;
+    END IF;
+    RETURN OLD;
 END;
 $$;
 
@@ -681,48 +516,23 @@ CREATE TRIGGER trg_protect_student_delete
     FOR EACH ROW EXECUTE FUNCTION fn_protect_student_delete();
 
 
--- ── 4.9 Deletion protection: devices ─────────────────────────
-
-CREATE OR REPLACE FUNCTION fn_protect_device_delete()
-RETURNS TRIGGER LANGUAGE plpgsql AS $$
-DECLARE
-v_log_count INT;
-BEGIN
-SELECT COUNT(*) INTO v_log_count FROM device_logs WHERE device_id = OLD.device_id;
-
-IF v_log_count > 0 THEN
-        RAISE EXCEPTION
-            'Cannot delete device %. It has % log entry(ies). '
-            'Set device_status to ''inactive'' instead.',
-            OLD.device_id, v_log_count;
-END IF;
-
-RETURN OLD;
-END;
-$$;
-
-CREATE TRIGGER trg_protect_device_delete
-    BEFORE DELETE ON devices
-    FOR EACH ROW EXECUTE FUNCTION fn_protect_device_delete();
-
-
--- ── 4.10 Deletion protection: users ──────────────────────────
+-- ── 4.8 Deletion protection: users ──────────────────────────
 
 CREATE OR REPLACE FUNCTION fn_protect_user_delete()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 DECLARE
-v_audit_count INT;
+    v_audit_count INT;
 BEGIN
-SELECT COUNT(*) INTO v_audit_count FROM audit_logs WHERE user_id = OLD.user_id;
+    SELECT COUNT(*) INTO v_audit_count FROM audit_logs WHERE user_id = OLD.user_id;
 
-IF v_audit_count > 0 THEN
+    IF v_audit_count > 0 THEN
         RAISE EXCEPTION
             'Cannot delete user %. They have % audit log entries. '
             'Set status to ''inactive'' instead.',
             OLD.user_id, v_audit_count;
-END IF;
+    END IF;
 
-RETURN OLD;
+    RETURN OLD;
 END;
 $$;
 
@@ -731,9 +541,8 @@ CREATE TRIGGER trg_protect_user_delete
     FOR EACH ROW EXECUTE FUNCTION fn_protect_user_delete();
 
 
--- ── 4.11 Secure audit log writer ─────────────────────────────
+-- ── 4.9 Secure audit log writer ─────────────────────────────
 -- Call this from Java instead of INSERT-ing into audit_logs directly.
--- Keeps audit writes consistent and prevents accidental schema mismatches.
 
 CREATE OR REPLACE FUNCTION fn_write_audit_log(
     p_user_id      INT,
@@ -746,13 +555,13 @@ CREATE OR REPLACE FUNCTION fn_write_audit_log(
 )
 RETURNS VOID LANGUAGE plpgsql AS $$
 BEGIN
-INSERT INTO audit_logs (
-    user_id, action_type, target_table, target_id,
-    old_values, new_values, ip_address
-) VALUES (
-             p_user_id, p_action_type, p_target_table, p_target_id,
-             p_old_values, p_new_values, p_ip_address
-         );
+    INSERT INTO audit_logs (
+        user_id, action_type, target_table, target_id,
+        old_values, new_values, ip_address
+    ) VALUES (
+        p_user_id, p_action_type, p_target_table, p_target_id,
+        p_old_values, p_new_values, p_ip_address
+    );
 END;
 $$;
 
@@ -762,128 +571,81 @@ $$;
 -- ============================================================
 
 -- Current campus status per approved active device.
--- 'entry' = last log event was 'entry'
--- 'exit'  = last log event was 'exit', or no log exists yet
+-- 'entry' = checked in and has not exited
+-- 'exit'  = checked out, or has no record, or missed check-out (marked no egress)
 CREATE OR REPLACE VIEW v_device_campus_status AS
 SELECT
-    d.device_id,
-    d.student_id,
-    d.device_name,
-    d.serial_number,
-    d.brand,
-    d.model,
-    d.device_type,
-    d.registration_status,
-    d.device_status,
-    COALESCE(last_log.event_type, 'exit') AS campus_status,
-    last_log.event_time                       AS last_event_time
-FROM devices d
-         LEFT JOIN LATERAL (
-    SELECT event_type, event_time
-    FROM   device_logs
-    WHERE  device_id = d.device_id
-    ORDER  BY event_time DESC
-        LIMIT  1
-    ) last_log ON TRUE
-WHERE d.device_status = 'active'
-  AND (
-    d.registration_status IN ('approved', 'pending')
-    OR (d.registration_status = 'rejected' AND last_log.event_type = 'entry')
-  );
-
-
--- Current campus status per event request device.
-CREATE OR REPLACE VIEW v_event_device_status AS
-SELECT
-    erd.event_device_id,
-    erd.event_request_id,
-    erd.device_name,
-    erd.brand,
-    erd.model,
-    erd.device_type,
-    erd.serial_number,
-    erd.quantity,
-    erd.device_status AS manifest_status,
-    COALESCE(last_log.event_type, 'exit') AS current_day_status,
-    last_log.event_time AS last_event_time
-FROM event_request_devices erd
+    rd.request_device_id,
+    rd.request_id,
+    r.student_id,
+    rd.device_name,
+    rd.serial_number,
+    rd.brand,
+    rd.model,
+    rd.device_type,
+    rd.device_status,
+    r.request_type,
+    COALESCE(t.status, 'exit') AS campus_status,
+    t.event_time AS last_event_time,
+    COALESCE(t.no_egress_marked, FALSE) AS no_egress_marked
+FROM request_devices rd
+JOIN requests r ON r.request_id = rd.request_id
 LEFT JOIN LATERAL (
-    SELECT event_type, event_time
-    FROM   event_device_logs
-    WHERE  event_device_id = erd.event_device_id
-    ORDER  BY event_time DESC
-    LIMIT  1
-) last_log ON TRUE;
+    SELECT 
+        CASE 
+            WHEN dt.egress_time IS NULL AND dt.no_egress_marked = FALSE THEN 'entry'
+            ELSE 'exit'
+        END AS status,
+        COALESCE(dt.egress_time, dt.ingress_time) AS event_time,
+        dt.no_egress_marked
+    FROM device_transactions dt
+    WHERE dt.request_device_id = rd.request_device_id
+    ORDER BY dt.log_date DESC, dt.ingress_time DESC
+    LIMIT 1
+) t ON TRUE
+WHERE rd.device_status = 'approved'
+  AND r.status = 'approved';
 
 
 
--- Admin approval queue: pending devices with student name.
-CREATE OR REPLACE VIEW v_pending_devices AS
+
+
+-- Active / Approved requests
+CREATE OR REPLACE VIEW v_active_requests AS
 SELECT
-    d.device_id,
-    d.student_id,
+    r.request_id,
+    r.request_type,
+    r.student_id,
     s.first_name || ' ' || s.last_name AS student_name,
-    s.course_year_level,
-    d.device_name,
-    d.brand,
-    d.model,
-    d.serial_number,
-    d.device_type,
-    d.device_purpose,
-    d.image_path,
-    d.created_at
-FROM   devices d
-           JOIN   students s ON s.student_id = d.student_id
-WHERE  d.registration_status = 'pending'
-ORDER  BY d.created_at;
-
-
--- Active event requests with device count.
-CREATE OR REPLACE VIEW v_active_event_requests AS
-SELECT
-    er.event_request_id,
-    er.student_id,
-    s.first_name || ' ' || s.last_name AS student_name,
-    er.event_name,
-    er.organization,
-    er.start_date,
-    er.end_date,
-    er.status,
-    COUNT(erd.event_device_id) AS device_count
-FROM   event_requests er
-           JOIN   students s ON s.student_id = er.student_id
-           LEFT   JOIN event_request_devices erd
-                       ON erd.event_request_id = er.event_request_id
-WHERE  er.status IN ('pending', 'approved')
-GROUP  BY
-    er.event_request_id, er.student_id,
-    s.first_name, s.last_name,
-    er.event_name, er.organization,
-    er.start_date, er.end_date, er.status;
+    r.event_name,
+    r.organization,
+    r.start_date,
+    r.end_date,
+    r.expected_ingress_time,
+    r.expected_egress_time,
+    r.status,
+    COUNT(rd.request_device_id) AS device_count
+FROM requests r
+JOIN students s ON s.student_id = r.student_id
+LEFT JOIN request_devices rd ON rd.request_id = r.request_id
+WHERE r.status = 'approved'
+GROUP BY r.request_id, s.first_name, s.last_name;
 
 
 -- ============================================================
 -- SECTION 6: AUTOVACUUM TUNING
 -- ============================================================
--- device_logs and audit_logs receive the highest INSERT rate.
--- Lower the scale factors so autovacuum runs more frequently
--- and prevents table bloat.
+-- device_transactions and audit_logs receive the highest INSERT/UPDATE rate.
 
-ALTER TABLE device_logs SET (
+ALTER TABLE device_transactions SET (
     autovacuum_vacuum_scale_factor  = 0.01,
     autovacuum_analyze_scale_factor = 0.005
-    );
+);
 
 ALTER TABLE audit_logs SET (
     autovacuum_vacuum_scale_factor  = 0.01,
     autovacuum_analyze_scale_factor = 0.005
-    );
-
-ALTER TABLE event_device_logs SET (
-    autovacuum_vacuum_scale_factor  = 0.01,
-    autovacuum_analyze_scale_factor = 0.005
-    );
-
+);
 
 
 -- ============================================================
@@ -896,26 +658,22 @@ COMMENT ON COLUMN users.password_hash         IS 'Store bcrypt or argon2 hash on
 COMMENT ON COLUMN users.status                IS 'active or inactive. Never hard-delete a user.';
 
 COMMENT ON TABLE  students                    IS 'Registered students. Never hard-delete; set status = inactive.';
-COMMENT ON TABLE  devices                     IS 'Permanent BYOD registered devices.';
-COMMENT ON COLUMN devices.registration_status IS 'State machine: pending → approved | pending → rejected | rejected → pending.';
-COMMENT ON COLUMN devices.device_status       IS 'active or inactive. Inactive devices cannot log entry/exit.';
 
-COMMENT ON TABLE  event_requests              IS 'Header for a temporary device access request.';
-COMMENT ON TABLE  event_request_devices       IS 'Individual devices listed under an event request.';
+COMMENT ON TABLE  requests                    IS 'Unified header for individual (normal) and group (event) device requests.';
+COMMENT ON COLUMN requests.request_type          IS 'normal or event.';
+COMMENT ON COLUMN requests.status                IS 'pending, approved, rejected, returned.';
 
-COMMENT ON TABLE  device_logs                 IS 'Immutable gate event log. Never update or delete rows.';
-COMMENT ON COLUMN device_logs.auto_exit       IS 'TRUE = generated by nightly auto-exit batch, not a human guard.';
+COMMENT ON TABLE  request_devices                IS 'Individual device specifications attached to a request.';
+COMMENT ON COLUMN request_devices.device_status  IS 'pending, approved, rejected.';
 
-COMMENT ON TABLE  event_device_logs           IS 'Per-day entry/exit logging for event request devices.';
-COMMENT ON COLUMN event_device_logs.event_type IS 'entry or exit.';
+COMMENT ON TABLE  device_transactions            IS 'Daily ingress/egress transactions. Max 1 transaction per day per device.';
+COMMENT ON COLUMN device_transactions.no_egress_marked IS 'TRUE = student exited campus without scanning out on this day.';
 
 COMMENT ON TABLE  audit_logs                  IS 'Immutable audit trail. Write via fn_write_audit_log() only.';
 
-COMMENT ON VIEW   v_device_campus_status      IS 'Derives entry/exit per device from the latest device_log row.';
-COMMENT ON VIEW   v_event_device_status       IS 'Current daily campus presence status per event request device.';
-COMMENT ON VIEW   v_pending_devices           IS 'Pending device registrations for the admin approval queue.';
-COMMENT ON VIEW   v_active_event_requests     IS 'Pending and approved event requests with device counts.';
+COMMENT ON VIEW   v_device_campus_status         IS 'Real-time campus presence state derived from the latest daily transaction.';
 
+COMMENT ON VIEW   v_active_requests              IS 'Active approved access requests in system.';
 
 COMMENT ON FUNCTION fn_write_audit_log        IS 'Preferred way to write to audit_logs from Java. Keeps inserts consistent.';
 COMMENT ON FUNCTION fn_set_updated_at         IS 'Auto-refreshes updated_at on every UPDATE.';
