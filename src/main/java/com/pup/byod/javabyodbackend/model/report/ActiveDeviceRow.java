@@ -1,6 +1,6 @@
 package com.pup.byod.javabyodbackend.model.report;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 /**
  * One row in the Active Devices on Campus report.
@@ -17,7 +17,7 @@ public class ActiveDeviceRow {
     private String         deviceType;        // category value
     private String         brand;
     private String         model;
-    private OffsetDateTime enteredAt;         // timestamp of the latest 'entry' log
+    private LocalDateTime enteredAt;         // timestamp of the latest ingress
 
     // ── Constructors ──────────────────────────────────────────────────────────
 
@@ -52,6 +52,6 @@ public class ActiveDeviceRow {
     public String         getModel()                 { return model; }
     public void           setModel(String v)         { this.model = v; }
 
-    public OffsetDateTime getEnteredAt()             { return enteredAt; }
-    public void           setEnteredAt(OffsetDateTime v) { this.enteredAt = v; }
+    public LocalDateTime getEnteredAt()             { return enteredAt; }
+    public void           setEnteredAt(LocalDateTime v) { this.enteredAt = v; }
 }

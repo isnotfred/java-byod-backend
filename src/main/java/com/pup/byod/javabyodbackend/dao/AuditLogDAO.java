@@ -148,14 +148,13 @@ public class AuditLogDAO {
                 FROM audit_logs al
                 LEFT JOIN users u ON u.user_id = al.user_id
                 WHERE al.action_type IN (
-                    'DEVICE_REJECTED',
-                    'DEVICE_DEACTIVATED',
+                    'REQUEST_REJECTED',
+                    'REQUEST_RETURNED',
+                    'DEVICE_VERIFIED',
                     'ADMIN_DEACTIVATED',
                     'GUARD_DEACTIVATED_BY_SUPER',
                     'USER_ROLE_CHANGED',
-                    'DEVICE_AUTO_EXIT',
-                    'EVENT_REQUEST_REJECTED',
-                    'EVENT_REQUEST_RETURNED'
+                    'MISSED_EGRESS_BATCH'
                 )
                   AND al.created_at >= :from
                   AND al.created_at < CAST(:to AS date) + INTERVAL '1 day'

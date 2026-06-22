@@ -6,19 +6,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
+/**
+ * Maps the v_active_requests view.
+ * Represents an active approved request with device count.
+ */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActiveEventRequest {
-    private Integer eventRequestId;
+public class ActiveRequest {
+
+    private Integer requestId;
+    private String requestType;
     private String studentId;
     private String studentName;
     private String eventName;
     private String organization;
     private LocalDate startDate;
     private LocalDate endDate;
+    private LocalTime expectedIngressTime;
+    private LocalTime expectedEgressTime;
     private String status;
     private Integer deviceCount;
 }
