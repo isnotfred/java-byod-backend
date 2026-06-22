@@ -1,6 +1,6 @@
 package com.pup.byod.javabyodbackend.model.report;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 /**
  * One row in the Daily Device Traffic Summary report.
@@ -11,7 +11,7 @@ public class DailyTrafficRow {
     // Log event fields
     private int            logId;
     private String         eventType;          // "entry" | "exit"
-    private OffsetDateTime eventTime;
+    private LocalDateTime eventTime;
     private boolean        autoExit;
     private String         logoutType;         // "manual" | "automatic" | null
     private String         notes;
@@ -43,8 +43,8 @@ public class DailyTrafficRow {
     public String         getEventType()            { return eventType; }
     public void           setEventType(String v)    { this.eventType = v; }
 
-    public OffsetDateTime getEventTime()            { return eventTime; }
-    public void           setEventTime(OffsetDateTime v) { this.eventTime = v; }
+    public LocalDateTime getEventTime()            { return eventTime; }
+    public void           setEventTime(LocalDateTime v) { this.eventTime = v; }
 
     public boolean        isAutoExit()              { return autoExit; }
     public void           setAutoExit(boolean v)    { this.autoExit = v; }

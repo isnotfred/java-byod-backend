@@ -1,6 +1,6 @@
 package com.pup.byod.javabyodbackend.model.report;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 /**
  * One row in the Pending Registration Report.
@@ -19,7 +19,7 @@ public class PendingRegistrationRow {
     private String         deviceType;        // category value
     private String         devicePurpose;
     private String         imagePath;
-    private OffsetDateTime submittedAt;       // devices.created_at
+    private LocalDateTime submittedAt;       // request created_at
     private String         submittedBy;       // full_name of the guard who registered it
 
     // ── Constructors ──────────────────────────────────────────────────────────
@@ -61,8 +61,8 @@ public class PendingRegistrationRow {
     public String         getImagePath()             { return imagePath; }
     public void           setImagePath(String v)     { this.imagePath = v; }
 
-    public OffsetDateTime getSubmittedAt()            { return submittedAt; }
-    public void           setSubmittedAt(OffsetDateTime v) { this.submittedAt = v; }
+    public LocalDateTime getSubmittedAt()            { return submittedAt; }
+    public void           setSubmittedAt(LocalDateTime v) { this.submittedAt = v; }
 
     public String         getSubmittedBy()           { return submittedBy; }
     public void           setSubmittedBy(String v)   { this.submittedBy = v; }

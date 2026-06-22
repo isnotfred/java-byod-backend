@@ -1,6 +1,6 @@
 package com.pup.byod.javabyodbackend.model.report;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 /**
  * One row in the Device Frequency Report.
@@ -20,8 +20,8 @@ public class DeviceFrequencyRow {
     private String         courseYearLevel;
     private int            entryCount;
     private int            exitCount;
-    private OffsetDateTime firstSeen;         // earliest event_time in range
-    private OffsetDateTime lastSeen;          // latest event_time in range
+    private LocalDateTime firstSeen;         // earliest event_time in range
+    private LocalDateTime lastSeen;          // latest event_time in range
 
     // ── Constructors ──────────────────────────────────────────────────────────
 
@@ -62,9 +62,9 @@ public class DeviceFrequencyRow {
     public int            getExitCount()             { return exitCount; }
     public void           setExitCount(int v)        { this.exitCount = v; }
 
-    public OffsetDateTime getFirstSeen()             { return firstSeen; }
-    public void           setFirstSeen(OffsetDateTime v) { this.firstSeen = v; }
+    public LocalDateTime getFirstSeen()             { return firstSeen; }
+    public void           setFirstSeen(LocalDateTime v) { this.firstSeen = v; }
 
-    public OffsetDateTime getLastSeen()              { return lastSeen; }
-    public void           setLastSeen(OffsetDateTime v)  { this.lastSeen = v; }
+    public LocalDateTime getLastSeen()              { return lastSeen; }
+    public void           setLastSeen(LocalDateTime v)  { this.lastSeen = v; }
 }
