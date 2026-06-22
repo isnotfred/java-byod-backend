@@ -341,3 +341,50 @@ COMMENT ON COLUMN device_transactions.no_egress_marked IS 'TRUE = student exited
 COMMENT ON VIEW   v_device_campus_status         IS 'Real-time campus presence state derived from the latest daily transaction.';
 
 COMMENT ON VIEW   v_active_requests              IS 'Active approved access requests in system.';
+
+-- ── 9. UPDATE AUDIT LOG ACTIONS CONSTRAINT ───────────────────
+ALTER TABLE audit_logs DROP CONSTRAINT IF EXISTS chk_audit_logs_action_type_known;
+
+ALTER TABLE audit_logs ADD CONSTRAINT chk_audit_logs_action_type_known CHECK (action_type IN (
+    'DEVICE_REGISTERED',
+    'DEVICE_APPROVED',
+    'DEVICE_REJECTED',
+    'DEVICE_DEACTIVATED',
+    'DEVICE_UPDATED',
+    'DEVICE_ENTRY',
+    'DEVICE_EXIT',
+    'DEVICE_AUTO_EXIT',
+    'STUDENT_CREATED',
+    'STUDENT_UPDATED',
+    'STUDENT_DEACTIVATED',
+    'USER_CREATED',
+    'USER_UPDATED',
+    'USER_DEACTIVATED',
+    'USER_LOGIN',
+    'USER_LOGOUT',
+    'USER_LOGIN_FAILED',
+    'EVENT_REQUEST_CREATED',
+    'EVENT_REQUEST_APPROVED',
+    'EVENT_REQUEST_RETURNED',
+    'EVENT_REQUEST_REJECTED',
+    'SYSTEM_AUTO_EXIT_BATCH',
+    'ADMIN_CREATED',
+    'ADMIN_UPDATED',
+    'ADMIN_DEACTIVATED',
+    'GUARD_CREATED',
+    'GUARD_UPDATED',
+    'GUARD_DEACTIVATED_BY_SUPER',
+    'USER_ROLE_CHANGED',
+    'SYSTEM_CONFIG_UPDATED',
+    
+    -- New request overhaul actions
+    'REQUEST_CREATED',
+    'REQUEST_APPROVED',
+    'REQUEST_REJECTED',
+    'REQUEST_RETURNED',
+    'DEVICE_VERIFIED',
+    'DEVICE_CHECK_IN',
+    'DEVICE_CHECK_OUT',
+    'MISSED_EGRESS_BATCH'
+));
+

@@ -301,7 +301,6 @@ ALTER TABLE audit_logs
         CHECK (char_length(trim(target_table)) > 0),
     ADD CONSTRAINT chk_audit_logs_ip_length
         CHECK (ip_address IS NULL OR char_length(ip_address) BETWEEN 7 AND 45),
-    -- Standardised vocabulary prevents free-text inconsistencies
     ADD CONSTRAINT chk_audit_logs_action_type_known
         CHECK (action_type IN (
             'DEVICE_REGISTERED',
@@ -333,7 +332,17 @@ ALTER TABLE audit_logs
             'GUARD_UPDATED',
             'GUARD_DEACTIVATED_BY_SUPER',
             'USER_ROLE_CHANGED',
-            'SYSTEM_CONFIG_UPDATED'
+            'SYSTEM_CONFIG_UPDATED',
+            
+            -- New request overhaul actions
+            'REQUEST_CREATED',
+            'REQUEST_APPROVED',
+            'REQUEST_REJECTED',
+            'REQUEST_RETURNED',
+            'DEVICE_VERIFIED',
+            'DEVICE_CHECK_IN',
+            'DEVICE_CHECK_OUT',
+            'MISSED_EGRESS_BATCH'
         ));
 
 

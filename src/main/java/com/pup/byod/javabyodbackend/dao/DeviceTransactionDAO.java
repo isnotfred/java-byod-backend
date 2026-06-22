@@ -332,10 +332,7 @@ public class DeviceTransactionDAO {
                 UPDATE device_transactions
                 SET egress_time       = CURRENT_TIMESTAMP,
                     egress_handled_by = :handledBy,
-                    notes             = CASE 
-                                          WHEN :notes IS NOT NULL THEN :notes 
-                                          ELSE notes 
-                                        END
+                    notes             = COALESCE(CAST(:notes AS VARCHAR), notes)
                 WHERE transaction_id = :transactionId
                 """;
         var params = new MapSqlParameterSource()
