@@ -61,16 +61,6 @@ public class ReportService {
         return deviceTransactionDAO.getMonthlyTraffic(year, month);
     }
 
-    // ── 3. Pending Requests ─────────────────────────────────────────
-
-    /**
-     * Lists all requests currently in 'pending' status.
-     * Replaces the old pending device registrations report.
-     */
-    public List<PendingRegistrationRow> getPendingRequestsReport() {
-        return deviceTransactionDAO.getPendingRequests();
-    }
-
     // ── 4. Active Devices on Campus ─────────────────────────────────
 
     /**

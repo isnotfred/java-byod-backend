@@ -46,13 +46,6 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getMonthlyTrafficReport(year, month));
     }
 
-    // ── 3. Pending Requests ─────────────────────────────────────────
-
-    @GetMapping("/pending-requests")
-    public ResponseEntity<List<PendingRegistrationRow>> getPendingRequests() {
-        return ResponseEntity.ok(reportService.getPendingRequestsReport());
-    }
-
     // ── 4. Active Devices on Campus ─────────────────────────────────
 
     @GetMapping("/active-devices")

@@ -299,32 +299,7 @@ public class DeviceTransactionDAO {
         return jdbc.query(sql, purposeBreakdownRowMapper);
     }
 
-    /**
-     * Pending requests report (replaces old pending registrations).
-     */
-    public List<PendingRegistrationRow> getPendingRequests() {
-        String sql = """
-                SELECT
-                    r.request_id,
-                    r.student_id,
-                    s.first_name || ' ' || s.last_name AS student_name,
-                    s.course_year_level,
-                    r.purpose,
-                    r.request_type,
-                    r.start_date,
-                    r.end_date,
-                    r.created_at AS submitted_at,
-                    COUNT(rd.request_device_id) AS device_count,
-                    NULL AS submitted_by
-                FROM   requests r
-                JOIN   students s ON s.student_id = r.student_id
-                LEFT   JOIN request_devices rd ON rd.request_id = r.request_id
-                WHERE  r.status = 'pending'
-                GROUP  BY r.request_id, s.first_name, s.last_name, s.course_year_level
-                ORDER  BY r.created_at ASC
-                """;
-        return jdbc.query(sql, pendingRegistrationRowMapper);
-    }
+
 
     // ── Mutations ────────────────────────────────────────────────────
 
@@ -451,17 +426,6 @@ public class DeviceTransactionDAO {
         return row;
     };
 
-    private final RowMapper<PendingRegistrationRow> pendingRegistrationRowMapper = (rs, rowNum) -> {
-        var row = new PendingRegistrationRow();
-        row.setDeviceId(rs.getInt("request_id"));
-        row.setStudentId(rs.getString("student_id"));
-        row.setStudentName(rs.getString("student_name"));
-        row.setCourseYearLevel(rs.getString("course_year_level"));
-        row.setDeviceName(rs.getString("purpose"));
-        row.setSubmittedAt(rs.getTimestamp("submitted_at") != null ? rs.getTimestamp("submitted_at").toLocalDateTime() : null);
-        row.setSubmittedBy(rs.getString("submitted_by"));
-        return row;
-    };
 
     private final RowMapper<PurposeBreakdownRow> purposeBreakdownRowMapper = (rs, rowNum) -> PurposeBreakdownRow.builder()
             .purpose(rs.getString("purpose"))
