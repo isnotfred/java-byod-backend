@@ -16,6 +16,7 @@ public class Student {
     private String firstName;
     private String lastName;
     private String courseYearLevel;
+    private String contactNumber;
     private String course;
     private Integer yearLevel;
     private String status;

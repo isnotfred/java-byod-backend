@@ -54,7 +54,8 @@ public class StudentController {
                 request.studentId,
                 request.firstName,
                 request.lastName,
-                request.courseYearLevel
+                request.courseYearLevel,
+                request.contactNumber
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -70,6 +71,7 @@ public class StudentController {
                 request.firstName,
                 request.lastName,
                 request.courseYearLevel,
+                request.contactNumber,
                 request.status
         );
     }
@@ -95,12 +97,14 @@ public class StudentController {
         public String firstName;
         public String lastName;
         public String courseYearLevel;
+        public String contactNumber;
     }
 
     public static class UpdateStudentRequest {
         public String firstName;
         public String lastName;
         public String courseYearLevel;
+        public String contactNumber;
         public String status;
     }
 }

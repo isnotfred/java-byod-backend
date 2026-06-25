@@ -25,6 +25,7 @@ public class StudentDAO {
             .firstName(rs.getString("first_name"))
             .lastName(rs.getString("last_name"))
             .courseYearLevel(rs.getString("course_year_level"))
+            .contactNumber(rs.getString("contact_number"))
             .status(rs.getString("status"))
             .createdAt(rs.getTimestamp("created_at") != null
                     ? rs.getTimestamp("created_at").toLocalDateTime() : null)
@@ -70,8 +71,8 @@ public class StudentDAO {
 
     public int insert(Student student) {
         String sql = """
-                INSERT INTO students (student_id, first_name, last_name, course_year_level, status)
-                VALUES (:studentId, :firstName, :lastName, :courseYearLevel, :status)
+                INSERT INTO students (student_id, first_name, last_name, course_year_level, contact_number, status)
+                VALUES (:studentId, :firstName, :lastName, :courseYearLevel, :contactNumber, :status)
                 """;
 
         var params = new MapSqlParameterSource()
@@ -79,6 +80,7 @@ public class StudentDAO {
                 .addValue("firstName", student.getFirstName())
                 .addValue("lastName", student.getLastName())
                 .addValue("courseYearLevel", student.getCourseYearLevel())
+                .addValue("contactNumber", student.getContactNumber())
                 .addValue("status", student.getStatus());
 
         return jdbc.update(sql, params);
@@ -90,6 +92,7 @@ public class StudentDAO {
                 SET first_name       = :firstName,
                     last_name        = :lastName,
                     course_year_level = :courseYearLevel,
+                    contact_number   = :contactNumber,
                     status           = :status
                 WHERE student_id = :studentId
                 """;
@@ -98,6 +101,7 @@ public class StudentDAO {
                 .addValue("firstName", student.getFirstName())
                 .addValue("lastName", student.getLastName())
                 .addValue("courseYearLevel", student.getCourseYearLevel())
+                .addValue("contactNumber", student.getContactNumber())
                 .addValue("status", student.getStatus())
                 .addValue("studentId", student.getStudentId());
 

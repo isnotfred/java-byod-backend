@@ -34,6 +34,7 @@ CREATE TABLE students (
     first_name        VARCHAR(100)  NOT NULL,
     last_name         VARCHAR(100)  NOT NULL,
     course_year_level VARCHAR(100),
+    contact_number    VARCHAR(20),
     status            VARCHAR(10)   NOT NULL DEFAULT 'active',
     created_at        TIMESTAMPTZ   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMPTZ   NOT NULL DEFAULT CURRENT_TIMESTAMP

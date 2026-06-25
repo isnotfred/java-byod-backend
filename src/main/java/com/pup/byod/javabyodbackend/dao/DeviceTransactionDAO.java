@@ -145,8 +145,8 @@ public class DeviceTransactionDAO {
                 LEFT   JOIN users ui ON ui.user_id = dt.ingress_handled_by
                 LEFT   JOIN users ue ON ue.user_id = dt.egress_handled_by
                 WHERE  dt.log_date = :date
-                  AND  (:studentId  IS NULL OR r.student_id = :studentId)
-                  AND  (:deviceType IS NULL OR rd.device_type = :deviceType)
+                  AND  (CAST(:studentId AS VARCHAR) IS NULL OR r.student_id = :studentId)
+                  AND  (CAST(:deviceType AS VARCHAR) IS NULL OR rd.device_type = :deviceType)
                 ORDER  BY dt.ingress_time DESC
                 """;
         var params = new MapSqlParameterSource()

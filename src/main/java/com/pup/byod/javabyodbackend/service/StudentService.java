@@ -47,7 +47,7 @@ public class StudentService {
     }
 
     @Transactional
-    public Student createStudent(String studentId, String firstName, String lastName, String courseYearLevel) {
+    public Student createStudent(String studentId, String firstName, String lastName, String courseYearLevel, String contactNumber) {
         ValidationUtil.requireValidStudentId(studentId);
         ValidationUtil.requireValidName(firstName, "First name");
         ValidationUtil.requireValidName(lastName, "Last name");
@@ -61,6 +61,7 @@ public class StudentService {
                 .firstName(firstName.trim())
                 .lastName(lastName.trim())
                 .courseYearLevel(courseYearLevel)
+                .contactNumber(contactNumber != null ? contactNumber.trim() : null)
                 .status("active")
                 .build();
 
@@ -71,7 +72,7 @@ public class StudentService {
     }
 
     @Transactional
-    public Student updateStudent(String studentId, String firstName, String lastName, String courseYearLevel, String status) {
+    public Student updateStudent(String studentId, String firstName, String lastName, String courseYearLevel, String contactNumber, String status) {
         Student existing = getStudentById(studentId);
         ValidationUtil.requireValidName(firstName, "First name");
         ValidationUtil.requireValidName(lastName, "Last name");
@@ -82,6 +83,7 @@ public class StudentService {
                 .firstName(firstName.trim())
                 .lastName(lastName.trim())
                 .courseYearLevel(courseYearLevel)
+                .contactNumber(contactNumber != null ? contactNumber.trim() : null)
                 .status(status)
                 .createdAt(existing.getCreatedAt())
                 .updatedAt(existing.getUpdatedAt())
@@ -124,7 +126,7 @@ public class StudentService {
                         new InputStreamReader(file.getInputStream()));
                 CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
                         .builder()
-                        .setHeader("student_id", "first_name", "last_name", "course_year_level")
+                        .setHeader("student_id", "first_name", "last_name", "course_year_level", "contact_number")
                         .setSkipHeaderRecord(true)
                         .setIgnoreEmptyLines(true)
                         .setTrim(true)
@@ -137,6 +139,7 @@ public class StudentService {
                 String firstName     = record.get("first_name");
                 String lastName      = record.get("last_name");
                 String courseYearLevel = record.get("course_year_level");
+                String contactNumber = record.isMapped("contact_number") && record.isSet("contact_number") ? record.get("contact_number") : null;
 
                 // Validate row
                 List<String> rowErrors = new ArrayList<>();
@@ -177,6 +180,7 @@ public class StudentService {
                             .firstName(firstName)
                             .lastName(lastName)
                             .courseYearLevel(courseYearLevel)
+                            .contactNumber(contactNumber)
                             .status("active")
                             .build();
 

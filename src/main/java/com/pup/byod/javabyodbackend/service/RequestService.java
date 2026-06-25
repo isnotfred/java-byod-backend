@@ -124,8 +124,9 @@ public class RequestService {
         // Event-specific validations
         if (requestType == RequestType.event) {
             ValidationUtil.requireValidEventName(eventName);
-            ValidationUtil.requireNonBlank(approvalDocType, "Approval document type");
-            validateApprovalDocType(approvalDocType);
+            if (approvalDocType != null && !approvalDocType.isBlank()) {
+                validateApprovalDocType(approvalDocType);
+            }
             if (responsiblePerson != null && !responsiblePerson.isBlank()) {
                 ValidationUtil.requireValidName(responsiblePerson, "Responsible person");
             }
@@ -244,8 +245,9 @@ public class RequestService {
         // Event-specific validations
         if (requestType == RequestType.event) {
             ValidationUtil.requireValidEventName(eventName);
-            ValidationUtil.requireNonBlank(approvalDocType, "Approval document type");
-            validateApprovalDocType(approvalDocType);
+            if (approvalDocType != null && !approvalDocType.isBlank()) {
+                validateApprovalDocType(approvalDocType);
+            }
             if (responsiblePerson != null && !responsiblePerson.isBlank()) {
                 ValidationUtil.requireValidName(responsiblePerson, "Responsible person");
             }
