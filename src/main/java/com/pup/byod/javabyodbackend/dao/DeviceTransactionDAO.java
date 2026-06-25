@@ -362,6 +362,8 @@ public class DeviceTransactionDAO {
         row.setStudentName(rs.getString("student_name"));
         row.setCourseYearLevel(rs.getString("course_year_level"));
         row.setHandledByName(rs.getString("ingress_handled_by_name"));
+        row.setIngressTime(rs.getTimestamp("ingress_time") != null ? rs.getTimestamp("ingress_time").toLocalDateTime() : null);
+        row.setEgressTime(rs.getTimestamp("egress_time") != null ? rs.getTimestamp("egress_time").toLocalDateTime() : null);
         return row;
     };
 

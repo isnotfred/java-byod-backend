@@ -15,6 +15,8 @@ public class DailyTrafficRow {
     private boolean        autoExit;
     private String         logoutType;         // "manual" | "automatic" | null
     private String         notes;
+    private LocalDateTime ingressTime;
+    private LocalDateTime egressTime;
 
     // Device fields
     private int    deviceId;
@@ -81,4 +83,10 @@ public class DailyTrafficRow {
 
     public String         getHandledByName()        { return handledByName; }
     public void           setHandledByName(String v){ this.handledByName = v; }
+
+    public LocalDateTime getIngressTime()            { return ingressTime; }
+    public void           setIngressTime(LocalDateTime v) { this.ingressTime = v; }
+
+    public LocalDateTime getEgressTime()             { return egressTime; }
+    public void           setEgressTime(LocalDateTime v)  { this.egressTime = v; }
 }
