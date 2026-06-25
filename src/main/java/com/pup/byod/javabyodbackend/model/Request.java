@@ -29,8 +29,6 @@ public class Request {
     private String eventName;
     private String organization;
     private String responsiblePerson;
-    private String approvalDocType;
-    private String approvalDocRef;
 
     private String purpose;
     private LocalDate startDate;

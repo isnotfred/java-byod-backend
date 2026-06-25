@@ -94,8 +94,6 @@ public class RequestService {
                                  String eventName,
                                  String organization,
                                  String responsiblePerson,
-                                 String approvalDocType,
-                                 String approvalDocRef,
                                  String purpose,
                                  LocalDate startDate,
                                  LocalDate endDate,
@@ -124,17 +122,11 @@ public class RequestService {
         // Event-specific validations
         if (requestType == RequestType.event) {
             ValidationUtil.requireValidEventName(eventName);
-            if (approvalDocType != null && !approvalDocType.isBlank()) {
-                validateApprovalDocType(approvalDocType);
-            }
             if (responsiblePerson != null && !responsiblePerson.isBlank()) {
                 ValidationUtil.requireValidName(responsiblePerson, "Responsible person");
             }
             if (organization != null && !organization.isBlank()) {
                 ValidationUtil.requireValidOrganization(organization);
-            }
-            if (approvalDocRef != null && !approvalDocRef.isBlank()) {
-                ValidationUtil.requireValidDocRef(approvalDocRef);
             }
         }
 
@@ -165,8 +157,6 @@ public class RequestService {
                 .eventName(eventName)
                 .organization(organization)
                 .responsiblePerson(responsiblePerson)
-                .approvalDocType(approvalDocType)
-                .approvalDocRef(approvalDocRef)
                 .purpose(purpose)
                 .startDate(startDate)
                 .endDate(endDate)
@@ -213,8 +203,6 @@ public class RequestService {
                                  String eventName,
                                  String organization,
                                  String responsiblePerson,
-                                 String approvalDocType,
-                                 String approvalDocRef,
                                  String purpose,
                                  LocalDate startDate,
                                  LocalDate endDate,
@@ -245,17 +233,11 @@ public class RequestService {
         // Event-specific validations
         if (requestType == RequestType.event) {
             ValidationUtil.requireValidEventName(eventName);
-            if (approvalDocType != null && !approvalDocType.isBlank()) {
-                validateApprovalDocType(approvalDocType);
-            }
             if (responsiblePerson != null && !responsiblePerson.isBlank()) {
                 ValidationUtil.requireValidName(responsiblePerson, "Responsible person");
             }
             if (organization != null && !organization.isBlank()) {
                 ValidationUtil.requireValidOrganization(organization);
-            }
-            if (approvalDocRef != null && !approvalDocRef.isBlank()) {
-                ValidationUtil.requireValidDocRef(approvalDocRef);
             }
         }
 
@@ -315,8 +297,6 @@ public class RequestService {
         request.setEventName(eventName);
         request.setOrganization(organization);
         request.setResponsiblePerson(responsiblePerson);
-        request.setApprovalDocType(approvalDocType);
-        request.setApprovalDocRef(approvalDocRef);
         request.setPurpose(purpose);
         request.setStartDate(startDate);
         request.setEndDate(endDate);
@@ -473,11 +453,7 @@ public class RequestService {
         }
     }
 
-    private void validateApprovalDocType(String approvalDocType) {
-        if (!"Paper Approval".equals(approvalDocType) && !"Signed GPOA".equals(approvalDocType)) {
-            throw new BusinessRuleException("Approval document type must be 'Paper Approval' or 'Signed GPOA'.");
-        }
-    }
+
 
     private void validateDateRange(LocalDate startDate, LocalDate endDate, RequestType requestType) {
         LocalDate today = LocalDate.now();

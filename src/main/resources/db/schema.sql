@@ -54,8 +54,6 @@ CREATE TABLE requests (
     event_name            VARCHAR(255),
     organization          VARCHAR(255),
     responsible_person    VARCHAR(255),
-    approval_doc_type     VARCHAR(20),
-    approval_doc_ref      VARCHAR(255),
     
     -- Purpose (applies to both, e.g., 'Academic BYOD' or 'Event Participation')
     purpose               VARCHAR(255)    NOT NULL,
@@ -246,8 +244,6 @@ ALTER TABLE requests
         CHECK (request_type IN ('normal', 'event')),
     ADD CONSTRAINT chk_requests_status
         CHECK (status IN ('pending', 'approved', 'rejected', 'returned')),
-    ADD CONSTRAINT chk_requests_approval_doc_type
-        CHECK (approval_doc_type IN ('Paper Approval', 'Signed GPOA')),
     -- End date must be on or after start date
     ADD CONSTRAINT chk_requests_date_range
         CHECK (end_date >= start_date),
@@ -697,7 +693,6 @@ COMMENT ON TABLE  system_settings             IS 'System settings and policy par
 
 INSERT INTO system_settings (setting_key, setting_value, description) VALUES
 ('max_devices_per_student', '5', 'Maximum number of active registered devices allowed per student'),
-('allow_unregistered_devices', 'true', 'Whether unapproved devices can be checked in by guards'),
 ('event_request_max_duration_days', '7', 'Maximum duration in days for an event request'),
 ('auto_exit_cutoff_time', '22:00', 'Cutoff time after which checked-in devices are auto-exited');
 

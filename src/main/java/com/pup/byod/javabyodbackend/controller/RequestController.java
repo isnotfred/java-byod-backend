@@ -84,8 +84,6 @@ public class RequestController {
         String eventName = (String) body.get("eventName");
         String organization = (String) body.get("organization");
         String responsiblePerson = (String) body.get("responsiblePerson");
-        String approvalDocType = (String) body.get("approvalDocType");
-        String approvalDocRef = (String) body.get("approvalDocRef");
         String purpose = (String) body.get("purpose");
 
         LocalDate startDate = body.get("startDate") != null ? LocalDate.parse((String) body.get("startDate")) : null;
@@ -123,7 +121,7 @@ public class RequestController {
 
         Request created = requestService.createRequest(
                 requestType, studentId, eventName, organization, responsiblePerson,
-                approvalDocType, approvalDocRef, purpose, startDate, endDate,
+                purpose, startDate, endDate,
                 expectedIngressTime, expectedEgressTime,
                 isSubmitted, isAccommodated, remarks, creatorUserId, lineItems
         );
@@ -140,8 +138,6 @@ public class RequestController {
         String eventName = (String) body.get("eventName");
         String organization = (String) body.get("organization");
         String responsiblePerson = (String) body.get("responsiblePerson");
-        String approvalDocType = (String) body.get("approvalDocType");
-        String approvalDocRef = (String) body.get("approvalDocRef");
         String purpose = (String) body.get("purpose");
 
         LocalDate startDate = body.get("startDate") != null ? LocalDate.parse((String) body.get("startDate")) : null;
@@ -179,7 +175,7 @@ public class RequestController {
 
         Request updated = requestService.updateRequest(
                 requestId, requestType, studentId, eventName, organization, responsiblePerson,
-                approvalDocType, approvalDocRef, purpose, startDate, endDate,
+                purpose, startDate, endDate,
                 expectedIngressTime, expectedEgressTime,
                 isSubmitted, isAccommodated, remarks, creatorUserId, lineItems
         );

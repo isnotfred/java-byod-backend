@@ -63,12 +63,6 @@ public class SystemSettingService {
             }
         }
 
-        if ("allow_unregistered_devices".equals(key)) {
-            if (!"true".equalsIgnoreCase(value) && !"false".equalsIgnoreCase(value)) {
-                throw new BusinessRuleException("Allow unregistered devices setting must be 'true' or 'false'.");
-            }
-        }
-
         if ("event_request_max_duration_days".equals(key)) {
             try {
                 int days = Integer.parseInt(value);

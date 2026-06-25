@@ -33,8 +33,6 @@ public class RequestDAO {
             .eventName(rs.getString("event_name"))
             .organization(rs.getString("organization"))
             .responsiblePerson(rs.getString("responsible_person"))
-            .approvalDocType(rs.getString("approval_doc_type"))
-            .approvalDocRef(rs.getString("approval_doc_ref"))
             .purpose(rs.getString("purpose"))
             .startDate(rs.getDate("start_date") != null ? rs.getDate("start_date").toLocalDate() : null)
             .endDate(rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null)
@@ -118,12 +116,12 @@ public class RequestDAO {
         String sql = """
                 INSERT INTO requests (
                     request_type, student_id, event_name, organization, responsible_person,
-                    approval_doc_type, approval_doc_ref, purpose, start_date, end_date,
+                    purpose, start_date, end_date,
                     expected_ingress_time, expected_egress_time, status,
                     is_submitted, is_accommodated, reviewed_by, reviewed_at, remarks
                 ) VALUES (
                     :requestType, :studentId, :eventName, :organization, :responsiblePerson,
-                    :approvalDocType, :approvalDocRef, :purpose, :startDate, :endDate,
+                    :purpose, :startDate, :endDate,
                     :expectedIngressTime, :expectedEgressTime, :status,
                     :isSubmitted, :isAccommodated, :reviewedBy, :reviewedAt, :remarks
                 )
@@ -135,8 +133,6 @@ public class RequestDAO {
                 .addValue("eventName", request.getEventName())
                 .addValue("organization", request.getOrganization())
                 .addValue("responsiblePerson", request.getResponsiblePerson())
-                .addValue("approvalDocType", request.getApprovalDocType())
-                .addValue("approvalDocRef", request.getApprovalDocRef())
                 .addValue("purpose", request.getPurpose())
                 .addValue("startDate", request.getStartDate())
                 .addValue("endDate", request.getEndDate())
@@ -161,8 +157,6 @@ public class RequestDAO {
                     event_name         = :eventName,
                     organization       = :organization,
                     responsible_person = :responsiblePerson,
-                    approval_doc_type  = :approvalDocType,
-                    approval_doc_ref   = :approvalDocRef,
                     purpose            = :purpose,
                     start_date         = :startDate,
                     end_date           = :endDate,
@@ -182,8 +176,6 @@ public class RequestDAO {
                 .addValue("eventName", request.getEventName())
                 .addValue("organization", request.getOrganization())
                 .addValue("responsiblePerson", request.getResponsiblePerson())
-                .addValue("approvalDocType", request.getApprovalDocType())
-                .addValue("approvalDocRef", request.getApprovalDocRef())
                 .addValue("purpose", request.getPurpose())
                 .addValue("startDate", request.getStartDate())
                 .addValue("endDate", request.getEndDate())
