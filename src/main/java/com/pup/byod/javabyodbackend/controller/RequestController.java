@@ -131,7 +131,64 @@ public class RequestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @PutMapping("/{requestId}")
+    public ResponseEntity<Request> updateRequest(
+            @PathVariable int requestId,
+            @RequestBody Map<String, Object> body) {
+        String requestType = (String) body.get("requestType");
+        String studentId = (String) body.get("studentId");
+        String eventName = (String) body.get("eventName");
+        String organization = (String) body.get("organization");
+        String responsiblePerson = (String) body.get("responsiblePerson");
+        String approvalDocType = (String) body.get("approvalDocType");
+        String approvalDocRef = (String) body.get("approvalDocRef");
+        String purpose = (String) body.get("purpose");
+
+        LocalDate startDate = body.get("startDate") != null ? LocalDate.parse((String) body.get("startDate")) : null;
+        LocalDate endDate = body.get("endDate") != null ? LocalDate.parse((String) body.get("endDate")) : null;
+        LocalTime expectedIngressTime = body.get("expectedIngressTime") != null
+                ? LocalTime.parse((String) body.get("expectedIngressTime")) : null;
+        LocalTime expectedEgressTime = body.get("expectedEgressTime") != null
+                ? LocalTime.parse((String) body.get("expectedEgressTime")) : null;
+
+        Boolean isSubmitted = (Boolean) body.get("isSubmitted");
+        Boolean isAccommodated = (Boolean) body.get("isAccommodated");
+        String remarks = (String) body.get("remarks");
+        Integer creatorUserId = body.get("creatorUserId") != null
+                ? ((Number) body.get("creatorUserId")).intValue() : null;
+
+        // Parse line items
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> rawItems = (List<Map<String, Object>>) body.get("lineItems");
+        List<RequestService.LineItemRequest> lineItems = new ArrayList<>();
+
+        if (rawItems != null) {
+            for (Map<String, Object> item : rawItems) {
+                RequestService.LineItemRequest lineItem = new RequestService.LineItemRequest();
+                lineItem.deviceName = (String) item.get("deviceName");
+                lineItem.brand = (String) item.get("brand");
+                lineItem.model = (String) item.get("model");
+                lineItem.deviceType = (String) item.get("deviceType");
+                lineItem.serialNumber = (String) item.get("serialNumber");
+                lineItem.quantity = item.get("quantity") != null ? ((Number) item.get("quantity")).intValue() : null;
+                lineItem.imagePath = (String) item.get("imagePath");
+                lineItem.remarks = (String) item.get("remarks");
+                lineItems.add(lineItem);
+            }
+        }
+
+        Request updated = requestService.updateRequest(
+                requestId, requestType, studentId, eventName, organization, responsiblePerson,
+                approvalDocType, approvalDocRef, purpose, startDate, endDate,
+                expectedIngressTime, expectedEgressTime,
+                isSubmitted, isAccommodated, remarks, creatorUserId, lineItems
+        );
+
+        return ResponseEntity.ok(updated);
+    }
+
     // ── PUT Endpoints ───────────────────────────────────────────────
+
 
     @PutMapping("/{requestId}/approve")
     public ResponseEntity<Request> approveRequest(

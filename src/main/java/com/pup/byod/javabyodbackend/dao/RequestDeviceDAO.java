@@ -199,6 +199,12 @@ public class RequestDeviceDAO {
         return jdbc.update(sql, params);
     }
 
+    public int deleteByRequestId(int requestId) {
+        String sql = "DELETE FROM request_devices WHERE request_id = :requestId";
+        var params = new MapSqlParameterSource("requestId", requestId);
+        return jdbc.update(sql, params);
+    }
+
     public int delete(int requestDeviceId) {
         String sql = "DELETE FROM request_devices WHERE request_device_id = :requestDeviceId";
         var params = new MapSqlParameterSource("requestDeviceId", requestDeviceId);
