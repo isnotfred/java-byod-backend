@@ -59,7 +59,7 @@ public class DeviceTransactionService {
      * @return DeviceScanResponse with the result
      */
     @Transactional
-    public DeviceScanResponse processGateScan(String serialNumber, int handledBy, String notes) {
+    public DeviceScanResponse processGateScan(String serialNumber, int handledBy, String notes, String direction) {
         if (serialNumber == null || serialNumber.isBlank()) {
             throw new BusinessRuleException("Serial number is required.");
         }
@@ -72,13 +72,24 @@ public class DeviceTransactionService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No approved device found with serial number '" + serialNumber + "' on an active request."));
 
-        // 3. Check today's transaction status
-        Optional<DeviceTransaction> todayTx = deviceTransactionDAO.findTodayTransaction(device.getRequestDeviceId());
+        // 3. Find if there is an open transaction (egress_time IS NULL)
+        Optional<DeviceTransaction> openTx = deviceTransactionDAO.findOpenTransaction(device.getRequestDeviceId());
 
-        if (todayTx.isEmpty()) {
-            // No transaction today → create ingress
+        // 4. Process based on explicit direction or auto-detect fallback
+        if ("ingress".equalsIgnoreCase(direction)) {
+            if (openTx.isPresent()) {
+                throw new BusinessRuleException(
+                        "Device '" + device.getDeviceName() + "' is already checked in (needs to check out first).");
+            }
+
+            Optional<DeviceTransaction> todayTx = deviceTransactionDAO.findTodayTransaction(device.getRequestDeviceId());
+            if (todayTx.isPresent() && todayTx.get().getEgressTime() != null) {
+                throw new BusinessRuleException(
+                        "Device '" + device.getDeviceName() + "' has already completed its ingress/egress cycle for today.");
+            }
+
+            // Create ingress
             int txId = deviceTransactionDAO.insertIngress(device.getRequestDeviceId(), handledBy, notes);
-
             auditLogService.writeAuditLog(handledBy, "DEVICE_CHECK_IN", "device_transactions",
                     String.valueOf(txId), null, null, null);
 
@@ -87,12 +98,15 @@ public class DeviceTransactionService {
                     .message("Device '" + device.getDeviceName() + "' checked in successfully.")
                     .device(device)
                     .build();
-        }
 
-        DeviceTransaction existingTx = todayTx.get();
+        } else if ("egress".equalsIgnoreCase(direction)) {
+            if (openTx.isEmpty()) {
+                throw new BusinessRuleException(
+                        "Device '" + device.getDeviceName() + "' is not currently checked in.");
+            }
 
-        if (existingTx.getEgressTime() == null && !existingTx.isNoEgressMarked()) {
-            // Ingress exists but no egress → record egress
+            // Record egress
+            DeviceTransaction existingTx = openTx.get();
             deviceTransactionDAO.updateEgress(existingTx.getTransactionId(), handledBy, notes);
 
             auditLogService.writeAuditLog(handledBy, "DEVICE_CHECK_OUT", "device_transactions",
@@ -103,11 +117,42 @@ public class DeviceTransactionService {
                     .message("Device '" + device.getDeviceName() + "' checked out successfully.")
                     .device(device)
                     .build();
-        }
 
-        // Transaction already complete for today
-        throw new BusinessRuleException(
-                "Device '" + device.getDeviceName() + "' has already completed its ingress/egress cycle for today.");
+        } else {
+            // Direction is null (auto-detect / fallback scan)
+            if (openTx.isPresent()) {
+                // Record egress
+                DeviceTransaction existingTx = openTx.get();
+                deviceTransactionDAO.updateEgress(existingTx.getTransactionId(), handledBy, notes);
+
+                auditLogService.writeAuditLog(handledBy, "DEVICE_CHECK_OUT", "device_transactions",
+                        String.valueOf(existingTx.getTransactionId()), null, null, null);
+
+                return DeviceScanResponse.builder()
+                        .status("CHECK_OUT_SUCCESS")
+                        .message("Device '" + device.getDeviceName() + "' checked out successfully.")
+                        .device(device)
+                        .build();
+            }
+
+            // Prevent duplicates today
+            Optional<DeviceTransaction> todayTx = deviceTransactionDAO.findTodayTransaction(device.getRequestDeviceId());
+            if (todayTx.isPresent()) {
+                throw new BusinessRuleException(
+                        "Device '" + device.getDeviceName() + "' has already completed its ingress/egress cycle for today.");
+            }
+
+            // Create ingress
+            int txId = deviceTransactionDAO.insertIngress(device.getRequestDeviceId(), handledBy, notes);
+            auditLogService.writeAuditLog(handledBy, "DEVICE_CHECK_IN", "device_transactions",
+                    String.valueOf(txId), null, null, null);
+
+            return DeviceScanResponse.builder()
+                    .status("CHECK_IN_SUCCESS")
+                    .message("Device '" + device.getDeviceName() + "' checked in successfully.")
+                    .device(device)
+                    .build();
+        }
     }
 
     // ── Batch Operations ────────────────────────────────────────────
@@ -121,7 +166,7 @@ public class DeviceTransactionService {
                 .map(id -> {
                     RequestDevice device = requestDeviceDAO.findById(id)
                             .orElseThrow(() -> new ResourceNotFoundException("Device not found: " + id));
-                    return processGateScan(device.getSerialNumber(), handledBy, null);
+                    return processGateScan(device.getSerialNumber(), handledBy, null, "ingress");
                 })
                 .toList();
     }
@@ -135,7 +180,7 @@ public class DeviceTransactionService {
                 .map(id -> {
                     RequestDevice device = requestDeviceDAO.findById(id)
                             .orElseThrow(() -> new ResourceNotFoundException("Device not found: " + id));
-                    return processGateScan(device.getSerialNumber(), handledBy, null);
+                    return processGateScan(device.getSerialNumber(), handledBy, null, "egress");
                 })
                 .toList();
     }
@@ -154,6 +199,14 @@ public class DeviceTransactionService {
                     null, null, "{\"count\":" + count + "}", null);
         }
         return count;
+    }
+
+    /**
+     * Automatically reconcile missed checkouts daily at midnight (12:00 AM Manila time).
+     */
+    @org.springframework.scheduling.annotation.Scheduled(cron = "0 0 0 * * *")
+    public void autoReconcileMissedCheckouts() {
+        reconcileMissedCheckouts();
     }
 
     // ── Query Operations ────────────────────────────────────────────

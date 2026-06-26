@@ -165,7 +165,9 @@ public class RequestService {
                 .endDate(endDate)
                 .expectedIngressTime(expectedIngressTime)
                 .expectedEgressTime(expectedEgressTime)
-                .status(RequestStatus.pending)
+                .status(RequestStatus.approved)
+                .reviewedBy(creatorUserId)
+                .reviewedAt(java.time.LocalDateTime.now())
                 .isSubmitted(Boolean.TRUE.equals(isSubmitted))
                 .isAccommodated(Boolean.TRUE.equals(isAccommodated))
                 .remarks(remarks)
@@ -186,7 +188,9 @@ public class RequestService {
                     .serialNumber(lineItem.serialNumber)
                     .quantity(lineItem.quantity != null ? lineItem.quantity : 1)
                     .imagePath(lineItem.imagePath)
-                    .deviceStatus(DeviceVerificationStatus.pending)
+                    .deviceStatus(DeviceVerificationStatus.approved)
+                    .verifiedBy(creatorUserId)
+                    .verifiedAt(java.time.LocalDateTime.now())
                     .remarks(lineItem.remarks)
                     .build();
 

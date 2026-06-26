@@ -42,8 +42,9 @@ public class DeviceTransactionController {
         String serialNumber = (String) body.get("serialNumber");
         int handledBy = ((Number) body.get("handledBy")).intValue();
         String notes = (String) body.get("notes");
+        String direction = (String) body.get("direction");
 
-        DeviceScanResponse response = deviceTransactionService.processGateScan(serialNumber, handledBy, notes);
+        DeviceScanResponse response = deviceTransactionService.processGateScan(serialNumber, handledBy, notes, direction);
         return ResponseEntity.ok(response);
     }
 

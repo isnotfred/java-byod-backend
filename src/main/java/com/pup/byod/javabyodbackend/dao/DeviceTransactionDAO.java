@@ -55,6 +55,19 @@ public class DeviceTransactionDAO {
         return jdbc.query(sql, params, transactionRowMapper).stream().findFirst();
     }
 
+    public Optional<DeviceTransaction> findOpenTransaction(int requestDeviceId) {
+        String sql = """
+                SELECT * FROM device_transactions
+                WHERE request_device_id = :requestDeviceId
+                  AND egress_time IS NULL
+                  AND no_egress_marked = FALSE
+                ORDER BY log_date ASC
+                LIMIT 1
+                """;
+        var params = new MapSqlParameterSource("requestDeviceId", requestDeviceId);
+        return jdbc.query(sql, params, transactionRowMapper).stream().findFirst();
+    }
+
     /**
      * Find transactions for a specific device within a date range.
      */
@@ -104,14 +117,40 @@ public class DeviceTransactionDAO {
      */
     public int markUnclosedTransactionsAsMissed() {
         String sql = """
-                UPDATE device_transactions
+                UPDATE device_transactions dt
                 SET no_egress_marked = TRUE,
                     notes = COALESCE(notes, '') || ' [auto: missed egress]'
-                WHERE egress_time IS NULL
-                  AND no_egress_marked = FALSE
-                  AND log_date < CURRENT_DATE
+                WHERE dt.egress_time IS NULL
+                  AND dt.no_egress_marked = FALSE
+                  AND dt.log_date < CURRENT_DATE
+                  AND dt.request_device_id NOT IN (
+                      SELECT rd.request_device_id
+                      FROM request_devices rd
+                      JOIN requests r ON r.request_id = rd.request_id
+                      WHERE r.request_type = 'event'
+                        AND r.end_date >= CURRENT_DATE
+                  )
                 """;
         return jdbc.update(sql, new MapSqlParameterSource());
+    }
+
+    /**
+     * Close an unclosed transaction from a past day as a missed checkout, logging the actual egress time.
+     */
+    public void closeMissedTransaction(int transactionId, int handledBy, String notes) {
+        String sql = """
+                UPDATE device_transactions
+                SET egress_time = CURRENT_TIMESTAMP,
+                    egress_handled_by = :handledBy,
+                    no_egress_marked = TRUE,
+                    notes = COALESCE(notes, '') || ' ' || :notes
+                WHERE transaction_id = :transactionId
+                """;
+        var params = new MapSqlParameterSource()
+                .addValue("transactionId", transactionId)
+                .addValue("handledBy", handledBy)
+                .addValue("notes", notes);
+        jdbc.update(sql, params);
     }
 
     // ── Report Queries ──────────────────────────────────────────────
