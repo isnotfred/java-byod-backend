@@ -82,6 +82,7 @@ public class RequestController {
         String requestType = (String) body.get("requestType");
         String studentId = (String) body.get("studentId");
         String eventName = (String) body.get("eventName");
+        String venue = (String) body.get("venue");
         String organization = (String) body.get("organization");
         String responsiblePerson = (String) body.get("responsiblePerson");
         String purpose = (String) body.get("purpose");
@@ -120,7 +121,7 @@ public class RequestController {
         }
 
         Request created = requestService.createRequest(
-                requestType, studentId, eventName, organization, responsiblePerson,
+                requestType, studentId, eventName, venue, organization, responsiblePerson,
                 purpose, startDate, endDate,
                 expectedIngressTime, expectedEgressTime,
                 isSubmitted, isAccommodated, remarks, creatorUserId, lineItems
@@ -136,6 +137,7 @@ public class RequestController {
         String requestType = (String) body.get("requestType");
         String studentId = (String) body.get("studentId");
         String eventName = (String) body.get("eventName");
+        String venue = (String) body.get("venue");
         String organization = (String) body.get("organization");
         String responsiblePerson = (String) body.get("responsiblePerson");
         String purpose = (String) body.get("purpose");
@@ -174,7 +176,7 @@ public class RequestController {
         }
 
         Request updated = requestService.updateRequest(
-                requestId, requestType, studentId, eventName, organization, responsiblePerson,
+                requestId, requestType, studentId, eventName, venue, organization, responsiblePerson,
                 purpose, startDate, endDate,
                 expectedIngressTime, expectedEgressTime,
                 isSubmitted, isAccommodated, remarks, creatorUserId, lineItems

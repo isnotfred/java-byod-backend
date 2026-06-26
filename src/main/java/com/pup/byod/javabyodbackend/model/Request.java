@@ -27,6 +27,7 @@ public class Request {
 
     // Event-specific details (nullable for normal requests)
     private String eventName;
+    private String venue;
     private String organization;
     private String responsiblePerson;
 

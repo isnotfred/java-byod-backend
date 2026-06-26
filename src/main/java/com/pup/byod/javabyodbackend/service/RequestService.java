@@ -92,6 +92,7 @@ public class RequestService {
     public Request createRequest(String requestTypeStr,
                                  String studentId,
                                  String eventName,
+                                 String venue,
                                  String organization,
                                  String responsiblePerson,
                                  String purpose,
@@ -132,6 +133,7 @@ public class RequestService {
 
         // Validate date range
         validateDateRange(startDate, endDate, requestType);
+        validateTimes(startDate, expectedIngressTime, expectedEgressTime);
 
         // At least one device is required
         if (lineItems == null || lineItems.isEmpty()) {
@@ -155,6 +157,7 @@ public class RequestService {
                 .requestType(requestType)
                 .studentId(studentId)
                 .eventName(eventName)
+                .venue(venue)
                 .organization(organization)
                 .responsiblePerson(responsiblePerson)
                 .purpose(purpose)
@@ -201,6 +204,7 @@ public class RequestService {
                                  String requestTypeStr,
                                  String studentId,
                                  String eventName,
+                                 String venue,
                                  String organization,
                                  String responsiblePerson,
                                  String purpose,
@@ -248,15 +252,16 @@ public class RequestService {
             if (endDate.isBefore(startDate)) {
                 throw new BusinessRuleException("End date must not be before start date.");
             }
-            if (requestType == RequestType.event) {
-                int maxDays = 7;
-                try {
-                    maxDays = Integer.parseInt(systemSettingDAO.getValue("event_request_max_duration_days", "7"));
-                } catch (NumberFormatException ignored) {}
+        }
+        validateTimes(startDate, expectedIngressTime, expectedEgressTime);
+        if (requestType == RequestType.event) {
+            int maxDays = 7;
+            try {
+                maxDays = Integer.parseInt(systemSettingDAO.getValue("event_request_max_duration_days", "7"));
+            } catch (NumberFormatException ignored) {}
 
-                if (java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate) > maxDays) {
-                    throw new BusinessRuleException("Event duration exceeds the maximum allowed limit of " + maxDays + " days.");
-                }
+            if (java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate) > maxDays) {
+                throw new BusinessRuleException("Event duration exceeds the maximum allowed limit of " + maxDays + " days.");
             }
         }
 
@@ -295,6 +300,7 @@ public class RequestService {
         request.setRequestType(requestType);
         request.setStudentId(studentId);
         request.setEventName(eventName);
+        request.setVenue(venue);
         request.setOrganization(organization);
         request.setResponsiblePerson(responsiblePerson);
         request.setPurpose(purpose);
@@ -474,6 +480,27 @@ public class RequestService {
 
             if (ChronoUnit.DAYS.between(startDate, endDate) > maxDays) {
                 throw new BusinessRuleException("Event duration exceeds the maximum allowed limit of " + maxDays + " days.");
+            }
+        }
+    }
+
+    private void validateTimes(LocalDate startDate, LocalTime ingressTime, LocalTime egressTime) {
+        LocalTime limitStart = LocalTime.of(7, 0);
+        LocalTime limitEnd = LocalTime.of(21, 0);
+
+        if (ingressTime.isBefore(limitStart) || ingressTime.isAfter(limitEnd)) {
+            throw new BusinessRuleException("Expected ingress time must be between 7:00 AM and 9:00 PM.");
+        }
+        if (egressTime.isBefore(limitStart) || egressTime.isAfter(limitEnd)) {
+            throw new BusinessRuleException("Expected egress time must be between 7:00 AM and 9:00 PM.");
+        }
+        if (!egressTime.isAfter(ingressTime)) {
+            throw new BusinessRuleException("Expected egress time must be after ingress time.");
+        }
+
+        if (startDate.equals(LocalDate.now())) {
+            if (ingressTime.isBefore(LocalTime.now())) {
+                throw new BusinessRuleException("Expected ingress time cannot be in the past for today's request.");
             }
         }
     }

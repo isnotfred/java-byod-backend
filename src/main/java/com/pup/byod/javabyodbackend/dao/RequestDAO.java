@@ -31,6 +31,7 @@ public class RequestDAO {
             .requestType(RequestType.fromString(rs.getString("request_type")))
             .studentId(rs.getString("student_id"))
             .eventName(rs.getString("event_name"))
+            .venue(rs.getString("venue"))
             .organization(rs.getString("organization"))
             .responsiblePerson(rs.getString("responsible_person"))
             .purpose(rs.getString("purpose"))
@@ -54,6 +55,7 @@ public class RequestDAO {
             .studentId(rs.getString("student_id"))
             .studentName(rs.getString("student_name"))
             .eventName(rs.getString("event_name"))
+            .venue(rs.getString("venue"))
             .organization(rs.getString("organization"))
             .startDate(rs.getDate("start_date") != null ? rs.getDate("start_date").toLocalDate() : null)
             .endDate(rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null)
@@ -115,12 +117,12 @@ public class RequestDAO {
     public int insert(Request request) {
         String sql = """
                 INSERT INTO requests (
-                    request_type, student_id, event_name, organization, responsible_person,
+                    request_type, student_id, event_name, venue, organization, responsible_person,
                     purpose, start_date, end_date,
                     expected_ingress_time, expected_egress_time, status,
                     is_submitted, is_accommodated, reviewed_by, reviewed_at, remarks
                 ) VALUES (
-                    :requestType, :studentId, :eventName, :organization, :responsiblePerson,
+                    :requestType, :studentId, :eventName, :venue, :organization, :responsiblePerson,
                     :purpose, :startDate, :endDate,
                     :expectedIngressTime, :expectedEgressTime, :status,
                     :isSubmitted, :isAccommodated, :reviewedBy, :reviewedAt, :remarks
@@ -131,6 +133,7 @@ public class RequestDAO {
                 .addValue("requestType", request.getRequestType() != null ? request.getRequestType().name() : "normal")
                 .addValue("studentId", request.getStudentId())
                 .addValue("eventName", request.getEventName())
+                .addValue("venue", request.getVenue())
                 .addValue("organization", request.getOrganization())
                 .addValue("responsiblePerson", request.getResponsiblePerson())
                 .addValue("purpose", request.getPurpose())
@@ -155,6 +158,7 @@ public class RequestDAO {
                 UPDATE requests
                 SET request_type       = :requestType,
                     event_name         = :eventName,
+                    venue              = :venue,
                     organization       = :organization,
                     responsible_person = :responsiblePerson,
                     purpose            = :purpose,
@@ -174,6 +178,7 @@ public class RequestDAO {
         var params = new MapSqlParameterSource()
                 .addValue("requestType", request.getRequestType() != null ? request.getRequestType().name() : "normal")
                 .addValue("eventName", request.getEventName())
+                .addValue("venue", request.getVenue())
                 .addValue("organization", request.getOrganization())
                 .addValue("responsiblePerson", request.getResponsiblePerson())
                 .addValue("purpose", request.getPurpose())

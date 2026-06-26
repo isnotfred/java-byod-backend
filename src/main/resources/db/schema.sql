@@ -52,6 +52,7 @@ CREATE TABLE requests (
     
     -- Event-specific fields (nullable for normal requests)
     event_name            VARCHAR(255),
+    venue                 VARCHAR(255),
     organization          VARCHAR(255),
     responsible_person    VARCHAR(255),
     
@@ -624,6 +625,7 @@ SELECT
     r.student_id,
     s.first_name || ' ' || s.last_name AS student_name,
     r.event_name,
+    r.venue,
     r.organization,
     r.start_date,
     r.end_date,
@@ -635,7 +637,7 @@ FROM requests r
 JOIN students s ON s.student_id = r.student_id
 LEFT JOIN request_devices rd ON rd.request_id = r.request_id
 WHERE r.status = 'approved'
-GROUP BY r.request_id, s.first_name, s.last_name;
+GROUP BY r.request_id, s.first_name, s.last_name, r.venue;
 
 
 -- ============================================================

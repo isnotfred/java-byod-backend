@@ -23,6 +23,7 @@ public class ActiveRequest {
     private String studentId;
     private String studentName;
     private String eventName;
+    private String venue;
     private String organization;
     private LocalDate startDate;
     private LocalDate endDate;
