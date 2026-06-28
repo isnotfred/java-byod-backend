@@ -133,7 +133,7 @@ public class RequestService {
 
         // Validate date range
         validateDateRange(startDate, endDate, requestType);
-        validateTimes(startDate, expectedIngressTime, expectedEgressTime);
+        validateTimes(startDate, expectedIngressTime, expectedEgressTime, requestType);
 
         // At least one device is required
         if (lineItems == null || lineItems.isEmpty()) {
@@ -257,7 +257,7 @@ public class RequestService {
                 throw new BusinessRuleException("End date must not be before start date.");
             }
         }
-        validateTimes(startDate, expectedIngressTime, expectedEgressTime);
+        validateTimes(startDate, expectedIngressTime, expectedEgressTime, requestType);
         if (requestType == RequestType.event) {
             int maxDays = 7;
             try {
@@ -488,7 +488,7 @@ public class RequestService {
         }
     }
 
-    private void validateTimes(LocalDate startDate, LocalTime ingressTime, LocalTime egressTime) {
+    private void validateTimes(LocalDate startDate, LocalTime ingressTime, LocalTime egressTime, RequestType requestType) {
         LocalTime limitStart = LocalTime.of(7, 0);
         LocalTime limitEnd = LocalTime.of(21, 0);
 
@@ -498,7 +498,7 @@ public class RequestService {
         if (egressTime.isBefore(limitStart) || egressTime.isAfter(limitEnd)) {
             throw new BusinessRuleException("Expected egress time must be between 7:00 AM and 9:00 PM.");
         }
-        if (!egressTime.isAfter(ingressTime)) {
+        if (requestType == RequestType.normal && !egressTime.isAfter(ingressTime)) {
             throw new BusinessRuleException("Expected egress time must be after ingress time.");
         }
 

@@ -52,6 +52,7 @@ public class StudentService {
         ValidationUtil.requireValidStudentId(studentId);
         ValidationUtil.requireValidName(firstName, "First name");
         ValidationUtil.requireValidName(lastName, "Last name");
+        ValidationUtil.requireValidCourseYearLevel(courseYearLevel);
 
         if (studentRepository.findById(studentId).isPresent()) {
             throw new BusinessRuleException("Student ID already exists.");
@@ -77,6 +78,7 @@ public class StudentService {
         Student existing = getStudentById(oldStudentId);
         ValidationUtil.requireValidName(firstName, "First name");
         ValidationUtil.requireValidName(lastName, "Last name");
+        ValidationUtil.requireValidCourseYearLevel(courseYearLevel);
         ValidationUtil.requireNonBlank(status, "Status");
 
         if (!oldStudentId.equalsIgnoreCase(newStudentId)) {
@@ -155,6 +157,12 @@ public class StudentService {
 
                 if (studentId == null || studentId.isBlank()) {
                     rowErrors.add("student_id is required.");
+                } else {
+                    try {
+                        ValidationUtil.requireValidStudentId(studentId);
+                    } catch (Exception e) {
+                        rowErrors.add(e.getMessage());
+                    }
                 }
                 try {
                     ValidationUtil.requireValidName(firstName, "first_name");
@@ -163,6 +171,11 @@ public class StudentService {
                 }
                 try {
                     ValidationUtil.requireValidName(lastName, "last_name");
+                } catch (Exception e) {
+                    rowErrors.add(e.getMessage());
+                }
+                try {
+                    ValidationUtil.requireValidCourseYearLevel(courseYearLevel);
                 } catch (Exception e) {
                     rowErrors.add(e.getMessage());
                 }

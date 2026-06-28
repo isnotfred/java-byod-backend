@@ -60,7 +60,6 @@ public class DeviceTransactionDAO {
                 SELECT * FROM device_transactions
                 WHERE request_device_id = :requestDeviceId
                   AND egress_time IS NULL
-                  AND no_egress_marked = FALSE
                 ORDER BY log_date ASC
                 LIMIT 1
                 """;
@@ -175,6 +174,10 @@ public class DeviceTransactionDAO {
                     r.student_id,
                     s.first_name || ' ' || s.last_name AS student_name,
                     s.course_year_level,
+                    r.expected_ingress_time,
+                    r.expected_egress_time,
+                    (EXTRACT(EPOCH FROM (dt.ingress_time::time - r.expected_ingress_time)) / 60 >= 60) AS is_late_ingress,
+                    (dt.egress_time IS NOT NULL AND dt.egress_time::date = dt.log_date AND EXTRACT(EPOCH FROM (dt.egress_time::time - r.expected_egress_time)) / 60 >= 60) AS is_late_egress,
                     ui.full_name AS ingress_handled_by_name,
                     ue.full_name AS egress_handled_by_name
                 FROM   device_transactions dt
@@ -192,6 +195,49 @@ public class DeviceTransactionDAO {
                 .addValue("date", date)
                 .addValue("studentId", studentId)
                 .addValue("deviceType", deviceType);
+        return jdbc.query(sql, params, dailyTrafficRowMapper);
+    }
+
+    /**
+     * Late scans report: all check-ins & check-outs delayed by 1 hour or more.
+     */
+    public List<DailyTrafficRow> getLateScans(LocalDate from, LocalDate to) {
+        String sql = """
+                SELECT
+                    dt.transaction_id,
+                    dt.log_date,
+                    dt.ingress_time,
+                    dt.egress_time,
+                    dt.no_egress_marked,
+                    dt.notes,
+                    rd.request_device_id,
+                    rd.device_name,
+                    rd.serial_number,
+                    rd.device_type,
+                    rd.device_status AS registration_status,
+                    r.student_id,
+                    s.first_name || ' ' || s.last_name AS student_name,
+                    s.course_year_level,
+                    r.expected_ingress_time,
+                    r.expected_egress_time,
+                    (EXTRACT(EPOCH FROM (dt.ingress_time::time - r.expected_ingress_time)) / 60 >= 60) AS is_late_ingress,
+                    (dt.egress_time IS NOT NULL AND dt.egress_time::date = dt.log_date AND EXTRACT(EPOCH FROM (dt.egress_time::time - r.expected_egress_time)) / 60 >= 60) AS is_late_egress,
+                    ui.full_name AS ingress_handled_by_name,
+                    ue.full_name AS egress_handled_by_name
+                FROM   device_transactions dt
+                JOIN   request_devices rd ON rd.request_device_id = dt.request_device_id
+                JOIN   requests r ON r.request_id = rd.request_id
+                JOIN   students s ON s.student_id = r.student_id
+                LEFT   JOIN users ui ON ui.user_id = dt.ingress_handled_by
+                LEFT   JOIN users ue ON ue.user_id = dt.egress_handled_by
+                WHERE  dt.log_date >= :from AND dt.log_date <= :to
+                  AND  ((EXTRACT(EPOCH FROM (dt.ingress_time::time - r.expected_ingress_time)) / 60 >= 60)
+                    OR  (dt.egress_time IS NOT NULL AND dt.egress_time::date = dt.log_date AND EXTRACT(EPOCH FROM (dt.egress_time::time - r.expected_egress_time)) / 60 >= 60))
+                ORDER  BY dt.log_date DESC, dt.ingress_time DESC
+                """;
+        var params = new MapSqlParameterSource()
+                .addValue("from", from)
+                .addValue("to", to);
         return jdbc.query(sql, params, dailyTrafficRowMapper);
     }
 
@@ -371,6 +417,7 @@ public class DeviceTransactionDAO {
                 UPDATE device_transactions
                 SET egress_time       = CURRENT_TIMESTAMP,
                     egress_handled_by = :handledBy,
+                    no_egress_marked  = FALSE,
                     notes             = COALESCE(CAST(:notes AS VARCHAR), notes)
                 WHERE transaction_id = :transactionId
                 """;
@@ -403,6 +450,10 @@ public class DeviceTransactionDAO {
         row.setHandledByName(rs.getString("ingress_handled_by_name"));
         row.setIngressTime(rs.getTimestamp("ingress_time") != null ? rs.getTimestamp("ingress_time").toLocalDateTime() : null);
         row.setEgressTime(rs.getTimestamp("egress_time") != null ? rs.getTimestamp("egress_time").toLocalDateTime() : null);
+        row.setExpectedIngressTime(rs.getTime("expected_ingress_time") != null ? rs.getTime("expected_ingress_time").toLocalTime() : null);
+        row.setExpectedEgressTime(rs.getTime("expected_egress_time") != null ? rs.getTime("expected_egress_time").toLocalTime() : null);
+        row.setLateIngress(rs.getBoolean("is_late_ingress"));
+        row.setLateEgress(rs.getBoolean("is_late_egress"));
         return row;
     };
 

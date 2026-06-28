@@ -233,13 +233,15 @@ Creates a student registry record.
   ```
 
 #### `PUT /api/v1/students/{studentId}`
-Updates details of an existing student record.
+Updates details of an existing student record (including editable student ID).
 - **Request Body:**
   ```json
   {
+    "studentId": "2021-10023",
     "firstName": "Juan",
     "lastName": "Dela Cruz II",
     "courseYearLevel": "BSIT 4-1",
+    "contactNumber": "09171234567",
     "status": "active"
   }
   ```
@@ -250,6 +252,7 @@ Updates details of an existing student record.
     "firstName": "Juan",
     "lastName": "Dela Cruz II",
     "courseYearLevel": "BSIT 4-1",
+    "contactNumber": "09171234567",
     "course": "BSIT",
     "yearLevel": 4,
     "status": "active",
@@ -567,6 +570,10 @@ Lists administrative incident logs, rejections, overrides, and returned requests
 
 #### `GET /reports/missed-checkouts`
 Lists all transactions flagged with `no_egress_marked = true` or left unclosed.
+- **Parameters:** `from`, `to`.
+
+#### `GET /reports/late-scans`
+Lists campus check-in and check-out scans delayed by 1 hour or more.
 - **Parameters:** `from`, `to`.
 
 #### `GET /reports/purpose-breakdown`

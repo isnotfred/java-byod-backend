@@ -31,7 +31,12 @@ public class DailyTrafficRow {
     private String courseYearLevel;
 
     // Guard fields
-    private String handledByName;              // null for auto-exit rows
+    private String         handledByName;              // null for auto-exit rows
+
+    private java.time.LocalTime expectedIngressTime;
+    private java.time.LocalTime expectedEgressTime;
+    private boolean             isLateIngress;
+    private boolean             isLateEgress;
 
     // ── Constructors ──────────────────────────────────────────────────────────
 
@@ -89,4 +94,16 @@ public class DailyTrafficRow {
 
     public LocalDateTime getEgressTime()             { return egressTime; }
     public void           setEgressTime(LocalDateTime v)  { this.egressTime = v; }
+
+    public java.time.LocalTime getExpectedIngressTime() { return expectedIngressTime; }
+    public void setExpectedIngressTime(java.time.LocalTime expectedIngressTime) { this.expectedIngressTime = expectedIngressTime; }
+
+    public java.time.LocalTime getExpectedEgressTime() { return expectedEgressTime; }
+    public void setExpectedEgressTime(java.time.LocalTime expectedEgressTime) { this.expectedEgressTime = expectedEgressTime; }
+
+    public boolean isLateIngress() { return isLateIngress; }
+    public void setLateIngress(boolean lateIngress) { isLateIngress = lateIngress; }
+
+    public boolean isLateEgress() { return isLateEgress; }
+    public void setLateEgress(boolean lateEgress) { isLateEgress = lateEgress; }
 }

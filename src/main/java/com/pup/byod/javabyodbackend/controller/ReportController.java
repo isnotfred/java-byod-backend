@@ -80,6 +80,15 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getMissedCheckoutReport(from, to));
     }
 
+    // ── Late Check-ins & Check-outs ──────────────────────────────────
+
+    @GetMapping("/late-scans")
+    public ResponseEntity<List<DailyTrafficRow>> getLateScansReport(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        return ResponseEntity.ok(reportService.getLateScansReport(from, to));
+    }
+
     // ── 8. Purpose Breakdown ────────────────────────────────────────
 
     @GetMapping("/purpose-breakdown")

@@ -103,6 +103,16 @@ public class ReportService {
         return deviceTransactionDAO.getMissedCheckouts(from, to);
     }
 
+    // ── Late Scans Report ───────────────────────────────────────────
+
+    /**
+     * Lists check-ins and check-outs delayed by 1 hour or more.
+     */
+    public List<DailyTrafficRow> getLateScansReport(LocalDate from, LocalDate to) {
+        validateDateRange(from, to);
+        return deviceTransactionDAO.getLateScans(from, to);
+    }
+
     // ── 8. Purpose Breakdown ────────────────────────────────────────
 
     /**

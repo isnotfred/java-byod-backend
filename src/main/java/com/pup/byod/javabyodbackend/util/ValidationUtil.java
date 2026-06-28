@@ -47,8 +47,15 @@ public final class ValidationUtil {
      */
     public static void requireValidStudentId(String studentId) {
         requireNonBlank(studentId, "Student ID");
-        if (!studentId.matches("^[A-Za-z0-9\\-]{1,50}$")) {
-            throw new BusinessRuleException("Student ID format is invalid.");
+        if (!studentId.matches("(?i)^2\\d{3}-\\d{5,6}-SR-0$")) {
+            throw new BusinessRuleException("Student ID format must be 2###-######-SR-0 (e.g., 2024-00482-SR-0).");
+        }
+    }
+
+    public static void requireValidCourseYearLevel(String value) {
+        requireNonBlank(value, "Course Year Level");
+        if (!value.matches("^[A-Za-z\\s.-]+\\s+\\d-\\d$")) {
+            throw new BusinessRuleException("Course Year Level format must be Text #-# (e.g., BSIT 2-2).");
         }
     }
 
