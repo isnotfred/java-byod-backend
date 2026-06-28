@@ -1,5 +1,6 @@
 package com.pup.byod.javabyodbackend.model.report;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 
 /**
@@ -35,7 +36,11 @@ public class DailyTrafficRow {
 
     private java.time.LocalTime expectedIngressTime;
     private java.time.LocalTime expectedEgressTime;
+
+    @JsonProperty("isLateIngress")
     private boolean             isLateIngress;
+
+    @JsonProperty("isLateEgress")
     private boolean             isLateEgress;
 
     // ── Constructors ──────────────────────────────────────────────────────────
