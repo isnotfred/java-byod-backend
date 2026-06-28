@@ -86,24 +86,26 @@ public class StudentDAO {
         return jdbc.update(sql, params);
     }
 
-    public int update(Student student) {
+    public int update(String oldStudentId, Student student) {
         String sql = """
                 UPDATE students
-                SET first_name       = :firstName,
-                    last_name        = :lastName,
+                SET student_id        = :newStudentId,
+                    first_name        = :firstName,
+                    last_name         = :lastName,
                     course_year_level = :courseYearLevel,
-                    contact_number   = :contactNumber,
-                    status           = :status
-                WHERE student_id = :studentId
+                    contact_number    = :contactNumber,
+                    status            = :status
+                WHERE student_id = :oldStudentId
                 """;
 
         var params = new MapSqlParameterSource()
+                .addValue("newStudentId", student.getStudentId())
                 .addValue("firstName", student.getFirstName())
                 .addValue("lastName", student.getLastName())
                 .addValue("courseYearLevel", student.getCourseYearLevel())
                 .addValue("contactNumber", student.getContactNumber())
                 .addValue("status", student.getStatus())
-                .addValue("studentId", student.getStudentId());
+                .addValue("oldStudentId", oldStudentId);
 
         return jdbc.update(sql, params);
     }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -72,14 +73,22 @@ public class StudentService {
     }
 
     @Transactional
-    public Student updateStudent(String studentId, String firstName, String lastName, String courseYearLevel, String contactNumber, String status) {
-        Student existing = getStudentById(studentId);
+    public Student updateStudent(String oldStudentId, String newStudentId, String firstName, String lastName, String courseYearLevel, String contactNumber, String status) {
+        Student existing = getStudentById(oldStudentId);
         ValidationUtil.requireValidName(firstName, "First name");
         ValidationUtil.requireValidName(lastName, "Last name");
         ValidationUtil.requireNonBlank(status, "Status");
 
+        if (!oldStudentId.equalsIgnoreCase(newStudentId)) {
+            ValidationUtil.requireValidStudentId(newStudentId);
+            Optional<Student> collision = studentRepository.findById(newStudentId);
+            if (collision.isPresent()) {
+                throw new com.pup.byod.javabyodbackend.exception.BusinessRuleException("Student ID " + newStudentId + " is already in use by another student.");
+            }
+        }
+
         Student updated = Student.builder()
-                .studentId(existing.getStudentId())
+                .studentId(newStudentId.trim())
                 .firstName(firstName.trim())
                 .lastName(lastName.trim())
                 .courseYearLevel(courseYearLevel)
@@ -89,9 +98,9 @@ public class StudentService {
                 .updatedAt(existing.getUpdatedAt())
                 .build();
 
-        studentRepository.update(updated);
-        Student saved = getStudentById(studentId);
-        auditLogService.writeAuditLog(null, "STUDENT_UPDATED", "students", studentId, null, null, null);
+        studentRepository.update(oldStudentId, updated);
+        Student saved = getStudentById(newStudentId);
+        auditLogService.writeAuditLog(null, "STUDENT_UPDATED", "students", newStudentId, null, null, null);
         return saved;
     }
 

@@ -337,6 +337,7 @@ ALTER TABLE audit_logs
             'REQUEST_APPROVED',
             'REQUEST_REJECTED',
             'REQUEST_RETURNED',
+            'REQUEST_UPDATED',
             'DEVICE_VERIFIED',
             'DEVICE_CHECK_IN',
             'DEVICE_CHECK_OUT',

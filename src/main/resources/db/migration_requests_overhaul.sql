@@ -382,6 +382,7 @@ ALTER TABLE audit_logs ADD CONSTRAINT chk_audit_logs_action_type_known CHECK (ac
     'REQUEST_APPROVED',
     'REQUEST_REJECTED',
     'REQUEST_RETURNED',
+    'REQUEST_UPDATED',
     'DEVICE_VERIFIED',
     'DEVICE_CHECK_IN',
     'DEVICE_CHECK_OUT',

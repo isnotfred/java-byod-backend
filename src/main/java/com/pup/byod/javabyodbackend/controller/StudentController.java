@@ -66,8 +66,11 @@ public class StudentController {
         ValidationUtil.requireValidName(request.lastName, "Last name");
         ValidationUtil.requireNonBlank(request.status, "Status");
 
+        String newStudentId = request.studentId != null ? request.studentId.trim() : studentId;
+
         return studentService.updateStudent(
                 studentId,
+                newStudentId,
                 request.firstName,
                 request.lastName,
                 request.courseYearLevel,
@@ -101,6 +104,7 @@ public class StudentController {
     }
 
     public static class UpdateStudentRequest {
+        public String studentId; // Added for editable student ID
         public String firstName;
         public String lastName;
         public String courseYearLevel;
