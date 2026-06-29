@@ -420,7 +420,6 @@ public class DeviceTransactionDAO {
                 UPDATE device_transactions
                 SET egress_time       = CURRENT_TIMESTAMP,
                     egress_handled_by = :handledBy,
-                    no_egress_marked  = FALSE,
                     notes             = COALESCE(CAST(:notes AS VARCHAR), notes)
                 WHERE transaction_id = :transactionId
                 """;
