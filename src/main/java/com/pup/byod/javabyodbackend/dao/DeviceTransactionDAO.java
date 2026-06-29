@@ -177,7 +177,7 @@ public class DeviceTransactionDAO {
                     r.expected_ingress_time,
                     r.expected_egress_time,
                     (EXTRACT(EPOCH FROM (dt.ingress_time::time - r.expected_ingress_time)) / 60 >= 60) AS is_late_ingress,
-                    (dt.egress_time IS NOT NULL AND dt.egress_time::date = dt.log_date AND EXTRACT(EPOCH FROM (dt.egress_time::time - r.expected_egress_time)) / 60 >= 60) AS is_late_egress,
+                    (dt.egress_time IS NOT NULL AND (dt.egress_time::date != dt.log_date OR EXTRACT(EPOCH FROM (dt.egress_time::time - r.expected_egress_time)) / 60 >= 60)) AS is_late_egress,
                     ui.full_name AS ingress_handled_by_name,
                     ue.full_name AS egress_handled_by_name
                 FROM   device_transactions dt
@@ -186,7 +186,7 @@ public class DeviceTransactionDAO {
                 JOIN   students s ON s.student_id = r.student_id
                 LEFT   JOIN users ui ON ui.user_id = dt.ingress_handled_by
                 LEFT   JOIN users ue ON ue.user_id = dt.egress_handled_by
-                WHERE  dt.log_date = :date
+                WHERE  (dt.log_date = :date OR dt.egress_time::date = :date)
                   AND  (CAST(:studentId AS VARCHAR) IS NULL OR r.student_id = :studentId)
                   AND  (CAST(:deviceType AS VARCHAR) IS NULL OR rd.device_type = :deviceType)
                 ORDER  BY dt.ingress_time DESC
