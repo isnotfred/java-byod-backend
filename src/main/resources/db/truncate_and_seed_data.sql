@@ -35,49 +35,49 @@ BEGIN
 
     -- B. Populate 2 Requests per Student (mix of normal/event, total 10 requests)
     
-    -- Student 1 Requests (both approved, one has ongoing logs today)
+    -- Student 1 Requests (approved, active through June 29)
     INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00481-SR-0', 'Academic Classes', '2026-06-12', '2026-06-12', '08:00:00', '17:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
+    VALUES ('normal', '2024-00481-SR-0', 'Academic Classes', '2026-06-01', '2026-06-29', '08:00:00', '17:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_id INTO v_req1_id;
     
     INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00481-SR-0', 'Lab Work', '2026-06-28', '2026-06-28', '08:00:00', '18:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
+    VALUES ('normal', '2024-00481-SR-0', 'Lab Work', '2026-06-15', '2026-06-20', '09:00:00', '18:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_id INTO v_req2_id;
 
-    -- Student 2 Requests (both approved)
+    -- Student 2 Requests (approved, active through June 29)
     INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00482-SR-0', 'Study Session', '2026-06-01', '2026-06-01', '08:00:00', '17:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
+    VALUES ('normal', '2024-00482-SR-0', 'Study Session', '2026-06-10', '2026-06-29', '08:00:00', '17:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_id INTO v_req3_id;
     
-    INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00482-SR-0', 'Thesis Defense', '2026-06-18', '2026-06-18', '08:30:00', '17:30:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
+    INSERT INTO requests (request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+    VALUES ('event', '2024-00482-SR-0', 'Research Symposium', 'Engineering Council', 'Dr. Lee', 'Thesis Defense', '2026-06-25', '2026-06-29', '08:30:00', '18:30:00', 'approved', TRUE, TRUE, v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_id INTO v_req4_id;
 
-    -- Student 3 Requests (both approved, event requests, one has ongoing logs today)
-    INSERT INTO requests (request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('event', '2024-00483-SR-0', 'Tech Expo Stage 1', 'Computer Society', 'Dr. Garcia', 'Project Presentation', '2026-06-05', '2026-06-10', '08:00:00', '18:00:00', 'approved', TRUE, TRUE, v_user_id, CURRENT_TIMESTAMP)
+    -- Student 3 Requests (approved, expired prior to June 29)
+    INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+    VALUES ('normal', '2024-00483-SR-0', 'Project Work', '2026-06-05', '2026-06-05', '08:00:00', '17:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_id INTO v_req5_id;
 
     INSERT INTO requests (request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('event', '2024-00483-SR-0', 'Hackathon Finals', 'CS Dept', 'Prof. Miller', 'Code Sprint', '2026-06-25', '2026-06-30', '07:30:00', '19:30:00', 'approved', TRUE, TRUE, v_user_id, CURRENT_TIMESTAMP)
+    VALUES ('event', '2024-00483-SR-0', 'Hackathon Finals', 'CS Dept', 'Prof. Miller', 'Code Sprint', '2026-06-12', '2026-06-12', '09:00:00', '18:00:00', 'approved', TRUE, TRUE, v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_id INTO v_req6_id;
 
     -- Student 4 Requests (both pending - satisfies 'at least 2 pending')
     INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00484-SR-0', 'Regular BYOD classes', '2026-06-28', '2026-06-28', '08:00:00', '17:00:00', 'pending', TRUE, FALSE, NULL, NULL)
+    VALUES ('normal', '2024-00484-SR-0', 'Regular BYOD classes', '2026-06-28', '2026-06-29', '08:00:00', '17:00:00', 'pending', TRUE, FALSE, NULL, NULL)
     RETURNING request_id INTO v_req7_id;
 
     INSERT INTO requests (request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('event', '2024-00484-SR-0', 'Sports Fest', 'PUP Org', 'Dr. Adams', 'Covering media', '2026-06-25', '2026-06-30', '08:00:00', '17:00:00', 'pending', TRUE, FALSE, NULL, NULL)
+    VALUES ('event', '2024-00484-SR-0', 'Sports Fest', 'PUP Org', 'Dr. Adams', 'Covering media', '2026-06-25', '2026-06-29', '08:00:00', '17:00:00', 'pending', TRUE, FALSE, NULL, NULL)
     RETURNING request_id INTO v_req8_id;
 
-    -- Student 5 Requests (one approved normal, one approved event)
+    -- Student 5 Requests (approved, active through June 29)
     INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00485-SR-0', 'Academic Research', '2026-06-28', '2026-06-28', '08:00:00', '18:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
+    VALUES ('normal', '2024-00485-SR-0', 'Academic Research', '2026-06-02', '2026-06-29', '08:00:00', '18:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_id INTO v_req9_id;
 
     INSERT INTO requests (request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('event', '2024-00485-SR-0', 'PUP Seminar', 'Junior Engineers', 'Engr. Santos', 'Training Support', '2026-06-01', '2026-06-05', '08:00:00', '18:00:00', 'approved', TRUE, TRUE, v_user_id, CURRENT_TIMESTAMP)
+    VALUES ('event', '2024-00485-SR-0', 'PUP Seminar', 'Junior Engineers', 'Engr. Santos', 'Training Support', '2026-06-20', '2026-06-25', '08:00:00', '18:00:00', 'approved', TRUE, TRUE, v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_id INTO v_req10_id;
 
     -- C. Populate Request Devices for all requests
@@ -105,7 +105,6 @@ BEGIN
     VALUES (v_req6_id, 'Arduino Kit Updated', 'Arduino', 'Uno R3', 'Project Prototypes (Optional SN)', 'SN-DEV-0032', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_device_id INTO v_dev6_id;
 
-    -- Student 4 Devices (linked to pending requests)
     INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
     VALUES (v_req7_id, 'Lenovo ThinkPad', 'Lenovo', 'T14 Gen 3', 'Personal Computers', 'SN-DEV-0041', 1, 'pending', NULL, NULL)
     RETURNING request_device_id INTO v_dev7_id;
@@ -122,46 +121,48 @@ BEGIN
     VALUES (v_req10_id, 'iPad Pro Updated', 'Apple', 'M1 11-inch', 'Mobile Devices (Tablet/Phone)', 'SN-DEV-0052', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_device_id INTO v_dev10_id;
 
-    -- D. Populate Logs from June 1 to June 28, 2026 (incorporating missed checkouts and late check-ins/outs)
+    -- E. Populate Logs from June 1 to June 29, 2026 (incorporating missed checkouts and late check-ins/outs)
     
     -- June 1, 2026: Standard logs (On Time)
     INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
     (v_dev1_id, '2026-06-01', '2026-06-01 07:45:00+08', v_user_id, '2026-06-01 16:50:00+08', v_user_id, FALSE),
-    (v_dev3_id, '2026-06-01', '2026-06-01 08:15:00+08', v_user_id, '2026-06-01 17:02:00+08', v_user_id, FALSE),
-    (v_dev10_id, '2026-06-01', '2026-06-01 08:10:00+08', v_user_id, '2026-06-01 17:55:00+08', v_user_id, FALSE);
+    (v_dev9_id, '2026-06-02', '2026-06-02 07:55:00+08', v_user_id, '2026-06-02 17:45:00+08', v_user_id, FALSE);
 
-    -- June 5, 2026: Late Check-in (Device 5 expected at 08:00, checked-in at 09:15 -> 1 hr 15 mins late)
+    -- June 5, 2026: Missed checkout (Device 5 never checked out)
     INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev5_id, '2026-06-05', '2026-06-05 09:15:00+08', v_user_id, '2026-06-05 17:45:00+08', v_user_id, FALSE);
+    (v_dev5_id, '2026-06-05', '2026-06-05 07:50:00+08', v_user_id, NULL, NULL, TRUE);
 
-    -- June 8, 2026: Late Check-out (Device 5 expected egress at 18:00, checked-out at 19:15 -> 1 hr 15 mins late)
+    -- June 10, 2026: Missed checkout for Device 1
     INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev5_id, '2026-06-08', '2026-06-08 07:55:00+08', v_user_id, '2026-06-08 19:15:00+08', v_user_id, FALSE);
+    (v_dev1_id, '2026-06-10', '2026-06-10 07:55:00+08', v_user_id, NULL, NULL, TRUE);
 
-    -- June 12, 2026: Missed checkout simulation for Device 1 (Ingress logged but Egress is NULL and flagged as missed)
+    -- June 12, 2026: Missed checkout for Device 6, BUT checked out today on June 29 (Checked-out missed egress!)
     INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev1_id, '2026-06-12', '2026-06-12 07:50:00+08', v_user_id, NULL, NULL, TRUE);
+    (v_dev6_id, '2026-06-12', '2026-06-12 08:45:00+08', v_user_id, '2026-06-29 11:30:00+08', v_user_id, FALSE);
 
-    -- June 18, 2026: Normal logs
+    -- June 15, 2026: Late Check-in (Device 1 expected at 08:00, checked-in at 09:10 -> 1 hr 10 mins late)
     INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev2_id, '2026-06-18', '2026-06-18 08:10:00+08', v_user_id, '2026-06-18 17:45:00+08', v_user_id, FALSE),
-    (v_dev4_id, '2026-06-18', '2026-06-18 08:20:00+08', v_user_id, '2026-06-18 17:20:00+08', v_user_id, FALSE);
+    (v_dev1_id, '2026-06-15', '2026-06-15 09:10:00+08', v_user_id, '2026-06-15 16:50:00+08', v_user_id, FALSE);
 
-    -- June 26, 2026: Missed checkout simulation on event Device 6
+    -- June 18, 2026: Late Check-out (Device 3 expected egress at 17:00, checked-out at 18:45 -> 1 hr 45 mins late)
     INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev6_id, '2026-06-26', '2026-06-26 07:45:00+08', v_user_id, NULL, NULL, TRUE);
+    (v_dev3_id, '2026-06-18', '2026-06-18 07:55:00+08', v_user_id, '2026-06-18 18:45:00+08', v_user_id, FALSE);
 
-    -- June 28, 2026: Ongoing states (active/ongoing logs today)
-    -- 1. Device 2 (John Doe) checked in today but hasn't checked out yet (Ongoing / Inside campus)
+    -- June 20, 2026: Late Check-in and Late Check-out (Device 9 expected 08:00/18:00, checked in 09:30, checked out 19:15)
     INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev2_id, '2026-06-28', '2026-06-28 07:45:00+08', v_user_id, NULL, NULL, FALSE);
+    (v_dev9_id, '2026-06-20', '2026-06-20 09:30:00+08', v_user_id, '2026-06-20 19:15:00+08', v_user_id, FALSE);
 
-    -- 2. Device 6 (Bob Johnson - Event) checked in and out today
+    -- June 29, 2026: Ongoing/active logs today (June 29) - satisfies 'at least 2 ongoing'
+    -- 1. Device 1 (John Doe) checked in today but has not checked out yet (Ongoing / Inside campus)
     INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev6_id, '2026-06-28', '2026-06-28 07:35:00+08', v_user_id, '2026-06-28 12:45:00+08', v_user_id, FALSE);
+    (v_dev1_id, '2026-06-29', '2026-06-29 07:45:00+08', v_user_id, NULL, NULL, FALSE);
 
-    -- 3. Device 9 (Charlie Brown) checked in late today (Expected 08:00, Ingress 09:15 -> Late check-in) and egressed at 17:45
+    -- 2. Device 3 (Jane Smith) checked in today but has not checked out yet (Ongoing / Inside campus)
     INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev9_id, '2026-06-28', '2026-06-28 09:15:00+08', v_user_id, '2026-06-28 17:45:00+08', v_user_id, FALSE);
+    (v_dev3_id, '2026-06-29', '2026-06-29 08:20:00+08', v_user_id, NULL, NULL, FALSE);
+
+    -- 3. Device 9 (Charlie Brown) checked in late today (Expected 08:00, Ingress 09:15 -> Late check-in) and checked out at 17:45
+    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
+    (v_dev9_id, '2026-06-29', '2026-06-29 09:15:00+08', v_user_id, '2026-06-29 17:45:00+08', v_user_id, FALSE);
 
 END $$;

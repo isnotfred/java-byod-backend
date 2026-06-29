@@ -321,7 +321,10 @@ public class DeviceTransactionDAO {
                     dt.log_date,
                     dt.ingress_time,
                     dt.no_egress_marked,
-                    dt.notes
+                    CASE
+                        WHEN dt.egress_time IS NOT NULL THEN 'Checked-out'
+                        ELSE 'Not Checked-out'
+                    END AS notes
                 FROM   device_transactions dt
                 JOIN   request_devices rd ON rd.request_device_id = dt.request_device_id
                 JOIN   requests r ON r.request_id = rd.request_id
