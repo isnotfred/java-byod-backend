@@ -224,6 +224,12 @@ public class RequestService {
 
         Request request = getRequestById(requestId);
 
+        // Edits are only allowed for upcoming requests
+        if ("rejected".equalsIgnoreCase(request.getStatus()) || "returned".equalsIgnoreCase(request.getStatus())
+                || !LocalDate.now().isBefore(request.getStartDate())) {
+            throw new BusinessRuleException("Edits are only allowed for upcoming requests.");
+        }
+
         ValidationUtil.requireNonBlank(studentId, "Student ID");
         ValidationUtil.requireNonBlank(purpose, "Purpose");
         ValidationUtil.requireNonNull(startDate, "Start date");
