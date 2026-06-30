@@ -98,11 +98,11 @@ BEGIN
     RETURNING request_device_id INTO v_dev4_id;
 
     INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req5_id, 'Arduino Kit', 'Arduino', 'Uno R3', 'Project Prototypes (Optional SN)', 'SN-DEV-0031', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
+    VALUES (v_req5_id, 'Arduino Kit', 'Arduino', 'Uno R3', 'Project Prototypes', 'SN-DEV-0031', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_device_id INTO v_dev5_id;
 
     INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req6_id, 'Arduino Kit Updated', 'Arduino', 'Uno R3', 'Project Prototypes (Optional SN)', 'SN-DEV-0032', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
+    VALUES (v_req6_id, 'Arduino Kit Updated', 'Arduino', 'Uno R3', 'Project Prototypes', 'SN-DEV-0032', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
     RETURNING request_device_id INTO v_dev6_id;
 
     INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)

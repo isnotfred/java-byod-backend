@@ -4,7 +4,7 @@ public enum DeviceType {
     PERSONAL_COMPUTERS("Personal Computers"),
     COMPONENTS_AND_PERIPHERALS("Components & Peripherals"),
     DISPLAY_AND_PROJECTION("Display & Projection"),
-    PROJECT_PROTOTYPES("Project Prototypes (Optional SN)"),
+    PROJECT_PROTOTYPES("Project Prototypes"),
     APPLIANCES_TLE("Appliances (TLE)");
 
     private final String dbValue;

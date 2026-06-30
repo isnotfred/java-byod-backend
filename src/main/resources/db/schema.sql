@@ -265,7 +265,7 @@ ALTER TABLE request_devices
             'Personal Computers',
             'Components & Peripherals',
             'Display & Projection',
-            'Project Prototypes (Optional SN)',
+            'Project Prototypes',
             'Appliances (TLE)',
             'Other'
         )),
