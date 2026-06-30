@@ -225,7 +225,7 @@ public class RequestService {
         Request request = getRequestById(requestId);
 
         // Edits are only allowed for upcoming requests
-        if ("rejected".equalsIgnoreCase(request.getStatus()) || "returned".equalsIgnoreCase(request.getStatus())
+        if (request.getStatus() == RequestStatus.rejected || request.getStatus() == RequestStatus.returned
                 || !LocalDate.now().isBefore(request.getStartDate())) {
             throw new BusinessRuleException("Edits are only allowed for upcoming requests.");
         }
