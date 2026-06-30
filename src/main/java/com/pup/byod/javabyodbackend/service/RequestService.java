@@ -489,14 +489,14 @@ public class RequestService {
     }
 
     private void validateTimes(LocalDate startDate, LocalTime ingressTime, LocalTime egressTime, RequestType requestType) {
-        LocalTime limitStart = LocalTime.of(7, 0);
+        LocalTime limitStart = LocalTime.of(6, 0);
         LocalTime limitEnd = LocalTime.of(21, 0);
 
         if (ingressTime.isBefore(limitStart) || ingressTime.isAfter(limitEnd)) {
-            throw new BusinessRuleException("Expected ingress time must be between 7:00 AM and 9:00 PM.");
+            throw new BusinessRuleException("Expected ingress time must be between 6:00 AM and 9:00 PM.");
         }
         if (egressTime.isBefore(limitStart) || egressTime.isAfter(limitEnd)) {
-            throw new BusinessRuleException("Expected egress time must be between 7:00 AM and 9:00 PM.");
+            throw new BusinessRuleException("Expected egress time must be between 6:00 AM and 9:00 PM.");
         }
         if (requestType == RequestType.normal && !egressTime.isAfter(ingressTime)) {
             throw new BusinessRuleException("Expected egress time must be after ingress time.");

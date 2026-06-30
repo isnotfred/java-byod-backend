@@ -355,9 +355,11 @@ public class DeviceTransactionDAO {
                     vcs.device_type,
                     vcs.brand,
                     vcs.model,
-                    vcs.last_event_time AS entered_at
+                    vcs.last_event_time AS entered_at,
+                    r.expected_egress_time
                 FROM   v_device_campus_status vcs
                 JOIN   students s ON s.student_id = vcs.student_id
+                JOIN   requests r ON r.request_id = vcs.request_id
                 WHERE  vcs.campus_status = 'entry'
                 ORDER  BY vcs.last_event_time DESC
                 """;
@@ -514,6 +516,7 @@ public class DeviceTransactionDAO {
         row.setBrand(rs.getString("brand"));
         row.setModel(rs.getString("model"));
         row.setEnteredAt(rs.getTimestamp("entered_at") != null ? rs.getTimestamp("entered_at").toLocalDateTime() : null);
+        row.setExpectedExitTime(rs.getTime("expected_egress_time") != null ? rs.getTime("expected_egress_time").toLocalTime() : null);
         return row;
     };
 

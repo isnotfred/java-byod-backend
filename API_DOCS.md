@@ -155,7 +155,7 @@ Retrieves all students.
   ```json
   [
     {
-      "studentId": "2021-10023",
+      "studentId": "2024-00481-SR-0",
       "firstName": "Juan",
       "lastName": "Dela Cruz",
       "courseYearLevel": "BSIT 3-1",
@@ -173,7 +173,7 @@ Retrieves a student by their ID.
 - **Response Body (`200 OK`):**
   ```json
   {
-    "studentId": "2021-10023",
+    "studentId": "2024-00481-SR-0",
     "firstName": "Juan",
     "lastName": "Dela Cruz",
     "courseYearLevel": "BSIT 3-1",
@@ -193,7 +193,7 @@ Searches students using a search keyword (e.g. name or ID).
   ```json
   [
     {
-      "studentId": "2021-10023",
+      "studentId": "2024-00481-SR-0",
       "firstName": "Juan",
       "lastName": "Dela Cruz",
       "courseYearLevel": "BSIT 3-1",
@@ -211,7 +211,7 @@ Creates a student registry record.
 - **Request Body:**
   ```json
   {
-    "studentId": "2021-10023",
+    "studentId": "2024-00481-SR-0",
     "firstName": "Juan",
     "lastName": "Dela Cruz",
     "courseYearLevel": "BSIT 3-1"
@@ -220,7 +220,7 @@ Creates a student registry record.
 - **Response Body (`201 Created`):**
   ```json
   {
-    "studentId": "2021-10023",
+    "studentId": "2024-00481-SR-0",
     "firstName": "Juan",
     "lastName": "Dela Cruz",
     "courseYearLevel": "BSIT 3-1",
@@ -237,7 +237,7 @@ Updates details of an existing student record (including editable student ID).
 - **Request Body:**
   ```json
   {
-    "studentId": "2021-10023",
+    "studentId": "2024-00481-SR-0",
     "firstName": "Juan",
     "lastName": "Dela Cruz II",
     "courseYearLevel": "BSIT 4-1",
@@ -248,7 +248,7 @@ Updates details of an existing student record (including editable student ID).
 - **Response Body (`200 OK`):**
   ```json
   {
-    "studentId": "2021-10023",
+    "studentId": "2024-00481-SR-0",
     "firstName": "Juan",
     "lastName": "Dela Cruz II",
     "courseYearLevel": "BSIT 4-1",
@@ -299,7 +299,7 @@ Retrieves all access requests.
     {
       "requestId": 1,
       "requestType": "EVENT",
-      "studentId": "2021-10023",
+      "studentId": "2024-00481-SR-0",
       "responsiblePerson": "Prof. Smith",
       "organization": "Acm Student Chapter",
       "eventName": "Tech Fair 2026",
@@ -329,7 +329,7 @@ Retrieves a request by its ID.
   {
     "requestId": 1,
     "requestType": "EVENT",
-    "studentId": "2021-10023",
+    "studentId": "2024-00481-SR-0",
     "responsiblePerson": "Prof. Smith",
     "organization": "Acm Student Chapter",
     "eventName": "Tech Fair 2026",
@@ -362,7 +362,7 @@ Retrieves a list of active requests mapped to `v_active_requests` (including dev
     {
       "requestId": 1,
       "requestType": "EVENT",
-      "studentId": "2021-10023",
+      "studentId": "2024-00481-SR-0",
       "studentName": "Juan Dela Cruz",
       "eventName": "Tech Fair 2026",
       "organization": "Acm Student Chapter",
@@ -407,7 +407,7 @@ Retrieves campus presence status from `v_device_campus_status` for all request d
     {
       "requestDeviceId": 5,
       "requestId": 1,
-      "studentId": "2021-10023",
+      "studentId": "2024-00481-SR-0",
       "deviceName": "Macbook Pro",
       "serialNumber": "SN-MAC-12345",
       "brand": "Apple",
@@ -429,7 +429,7 @@ Submits a normal or event request along with its device list (line items).
   ```json
   {
     "requestType": "normal",
-    "studentId": "2021-10023",
+    "studentId": "2024-00481-SR-0",
     "purpose": "Academic BYOD study classes",
     "startDate": "2026-06-22",
     "endDate": "2026-07-22",

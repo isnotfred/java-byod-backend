@@ -18,6 +18,7 @@ public class ActiveDeviceRow {
     private String         brand;
     private String         model;
     private LocalDateTime enteredAt;         // timestamp of the latest ingress
+    private java.time.LocalTime expectedExitTime;
 
     // ── Constructors ──────────────────────────────────────────────────────────
 
@@ -54,4 +55,7 @@ public class ActiveDeviceRow {
 
     public LocalDateTime getEnteredAt()             { return enteredAt; }
     public void           setEnteredAt(LocalDateTime v) { this.enteredAt = v; }
+
+    public java.time.LocalTime getExpectedExitTime() { return expectedExitTime; }
+    public void setExpectedExitTime(java.time.LocalTime v) { this.expectedExitTime = v; }
 }

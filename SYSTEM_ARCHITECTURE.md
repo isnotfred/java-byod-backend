@@ -53,7 +53,7 @@ The JavaFX frontend and the Spring Boot backend are completely separate processe
 | Spring Boot @RestController | JavaFX Controller | HTTPS response | JSON response body (+ HTTP status code) |
 | Spring Boot @Service / DAO | PostgreSQL (Railway) | JDBC over TLS | PreparedStatement / RowMapper |
 
-**Base URL (Railway):** `https://<app-name>.railway.app/api/`
+**Base URL (Railway):** `https://<app-name>.railway.app/api/v1/`
 
 ---
 
@@ -115,12 +115,13 @@ The DAO layer is the only part of the backend that talks to PostgreSQL. It:
 
 Views used directly in DAO queries:
 
-- `v_device_campus_status` — current inside/outside status per request device
-- `v_active_requests` — active approved requests with device counts
+- `v_device_campus_status` — current inside/outside status per device
+- `v_pending_devices` — pending device registrations for the approval queue
+- `v_active_event_requests` — active event requests with device counts
 
 ### 5.4 Model Layer (POJOs)
 
-Models are plain Java objects with fields that match the database table columns. One Model class per table. Models contain private fields with getters/setters, and enums for constrained fields (`RequestType`, `RequestStatus`, `DeviceVerificationStatus`, `Role`, etc.). Models carry no logic. Additionally, this layer contains constants for audit actions (`AuditActionTypes`) and DTOs representing query result structures for reports (under `model/report/`).
+Models are plain Java objects with fields that match the database table columns. One Model class per table. Models contain private fields with getters/setters, and enums for constrained fields (`DeviceType`, `RegistrationStatus`, `Role`, etc.). Models carry no logic. Additionally, this layer contains constants for audit actions (`AuditActionTypes`) and DTOs representing query result structures for reports (under `model/report/`).
 
 ---
 
@@ -169,15 +170,15 @@ The PostgreSQL database is hosted on Railway and is the single source of truth. 
 
 ## 7. Request Flow (End-to-End)
 
-The table below traces a single user action — e.g. a guard check-in at the gate — from the JavaFX UI to the database and back.
+The table below traces a single user action — e.g. a guard approving a device — from the JavaFX UI to the database and back.
 
 | # | Layer | What Happens | Passes To Next |
 |---|---|---|---|
-| **1** | JavaFX UI (FXML) | Guard inputs student ID and device serial, clicks "Scan" | Raw input to Controller |
+| **1** | JavaFX UI (FXML) | User clicks button / submits form | Raw input to Controller |
 | **2** | JavaFX Controller | Intercepts UI event, collects input, and delegates to service layer | Method call with inputs/DTOs |
 | **3** | JavaFX Service/API Layer | Configures HTTP request, serializes request DTO to JSON, sends HTTP request via HttpClient | HTTPS request to backend |
-| **4** | Spring Boot @RestController | Deserializes JSON to DTO, calls Service method | Method call + parameters |
-| **5** | Spring Boot @Service | Resolves request and device, reconciles previous days, calls DAO to insert check-in, writes audit log | Model objects or primitives |
+| **4** | Spring Boot @RestController | Deserializes JSON to DTO / model, calls Service method | Method call + parameters |
+| **5** | Spring Boot @Service | Validates business rules, calls DAO, calls AuditLogDAO | Model objects or primitives |
 | **6** | DAO (JDBC) | Executes PreparedStatement, calls fn_write_audit_log() | SQL + parameters to DB |
 | **7** | PostgreSQL (Railway) | Executes SQL, fires triggers, returns ResultSet / confirmation | ResultSet rows |
 | **8** | DAO → Service → Controller | ResultSet mapped to Model POJOs; returned up the chain | ResponseEntity (JSON) |
@@ -188,7 +189,7 @@ The table below traces a single user action — e.g. a guard check-in at the gat
 
 ## 8. Error Handling Strategy
 
-Errors propagate as HTTP error responses to the JavaFX frontend.
+Errors originate in three places: the Service layer (business rule violations), the DAO layer (SQL failures via `DataAccessException`), and the PostgreSQL database (trigger exceptions). All errors propagate as HTTP error responses to the JavaFX frontend.
 
 | Trigger | Caught In | Shown to User As |
 |---|---|---|
@@ -196,7 +197,7 @@ Errors propagate as HTTP error responses to the JavaFX frontend.
 | Duplicate unique key | @ControllerAdvice (HTTP 409) | "Serial number already exists", "Username already exists", or "Student ID already exists" |
 | Business rule violation | @ControllerAdvice (HTTP 422) | Custom message text surfaced in alert |
 | Super admin access required | @ControllerAdvice (HTTP 403) | "Super admin access required" |
-| Resource not found | @ControllerAdvice (HTTP 404) | "Request not found", "Student not found", etc. |
+| Resource not found | @ControllerAdvice (HTTP 404) | "Acting user not found", "User to update not found", etc. |
 | Auth failure | Service → HTTP 401 | "Invalid username or password" |
 | Inactive account | Service → HTTP 403 | "Account is inactive" |
 | DB connection lost | HikariCP / @ControllerAdvice 503 | "Database connection failed" |
@@ -214,14 +215,35 @@ Every significant action writes a row to `audit_logs` via the PostgreSQL functio
 ```sql
 fn_write_audit_log(
     p_user_id      INT,
-    p_action_type  VARCHAR,   -- e.g. 'REQUEST_APPROVED'
-    p_target_table VARCHAR,   -- e.g. 'requests'
+    p_action_type  VARCHAR,   -- e.g. 'DEVICE_APPROVED'
+    p_target_table VARCHAR,   -- e.g. 'devices'
     p_target_id    VARCHAR,   -- e.g. '42'
     p_old_values   JSONB,     -- state before change
     p_new_values   JSONB,     -- state after change
     p_ip_address   VARCHAR
 )
 ```
+
+Standardised `action_type` values (enforced by CHECK constraint):
+
+| Device Actions | Student/User Actions | Event / System Actions |
+|---|---|---|
+| DEVICE_REGISTERED | STUDENT_CREATED | EVENT_REQUEST_CREATED |
+| DEVICE_APPROVED | STUDENT_UPDATED | EVENT_REQUEST_APPROVED |
+| DEVICE_REJECTED | STUDENT_DEACTIVATED | EVENT_REQUEST_RETURNED |
+| DEVICE_DEACTIVATED | USER_CREATED | EVENT_REQUEST_REJECTED |
+| DEVICE_UPDATED | USER_UPDATED | SYSTEM_AUTO_EXIT_BATCH |
+| DEVICE_ENTRY | USER_DEACTIVATED | SYSTEM_CONFIG_UPDATED |
+| DEVICE_EXIT | USER_LOGIN | |
+| DEVICE_AUTO_EXIT | USER_LOGOUT | |
+| | USER_LOGIN_FAILED | |
+| | USER_ROLE_CHANGED | |
+| | ADMIN_CREATED | |
+| | ADMIN_UPDATED | |
+| | ADMIN_DEACTIVATED | |
+| | GUARD_CREATED | |
+| | GUARD_UPDATED | |
+| | GUARD_DEACTIVATED_BY_SUPER | |
 
 ---
 
@@ -258,6 +280,7 @@ The backend follows the standard Spring Boot layered structure.
 | ReportService | Produces daily traffic, active, frequency, incident, missed checkout, and purpose breakdown reports |
 | SuperAdminService | Account CRUD, status updates, role changes for guards and admins |
 | SystemSettingService | Manage settings and configuration parameters |
+| ResendEmailService | Sends account recovery tokens and gate notifications using the Resend API |
 
 **DAOs (`dao/`)**
 
@@ -307,3 +330,4 @@ The backend follows the standard Spring Boot layered structure.
 | RequestType | requests.request_type — normal, event |
 | RequestStatus | requests.status — pending, approved, rejected, returned |
 | DeviceVerificationStatus | request_devices.device_status — pending, approved, rejected |
+| DeviceType | request_devices.device_type constraint values (Personal Computers, Components & Peripherals, Display & Projection, Project Prototypes (Optional SN), Appliances (TLE), Other) |
