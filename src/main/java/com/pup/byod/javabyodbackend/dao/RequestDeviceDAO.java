@@ -83,11 +83,10 @@ public class RequestDeviceDAO {
                 LEFT JOIN device_transactions dt ON dt.request_device_id = rd.request_device_id AND dt.egress_time IS NULL
                 WHERE rd.serial_number = :serialNumber
                   AND rd.device_status = 'approved'
-                  AND r.status = 'approved'
                   AND (
-                    (r.start_date <= CURRENT_DATE AND r.end_date >= CURRENT_DATE)
+                    (r.status = 'approved' AND r.start_date <= CURRENT_DATE AND r.end_date >= CURRENT_DATE)
                     OR
-                    (dt.transaction_id IS NOT NULL)
+                    (r.status IN ('approved', 'cancelled') AND dt.transaction_id IS NOT NULL)
                   )
                 ORDER BY r.created_at DESC
                 LIMIT 1
