@@ -437,6 +437,24 @@ public class RequestService {
         return getRequestById(requestId);
     }
 
+    @Transactional
+    public Request cancelRequest(int requestId, int modifierUserId, String remarks) {
+        Request request = getRequestById(requestId);
+
+        request.setStatus(RequestStatus.cancelled);
+        request.setReviewedBy(modifierUserId);
+        request.setReviewedAt(LocalDateTime.now());
+        if (remarks != null && !remarks.isBlank()) {
+            request.setRemarks(remarks);
+        }
+        requestDAO.update(request);
+
+        auditLogService.writeAuditLog(modifierUserId, "REQUEST_CANCELLED", "requests",
+                String.valueOf(requestId), null, null, null);
+
+        return getRequestById(requestId);
+    }
+
     // ── Device Verification ────────────────────────────────────────
 
     @Transactional

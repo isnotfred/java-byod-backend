@@ -214,6 +214,15 @@ public class RequestController {
         return ResponseEntity.ok(requestService.returnRequest(requestId, reviewerUserId, remarks));
     }
 
+    @PutMapping("/{requestId}/cancel")
+    public ResponseEntity<Request> cancelRequest(
+            @PathVariable int requestId,
+            @RequestBody Map<String, Object> body) {
+        int modifierUserId = ((Number) body.get("modifierUserId")).intValue();
+        String remarks = body.containsKey("remarks") ? (String) body.get("remarks") : null;
+        return ResponseEntity.ok(requestService.cancelRequest(requestId, modifierUserId, remarks));
+    }
+
     @PutMapping("/devices/{requestDeviceId}/verify")
     public ResponseEntity<RequestDevice> verifyDevice(
             @PathVariable int requestDeviceId,

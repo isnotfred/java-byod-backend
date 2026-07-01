@@ -8,7 +8,8 @@ public enum RequestStatus {
     pending,
     approved,
     rejected,
-    returned;
+    returned,
+    cancelled;
 
     public static RequestStatus fromString(String value) {
         if (value == null) return null;

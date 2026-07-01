@@ -244,7 +244,7 @@ ALTER TABLE requests
     ADD CONSTRAINT chk_requests_type
         CHECK (request_type IN ('normal', 'event')),
     ADD CONSTRAINT chk_requests_status
-        CHECK (status IN ('pending', 'approved', 'rejected', 'returned')),
+        CHECK (status IN ('pending', 'approved', 'rejected', 'returned', 'cancelled')),
     -- End date must be on or after start date
     ADD CONSTRAINT chk_requests_date_range
         CHECK (end_date >= start_date),
