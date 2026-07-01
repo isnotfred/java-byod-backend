@@ -95,4 +95,11 @@ public class ReportController {
     public ResponseEntity<List<PurposeBreakdownRow>> getPurposeBreakdown() {
         return ResponseEntity.ok(reportService.getPurposeBreakdownReport());
     }
+
+    @GetMapping("/unused-cancelled")
+    public ResponseEntity<List<UnusedCancelledRow>> getUnusedCancelled(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        return ResponseEntity.ok(reportService.getUnusedCancelledReport(from, to));
+    }
 }

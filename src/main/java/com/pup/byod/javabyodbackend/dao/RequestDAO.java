@@ -204,4 +204,10 @@ public class RequestDAO {
                 .addValue("requestId", requestId);
         return jdbc.update(sql, params);
     }
+
+    public void markAsAccommodated(int requestId) {
+        String sql = "UPDATE requests SET is_accommodated = TRUE WHERE request_id = :requestId";
+        var params = new MapSqlParameterSource("requestId", requestId);
+        jdbc.update(sql, params);
+    }
 }

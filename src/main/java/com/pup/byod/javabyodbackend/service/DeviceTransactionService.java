@@ -1,6 +1,7 @@
 package com.pup.byod.javabyodbackend.service;
 
 import com.pup.byod.javabyodbackend.dao.DeviceTransactionDAO;
+import com.pup.byod.javabyodbackend.dao.RequestDAO;
 import com.pup.byod.javabyodbackend.dao.RequestDeviceDAO;
 import com.pup.byod.javabyodbackend.exception.BusinessRuleException;
 import com.pup.byod.javabyodbackend.exception.ResourceNotFoundException;
@@ -31,13 +32,16 @@ public class DeviceTransactionService {
 
     private final DeviceTransactionDAO deviceTransactionDAO;
     private final RequestDeviceDAO requestDeviceDAO;
+    private final RequestDAO requestDAO;
     private final AuditLogService auditLogService;
 
     public DeviceTransactionService(DeviceTransactionDAO deviceTransactionDAO,
                                     RequestDeviceDAO requestDeviceDAO,
+                                    RequestDAO requestDAO,
                                     AuditLogService auditLogService) {
         this.deviceTransactionDAO = deviceTransactionDAO;
         this.requestDeviceDAO = requestDeviceDAO;
+        this.requestDAO = requestDAO;
         this.auditLogService = auditLogService;
     }
 
@@ -90,6 +94,7 @@ public class DeviceTransactionService {
 
             // Create ingress
             int txId = deviceTransactionDAO.insertIngress(device.getRequestDeviceId(), handledBy, notes);
+            requestDAO.markAsAccommodated(device.getRequestId());
             auditLogService.writeAuditLog(handledBy, "DEVICE_CHECK_IN", "device_transactions",
                     String.valueOf(txId), null, null, null);
 
@@ -144,6 +149,7 @@ public class DeviceTransactionService {
 
             // Create ingress
             int txId = deviceTransactionDAO.insertIngress(device.getRequestDeviceId(), handledBy, notes);
+            requestDAO.markAsAccommodated(device.getRequestId());
             auditLogService.writeAuditLog(handledBy, "DEVICE_CHECK_IN", "device_transactions",
                     String.valueOf(txId), null, null, null);
 

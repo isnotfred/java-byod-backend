@@ -527,4 +527,58 @@ public class DeviceTransactionDAO {
             .totalDevicesApproved(rs.getInt("total_devices_approved"))
             .percentage(rs.getDouble("percentage"))
             .build();
+
+    private final RowMapper<UnusedCancelledRow> unusedCancelledRowMapper = (rs, rowNum) -> {
+        UnusedCancelledRow row = new UnusedCancelledRow();
+        row.setRequestId(rs.getInt("request_id"));
+        row.setRequestType(rs.getString("request_type"));
+        row.setStudentId(rs.getString("student_id"));
+        row.setStudentName(rs.getString("student_name"));
+        row.setPurpose(rs.getString("purpose"));
+        row.setStartDate(rs.getDate("start_date").toLocalDate());
+        row.setEndDate(rs.getDate("end_date").toLocalDate());
+        row.setStatus(rs.getString("status"));
+        row.setRemarks(rs.getString("remarks"));
+        return row;
+    };
+
+    public List<UnusedCancelledRow> getUnusedCancelledRequests(LocalDate from, LocalDate to) {
+        String sql = """
+                SELECT
+                    r.request_id,
+                    r.request_type,
+                    r.student_id,
+                    s.first_name || ' ' || s.last_name AS student_name,
+                    r.purpose,
+                    r.start_date,
+                    r.end_date,
+                    CASE
+                        WHEN r.status = 'cancelled' THEN 'cancelled'
+                        ELSE 'expired'
+                    END AS status,
+                    r.remarks
+                FROM   requests r
+                JOIN   students s ON s.student_id = r.student_id
+                WHERE  (
+                    r.status = 'cancelled'
+                    OR (
+                        r.status = 'approved'
+                        AND r.end_date < CURRENT_DATE
+                        AND NOT EXISTS (
+                            SELECT 1 
+                            FROM   device_transactions dt
+                            JOIN   request_devices rd ON rd.request_device_id = dt.request_device_id
+                            WHERE  rd.request_id = r.request_id
+                        )
+                    )
+                )
+                AND r.start_date >= :from
+                AND r.start_date <= :to
+                ORDER BY r.start_date DESC
+                """;
+        var params = new MapSqlParameterSource()
+                .addValue("from", from)
+                .addValue("to", to);
+        return jdbc.query(sql, params, unusedCancelledRowMapper);
+    }
 }

@@ -122,6 +122,11 @@ public class ReportService {
         return deviceTransactionDAO.getPurposeBreakdown();
     }
 
+    public List<UnusedCancelledRow> getUnusedCancelledReport(LocalDate from, LocalDate to) {
+        validateDateRange(from, to);
+        return deviceTransactionDAO.getUnusedCancelledRequests(from, to);
+    }
+
     // ── Private Helpers ─────────────────────────────────────────────
 
     private void validateDateRange(LocalDate from, LocalDate to) {

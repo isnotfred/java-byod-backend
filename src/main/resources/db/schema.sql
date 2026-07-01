@@ -341,6 +341,7 @@ ALTER TABLE audit_logs
             'DEVICE_VERIFIED',
             'DEVICE_CHECK_IN',
             'DEVICE_CHECK_OUT',
+            'REQUEST_CANCELLED',
             'MISSED_EGRESS_BATCH'
         ));
 
