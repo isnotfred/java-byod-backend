@@ -38,7 +38,9 @@ public class Request {
     private LocalTime expectedEgressTime;
 
     private RequestStatus status;
+    @com.fasterxml.jackson.annotation.JsonProperty("isSubmitted")
     private boolean isSubmitted;
+    @com.fasterxml.jackson.annotation.JsonProperty("isAccommodated")
     private boolean isAccommodated;
     private Integer reviewedBy;
     private LocalDateTime reviewedAt;

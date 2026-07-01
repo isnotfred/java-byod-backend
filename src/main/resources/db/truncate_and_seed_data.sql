@@ -1,168 +1,93 @@
 -- 1. Truncate target tables and reset their auto-increment sequences
 TRUNCATE TABLE device_transactions, request_devices, requests, students RESTART IDENTITY CASCADE;
 
--- 2. Populate Students, Requests, Request Devices, and Gate Transactions
-DO $$
-DECLARE
-    v_user_id INT;
-    v_req1_id INT; v_req2_id INT;
-    v_req3_id INT; v_req4_id INT;
-    v_req5_id INT; v_req6_id INT;
-    v_req7_id INT; v_req8_id INT;
-    v_req9_id INT; v_req10_id INT;
-    
-    v_dev1_id INT; v_dev2_id INT;
-    v_dev3_id INT; v_dev4_id INT;
-    v_dev5_id INT; v_dev6_id INT;
-    v_dev7_id INT; v_dev8_id INT;
-    v_dev9_id INT; v_dev10_id INT;
-BEGIN
-    -- Resolve acting user (use existing admin, or insert a default if table is empty)
-    SELECT user_id INTO v_user_id FROM users WHERE role = 'admin' OR role = 'super_admin' LIMIT 1;
-    IF v_user_id IS NULL THEN
-        INSERT INTO users (username, email, password_hash, full_name, role, status)
-        VALUES ('admin', 'admin@byod.com', '$2a$10$w821jXkexF8M21mXw7bIcuq0F.d4Uf.bC1.y9/lq/J5uL5c/1/b7u', 'System Admin', 'admin', 'active')
-        RETURNING user_id INTO v_user_id;
-    END IF;
+-- 2. Ensure default admin user exists
+INSERT INTO users (username, email, password_hash, full_name, role, status)
+VALUES ('admin', 'admin@byod.com', '$2a$10$w821jXkexF8M21mXw7bIcuq0F.d4Uf.bC1.y9/lq/J5uL5c/1/b7u', 'System Admin', 'admin', 'active')
+ON CONFLICT (username) DO NOTHING;
 
-    -- A. Populate 5 Students (using 2###-######-SR-0 Student ID and 'Text #-#' Course Year Level format)
-    INSERT INTO students (student_id, first_name, last_name, course_year_level, contact_number, status) VALUES
-    ('2024-00481-SR-0', 'John', 'Doe', 'BSIT 2-2', '09123456789', 'active'),
-    ('2024-00482-SR-0', 'Jane', 'Smith', 'BSECE 3-4', '09187654321', 'active'),
-    ('2024-00483-SR-0', 'Bob', 'Johnson', 'BSCS 1-1', '09223334444', 'active'),
-    ('2024-00484-SR-0', 'Alice', 'Williams', 'BSME 4-2', '09334445555', 'active'),
-    ('2024-00485-SR-0', 'Charlie', 'Brown', 'BSCE 2-1', '09445556666', 'active');
+-- 3. Populate 5 Students
+INSERT INTO students (student_id, first_name, last_name, course_year_level, contact_number, status) VALUES
+('2024-00481-SR-0', 'John', 'Doe', 'BSIT 2-2', '09123456789', 'active'),
+('2024-00482-SR-0', 'Jane', 'Smith', 'BSECE 3-4', '09187654321', 'active'),
+('2024-00483-SR-0', 'Bob', 'Johnson', 'BSCS 1-1', '09223334444', 'active'),
+('2024-00484-SR-0', 'Alice', 'Williams', 'BSME 4-2', '09334445555', 'active'),
+('2024-00485-SR-0', 'Charlie', 'Brown', 'BSCE 2-1', '09445556666', 'active');
 
-    -- B. Populate 2 Requests per Student (mix of normal/event, total 10 requests)
-    
-    -- Student 1 Requests (approved, active through June 29)
-    INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00481-SR-0', 'Academic Classes', '2026-06-01', '2026-06-29', '08:00:00', '17:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_id INTO v_req1_id;
-    
-    INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00481-SR-0', 'Lab Work', '2026-06-15', '2026-06-20', '09:00:00', '18:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_id INTO v_req2_id;
+-- 4. Populate 10 Requests (with explicit IDs to guarantee matching sequence)
+-- Student 1 (John Doe) - 2 Requests (Ongoing 1 & 2)
+INSERT INTO requests (request_id, request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+VALUES (1, 'normal', '2024-00481-SR-0', 'Regular Lectures', '2026-07-01'::date, '2026-07-01'::date, '08:00:00'::time, '17:00:00'::time, 'approved', TRUE, TRUE, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    -- Student 2 Requests (approved, active through June 29)
-    INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00482-SR-0', 'Study Session', '2026-06-10', '2026-06-29', '08:00:00', '17:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_id INTO v_req3_id;
-    
-    INSERT INTO requests (request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('event', '2024-00482-SR-0', 'Research Symposium', 'Engineering Council', 'Dr. Lee', 'Thesis Defense', '2026-06-25', '2026-06-29', '08:30:00', '18:30:00', 'approved', TRUE, TRUE, v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_id INTO v_req4_id;
+INSERT INTO requests (request_id, request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+VALUES (2, 'event', '2024-00481-SR-0', 'Engineering Exhibition', 'Engineering Society', 'Dr. Cruz', 'Capstone Showcase', '2026-06-30'::date, '2026-07-02'::date, '08:30:00'::time, '18:30:00'::time, 'approved', TRUE, TRUE, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    -- Student 3 Requests (approved, expired prior to June 29)
-    INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00483-SR-0', 'Project Work', '2026-06-05', '2026-06-05', '08:00:00', '17:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_id INTO v_req5_id;
+-- Student 2 (Jane Smith) - 2 Requests (Ongoing 3 & Completed 1)
+INSERT INTO requests (request_id, request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+VALUES (3, 'normal', '2024-00482-SR-0', 'Library Thesis Study', '2026-07-01'::date, '2026-07-01'::date, '09:00:00'::time, '18:00:00'::time, 'approved', TRUE, TRUE, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    INSERT INTO requests (request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('event', '2024-00483-SR-0', 'Hackathon Finals', 'CS Dept', 'Prof. Miller', 'Code Sprint', '2026-06-12', '2026-06-12', '09:00:00', '18:00:00', 'approved', TRUE, TRUE, v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_id INTO v_req6_id;
+INSERT INTO requests (request_id, request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+VALUES (4, 'normal', '2024-00482-SR-0', 'Computer Lab Exam', '2026-06-25'::date, '2026-06-25'::date, '08:00:00'::time, '17:00:00'::time, 'approved', TRUE, TRUE, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    -- Student 4 Requests (both pending - satisfies 'at least 2 pending')
-    INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00484-SR-0', 'Regular BYOD classes', '2026-06-28', '2026-06-29', '08:00:00', '17:00:00', 'pending', TRUE, FALSE, NULL, NULL)
-    RETURNING request_id INTO v_req7_id;
+-- Student 3 (Bob Johnson) - 2 Requests (Completed 2 & 3)
+INSERT INTO requests (request_id, request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+VALUES (5, 'event', '2024-00483-SR-0', 'Developer BootCamp', 'CS Department', 'Prof. Perez', 'Coding Workshops', '2026-06-20'::date, '2026-06-24'::date, '08:00:00'::time, '17:00:00'::time, 'approved', TRUE, TRUE, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    INSERT INTO requests (request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('event', '2024-00484-SR-0', 'Sports Fest', 'PUP Org', 'Dr. Adams', 'Covering media', '2026-06-25', '2026-06-29', '08:00:00', '17:00:00', 'pending', TRUE, FALSE, NULL, NULL)
-    RETURNING request_id INTO v_req8_id;
+INSERT INTO requests (request_id, request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+VALUES (6, 'normal', '2024-00483-SR-0', 'Software Lab Work', '2026-06-15'::date, '2026-06-15'::date, '09:00:00'::time, '18:00:00'::time, 'approved', TRUE, TRUE, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    -- Student 5 Requests (approved, active through June 29)
-    INSERT INTO requests (request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('normal', '2024-00485-SR-0', 'Academic Research', '2026-06-02', '2026-06-29', '08:00:00', '18:00:00', 'approved', TRUE, FALSE, v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_id INTO v_req9_id;
+-- Student 4 (Alice Williams) - 2 Requests (Completed 4 & Cancelled 1)
+INSERT INTO requests (request_id, request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+VALUES (7, 'event', '2024-00484-SR-0', 'Visual Media Fest', 'Multimedia Club', 'Ms. Santos', 'Event Photography', '2026-06-10'::date, '2026-06-12'::date, '08:00:00'::time, '18:00:00'::time, 'approved', TRUE, TRUE, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    INSERT INTO requests (request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
-    VALUES ('event', '2024-00485-SR-0', 'PUP Seminar', 'Junior Engineers', 'Engr. Santos', 'Training Support', '2026-06-20', '2026-06-25', '08:00:00', '18:00:00', 'approved', TRUE, TRUE, v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_id INTO v_req10_id;
+INSERT INTO requests (request_id, request_type, student_id, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+VALUES (8, 'normal', '2024-00484-SR-0', 'Make-up Class Session', '2026-07-01'::date, '2026-07-01'::date, '08:00:00'::time, '17:00:00'::time, 'cancelled', TRUE, FALSE, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    -- C. Populate Request Devices for all requests
-    INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req1_id, 'MacBook Air', 'Apple', 'M2 13-inch', 'Personal Computers', 'SN-DEV-0011', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_device_id INTO v_dev1_id;
+-- Student 5 (Charlie Brown) - 2 Requests (Upcoming 1 & Expired 1)
+INSERT INTO requests (request_id, request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+VALUES (9, 'event', '2024-00485-SR-0', 'Robotics Bootcamp', 'PUP Robotics', 'Engr. Rivera', 'Training and Competition', '2026-07-05'::date, '2026-07-08'::date, '09:00:00'::time, '17:00:00'::time, 'approved', TRUE, FALSE, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req2_id, 'MacBook Air Updated', 'Apple', 'M2 13-inch', 'Personal Computers', 'SN-DEV-0012', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_device_id INTO v_dev2_id;
+INSERT INTO requests (request_id, request_type, student_id, event_name, organization, responsible_person, purpose, start_date, end_date, expected_ingress_time, expected_egress_time, status, is_submitted, is_accommodated, reviewed_by, reviewed_at)
+VALUES (10, 'event', '2024-00485-SR-0', 'Web Design Hackathon', 'IT Society', 'Mrs. Alcantara', 'UI design challenge', '2026-06-28'::date, '2026-06-29'::date, '08:00:00'::time, '17:00:00'::time, 'approved', TRUE, FALSE, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req3_id, 'Dell XPS 15', 'Dell', 'XPS 9520', 'Personal Computers', 'SN-DEV-0021', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_device_id INTO v_dev3_id;
+-- Reset serial primary key sequence for requests
+SELECT setval('requests_request_id_seq', 10);
 
-    INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req4_id, 'Dell XPS 15 Updated', 'Dell', 'XPS 9520', 'Personal Computers', 'SN-DEV-0022', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_device_id INTO v_dev4_id;
+-- 5. Populate Request Devices
+INSERT INTO request_devices (request_device_id, request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at) VALUES
+(1, 1, 'MacBook Pro', 'Apple', 'M3 Pro 14"', 'Personal Computers', 'SN-DEV-0001', 1, 'approved', (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP),
+(2, 2, 'iPad Air', 'Apple', 'M2 11"', 'Mobile Devices (Tablet/Phone)', 'SN-DEV-0002', 1, 'approved', (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP),
+(3, 3, 'Dell Inspiron', 'Dell', 'Inspiron 15', 'Personal Computers', 'SN-DEV-0003', 1, 'approved', (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP),
+(4, 4, 'HP Pavilion', 'HP', 'Pavilion 14', 'Personal Computers', 'SN-DEV-0004', 1, 'approved', (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP),
+(5, 5, 'Asus ZenBook', 'Asus', 'ZenBook Duo', 'Personal Computers', 'SN-DEV-0005', 1, 'approved', (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP),
+(6, 6, 'Lenovo IdeaPad', 'Lenovo', 'IdeaPad 3', 'Personal Computers', 'SN-DEV-0006', 1, 'approved', (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP),
+(7, 7, 'Canon DSLR Camera', 'Canon', 'EOS 200D', 'Other Peripherals', 'SN-DEV-0007', 1, 'approved', (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP),
+(8, 8, 'Arduino Uno Board', 'Arduino', 'Uno R3', 'Project Prototypes', 'SN-DEV-0008', 1, 'approved', (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP),
+(9, 9, 'Raspberry Pi 4 Kit', 'Raspberry Pi', 'Model B', 'Project Prototypes', 'SN-DEV-0009', 1, 'approved', (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP),
+(10, 10, 'Fluke Multimeter', 'Fluke', 'Model 17B+', 'Other Peripherals', 'SN-DEV-0010', 1, 'approved', (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), CURRENT_TIMESTAMP);
 
-    INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req5_id, 'Arduino Kit', 'Arduino', 'Uno R3', 'Project Prototypes', 'SN-DEV-0031', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_device_id INTO v_dev5_id;
+-- Reset serial primary key sequence for request_devices
+SELECT setval('request_devices_request_device_id_seq', 10);
 
-    INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req6_id, 'Arduino Kit Updated', 'Arduino', 'Uno R3', 'Project Prototypes', 'SN-DEV-0032', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_device_id INTO v_dev6_id;
+-- 6. Populate Daily Ingress/Egress Transactions
+-- Completed 1: Normal on June 25, 2026
+INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked)
+VALUES (4, '2026-06-25'::date, '2026-06-25 08:05:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), '2026-06-25 16:55:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), FALSE);
 
-    INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req7_id, 'Lenovo ThinkPad', 'Lenovo', 'T14 Gen 3', 'Personal Computers', 'SN-DEV-0041', 1, 'pending', NULL, NULL)
-    RETURNING request_device_id INTO v_dev7_id;
+-- Completed 2: Event on June 21, 2026
+INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked)
+VALUES (5, '2026-06-21'::date, '2026-06-21 08:12:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), '2026-06-21 17:05:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), FALSE);
 
-    INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req8_id, 'DSLR Camera', 'Canon', 'EOS 80D', 'Other Peripherals', 'SN-DEV-0042', 1, 'pending', NULL, NULL)
-    RETURNING request_device_id INTO v_dev8_id;
+-- Completed 3: Normal on June 15, 2026
+INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked)
+VALUES (6, '2026-06-15'::date, '2026-06-15 08:45:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), '2026-06-15 17:50:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), FALSE);
 
-    INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req9_id, 'iPad Pro', 'Apple', 'M1 11-inch', 'Mobile Devices (Tablet/Phone)', 'SN-DEV-0051', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_device_id INTO v_dev9_id;
+-- Completed 4: Event on June 11, 2026
+INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked)
+VALUES (7, '2026-06-11'::date, '2026-06-11 07:50:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), '2026-06-11 18:15:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), FALSE);
 
-    INSERT INTO request_devices (request_id, device_name, brand, model, device_type, serial_number, quantity, device_status, verified_by, verified_at)
-    VALUES (v_req10_id, 'iPad Pro Updated', 'Apple', 'M1 11-inch', 'Mobile Devices (Tablet/Phone)', 'SN-DEV-0052', 1, 'approved', v_user_id, CURRENT_TIMESTAMP)
-    RETURNING request_device_id INTO v_dev10_id;
-
-    -- E. Populate Logs from June 1 to June 29, 2026 (incorporating missed checkouts and late check-ins/outs)
-    
-    -- June 1, 2026: Standard logs (On Time)
-    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev1_id, '2026-06-01', '2026-06-01 07:45:00+08', v_user_id, '2026-06-01 16:50:00+08', v_user_id, FALSE),
-    (v_dev9_id, '2026-06-02', '2026-06-02 07:55:00+08', v_user_id, '2026-06-02 17:45:00+08', v_user_id, FALSE);
-
-    -- June 5, 2026: Missed checkout (Device 5 never checked out)
-    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev5_id, '2026-06-05', '2026-06-05 07:50:00+08', v_user_id, NULL, NULL, TRUE);
-
-    -- June 10, 2026: Missed checkout for Device 1
-    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev1_id, '2026-06-10', '2026-06-10 07:55:00+08', v_user_id, NULL, NULL, TRUE);
-
-    -- June 12, 2026: Missed checkout for Device 6, BUT checked out today on June 29 (Checked-out missed egress!)
-    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev6_id, '2026-06-12', '2026-06-12 08:45:00+08', v_user_id, '2026-06-29 11:30:00+08', v_user_id, FALSE);
-
-    -- June 15, 2026: Late Check-in (Device 1 expected at 08:00, checked-in at 09:10 -> 1 hr 10 mins late)
-    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev1_id, '2026-06-15', '2026-06-15 09:10:00+08', v_user_id, '2026-06-15 16:50:00+08', v_user_id, FALSE);
-
-    -- June 18, 2026: Late Check-out (Device 3 expected egress at 17:00, checked-out at 18:45 -> 1 hr 45 mins late)
-    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev3_id, '2026-06-18', '2026-06-18 07:55:00+08', v_user_id, '2026-06-18 18:45:00+08', v_user_id, FALSE);
-
-    -- June 20, 2026: Late Check-in and Late Check-out (Device 9 expected 08:00/18:00, checked in 09:30, checked out 19:15)
-    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev9_id, '2026-06-20', '2026-06-20 09:30:00+08', v_user_id, '2026-06-20 19:15:00+08', v_user_id, FALSE);
-
-    -- June 29, 2026: Ongoing/active logs today (June 29) - satisfies 'at least 2 ongoing'
-    -- 1. Device 1 (John Doe) checked in today but has not checked out yet (Ongoing / Inside campus)
-    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev1_id, '2026-06-29', '2026-06-29 07:45:00+08', v_user_id, NULL, NULL, FALSE);
-
-    -- 2. Device 3 (Jane Smith) checked in today but has not checked out yet (Ongoing / Inside campus)
-    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev3_id, '2026-06-29', '2026-06-29 08:20:00+08', v_user_id, NULL, NULL, FALSE);
-
-    -- 3. Device 9 (Charlie Brown) checked in late today (Expected 08:00, Ingress 09:15 -> Late check-in) and checked out at 17:45
-    INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
-    (v_dev9_id, '2026-06-29', '2026-06-29 09:15:00+08', v_user_id, '2026-06-29 17:45:00+08', v_user_id, FALSE);
-
-END $$;
+-- Ongoing 1, 2, 3: Active today (July 1, 2026) check-in logs
+INSERT INTO device_transactions (request_device_id, log_date, ingress_time, ingress_handled_by, egress_time, egress_handled_by, no_egress_marked) VALUES
+(1, '2026-07-01'::date, '2026-07-01 07:55:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), NULL::timestamptz, NULL::integer, FALSE),
+(2, '2026-07-01'::date, '2026-07-01 08:20:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), NULL::timestamptz, NULL::integer, FALSE),
+(3, '2026-07-01'::date, '2026-07-01 08:45:00+08'::timestamptz, (SELECT user_id FROM users WHERE username = 'admin' LIMIT 1), NULL::timestamptz, NULL::integer, FALSE);
